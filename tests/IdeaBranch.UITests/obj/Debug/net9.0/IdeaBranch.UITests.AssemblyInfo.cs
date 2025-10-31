@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IdeaBranch.UITests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+79d30383d8d9d18d4090d242efaf99d08ccba7a3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aea5fb3584a6c48f1d4894db9dad2931f67ed58f")]
 [assembly: System.Reflection.AssemblyProductAttribute("IdeaBranch.UITests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IdeaBranch.UITests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -280,6 +280,48 @@
             Builds chat messages from prompt and context path.
             </summary>
         </member>
+        <member name="T:IdeaBranch.App.Services.LocalizationService">
+            <summary>
+            Service for locale-aware formatting of dates, times, and numbers.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LocalizationService.FormatDateTime(System.DateTime)">
+            <summary>
+            Formats a date/time value using the current culture's format.
+            Uses general date/time format (short date and short time).
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LocalizationService.FormatDateTime(System.DateTime,System.String)">
+            <summary>
+            Formats a date/time value using the current culture's format.
+            Uses the specified format string.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LocalizationService.FormatDate(System.DateTime)">
+            <summary>
+            Formats a date value using the current culture's short date format.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LocalizationService.FormatTime(System.DateTime)">
+            <summary>
+            Formats a time value using the current culture's short time format.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LocalizationService.FormatNumber(System.Double,System.String)">
+            <summary>
+            Formats a number using the current culture's number format.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LocalizationService.FormatNumber(System.Int32,System.String)">
+            <summary>
+            Formats a number using the current culture's number format.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LocalizationService.FormatCurrency(System.Decimal)">
+            <summary>
+            Formats a currency value using the current culture's currency format.
+            </summary>
+        </member>
         <member name="T:IdeaBranch.App.Services.MauiConnectivityService">
             <summary>
             MAUI-based implementation of IConnectivityService.
@@ -546,6 +588,101 @@
             <param name="success">Whether the operation succeeded.</param>
             <param name="errorMessage">Optional error message if the operation failed.</param>
         </member>
+        <member name="T:IdeaBranch.App.ViewModels.AnnotationEditViewModel">
+            <summary>
+            ViewModel for AnnotationEditPage that manages creating and editing annotations.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.AnnotationEditViewModel.#ctor(System.Guid,System.Int32,System.Int32,System.String,IdeaBranch.Domain.IAnnotationsRepository,IdeaBranch.Domain.ITagTaxonomyRepository,System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Initializes a new instance for creating a new annotation.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.AnnotationEditViewModel.#ctor(IdeaBranch.Domain.Annotation,System.String,IdeaBranch.Domain.IAnnotationsRepository,IdeaBranch.Domain.ITagTaxonomyRepository,System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Initializes a new instance for editing an existing annotation.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AnnotationEditViewModel.SelectedText">
+            <summary>
+            Gets the selected text span.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AnnotationEditViewModel.Comment">
+            <summary>
+            Gets or sets the annotation comment.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AnnotationEditViewModel.AvailableTags">
+            <summary>
+            Gets the available tags from the taxonomy.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AnnotationEditViewModel.SelectedTags">
+            <summary>
+            Gets or sets the selected tag IDs.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AnnotationEditViewModel.NumericValue">
+            <summary>
+            Gets or sets the numeric value.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AnnotationEditViewModel.GeospatialValue">
+            <summary>
+            Gets or sets the geospatial value (JSON).
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AnnotationEditViewModel.TemporalValue">
+            <summary>
+            Gets or sets the temporal value.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AnnotationEditViewModel.IsBusy">
+            <summary>
+            Gets or sets whether an operation is in progress.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AnnotationEditViewModel.ErrorMessage">
+            <summary>
+            Gets or sets the error message.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AnnotationEditViewModel.HasError">
+            <summary>
+            Gets whether there is an error message.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AnnotationEditViewModel.IsEditing">
+            <summary>
+            Gets whether this is editing an existing annotation.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.AnnotationEditViewModel.LoadAvailableTagsAsync">
+            <summary>
+            Loads available tags from the taxonomy.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.AnnotationEditViewModel.LoadTagChildrenAsync(System.Guid,System.Collections.Generic.List{IdeaBranch.Domain.TagTaxonomyNode})">
+            <summary>
+            Recursively loads tag children.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.AnnotationEditViewModel.LoadAnnotationDataAsync">
+            <summary>
+            Loads existing annotation data including tags and values.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.AnnotationEditViewModel.SaveAsync">
+            <summary>
+            Saves the annotation.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.AnnotationEditViewModel.DeleteAsync">
+            <summary>
+            Deletes the annotation if editing.
+            </summary>
+        </member>
         <member name="T:IdeaBranch.App.ViewModels.MapViewModel">
             <summary>
             ViewModel for MapPage.
@@ -633,7 +770,13 @@
         </member>
         <member name="P:IdeaBranch.App.ViewModels.SettingsViewModel.SelectedCategory">
             <summary>
-            Gets or sets the currently selected category.
+            Gets or sets the currently selected category (localized display name).
+            Internally converts to/from internal key for XAML converter matching.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SettingsViewModel.SelectedCategoryKey">
+            <summary>
+            Gets the internal key for the selected category (for XAML converter matching).
             </summary>
         </member>
         <member name="P:IdeaBranch.App.ViewModels.SettingsViewModel.SelectedLanguage">
@@ -756,7 +899,7 @@
             ViewModel for TopicNodeDetailPage that manages editing a single topic node.
             </summary>
         </member>
-        <member name="M:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.#ctor(IdeaBranch.Domain.TopicNode,System.Func{IdeaBranch.Domain.TopicNode,System.Threading.Tasks.Task},IdeaBranch.App.Services.LLM.LLMClientFactory,System.Func{IdeaBranch.Domain.TopicNode,System.Threading.Tasks.Task},IdeaBranch.App.Services.TelemetryService)">
+        <member name="M:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.#ctor(IdeaBranch.Domain.TopicNode,System.Func{IdeaBranch.Domain.TopicNode,System.Threading.Tasks.Task},IdeaBranch.App.Services.LLM.LLMClientFactory,System.Func{IdeaBranch.Domain.TopicNode,System.Threading.Tasks.Task},IdeaBranch.App.Services.TelemetryService,IdeaBranch.Domain.IAnnotationsRepository)">
             <summary>
             Initializes a new instance with a topic node to edit.
             </summary>
@@ -834,6 +977,61 @@
         <member name="M:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.RetryAsync">
             <summary>
             Retries the last failed operation.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.Annotations">
+            <summary>
+            Gets the annotations for this topic node.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.FilteredAnnotations">
+            <summary>
+            Gets the filtered annotations based on selected tag filters.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.SelectedTagFilters">
+            <summary>
+            Gets or sets the selected tag filter IDs.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.ShowComments">
+            <summary>
+            Gets or sets whether comments should be visible.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.HasTextSelection">
+            <summary>
+            Gets or sets whether text is currently selected in the Editor.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.SelectedAnnotation">
+            <summary>
+            Gets or sets the selected annotation.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.LoadAnnotationsAsync">
+            <summary>
+            Loads annotations for this topic node.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.CreateAnnotation(System.Int32,System.Int32,System.String)">
+            <summary>
+            Creates a new annotation for the specified text span.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.SaveAnnotationAsync(IdeaBranch.Domain.Annotation)">
+            <summary>
+            Saves an annotation.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.DeleteAnnotationAsync(System.Guid)">
+            <summary>
+            Deletes an annotation.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.HasAllTags(IdeaBranch.Domain.Annotation,System.Collections.Generic.IReadOnlyList{System.Guid})">
+            <summary>
+            Checks if an annotation has all the specified tags.
             </summary>
         </member>
         <member name="T:IdeaBranch.App.ViewModels.TopicTreeViewModel">

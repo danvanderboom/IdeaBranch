@@ -290,6 +290,10 @@ public class TopicTreeViewModel : INotifyPropertyChanged
             telemetry = services?.GetService<Services.TelemetryService>();
         }
 
+        // Get annotations repository
+        var annotationsRepository = Application.Current?.MainPage?.Handler?.MauiContext?.Services?
+            .GetService<Domain.IAnnotationsRepository>();
+
         // Create detail ViewModel with save callback
         var detailViewModel = new TopicNodeDetailViewModel(
             domainNode, 
@@ -304,7 +308,8 @@ public class TopicTreeViewModel : INotifyPropertyChanged
                 // Refresh view when children are added
                 await SaveAndRefreshAsync();
             },
-            telemetry);
+            telemetry,
+            annotationsRepository);
 
         // Create detail page and navigate
         var detailPage = new Views.TopicNodeDetailPage(detailViewModel);

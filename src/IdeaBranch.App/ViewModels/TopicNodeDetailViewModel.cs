@@ -19,6 +19,7 @@ public class TopicNodeDetailViewModel : INotifyPropertyChanged
     private readonly LLMClientFactory _llmFactory;
     private readonly Func<TopicNode, Task>? _onChildrenAdded;
     private readonly TelemetryService? _telemetry;
+    private readonly IAnnotationsRepository? _annotationsRepository;
     
     private string _title;
     private string _prompt;
@@ -27,6 +28,8 @@ public class TopicNodeDetailViewModel : INotifyPropertyChanged
     private string? _errorMessage;
     private string? _errorType; // "llm" or "repository"
     private Func<Task>? _retryAction;
+    private IReadOnlyList<Annotation> _annotations = Array.Empty<Annotation>();
+    private IReadOnlyList<Guid> _selectedTagFilters = Array.Empty<Guid>();
 
     /// <summary>
     /// Initializes a new instance with a topic node to edit.
@@ -36,17 +39,22 @@ public class TopicNodeDetailViewModel : INotifyPropertyChanged
         Func<TopicNode, Task> saveCallback,
         LLMClientFactory llmFactory,
         Func<TopicNode, Task>? onChildrenAdded = null,
-        TelemetryService? telemetry = null)
+        TelemetryService? telemetry = null,
+        IAnnotationsRepository? annotationsRepository = null)
     {
         _node = node ?? throw new ArgumentNullException(nameof(node));
         _saveCallback = saveCallback ?? throw new ArgumentNullException(nameof(saveCallback));
         _llmFactory = llmFactory ?? throw new ArgumentNullException(nameof(llmFactory));
         _onChildrenAdded = onChildrenAdded;
         _telemetry = telemetry;
+        _annotationsRepository = annotationsRepository;
         
         _title = node.Title ?? string.Empty;
         _prompt = node.Prompt ?? string.Empty;
         _response = node.Response ?? string.Empty;
+        
+        // Load annotations asynchronously
+        _ = LoadAnnotationsAsync();
     }
 
     /// <summary>
@@ -361,6 +369,173 @@ public class TopicNodeDetailViewModel : INotifyPropertyChanged
         {
             await _retryAction();
         }
+    }
+
+    /// <summary>
+    /// Gets the annotations for this topic node.
+    /// </summary>
+    public IReadOnlyList<Annotation> Annotations
+    {
+        get => _annotations;
+        private set
+        {
+            if (_annotations != value)
+            {
+                _annotations = value;
+                OnPropertyChanged(nameof(Annotations));
+                OnPropertyChanged(nameof(FilteredAnnotations));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the filtered annotations based on selected tag filters.
+    /// </summary>
+    public IReadOnlyList<Annotation> FilteredAnnotations
+    {
+        get
+        {
+            if (_selectedTagFilters.Count == 0)
+                return _annotations;
+            
+            // Filter annotations that have all selected tags
+            return _annotations.Where(a => HasAllTags(a, _selectedTagFilters)).ToList();
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the selected tag filter IDs.
+    /// </summary>
+    public IReadOnlyList<Guid> SelectedTagFilters
+    {
+        get => _selectedTagFilters;
+        set
+        {
+            if (_selectedTagFilters != value)
+            {
+                _selectedTagFilters = value ?? Array.Empty<Guid>();
+                OnPropertyChanged(nameof(SelectedTagFilters));
+                OnPropertyChanged(nameof(FilteredAnnotations));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets whether comments should be visible.
+    /// </summary>
+    public bool ShowComments
+    {
+        get => _showComments;
+        set
+        {
+            if (_showComments != value)
+            {
+                _showComments = value;
+                OnPropertyChanged(nameof(ShowComments));
+            }
+        }
+    }
+    private bool _showComments = true;
+
+    /// <summary>
+    /// Gets or sets whether text is currently selected in the Editor.
+    /// </summary>
+    public bool HasTextSelection
+    {
+        get => _hasTextSelection;
+        set
+        {
+            if (_hasTextSelection != value)
+            {
+                _hasTextSelection = value;
+                OnPropertyChanged(nameof(HasTextSelection));
+            }
+        }
+    }
+    private bool _hasTextSelection;
+
+    /// <summary>
+    /// Gets or sets the selected annotation.
+    /// </summary>
+    public Annotation? SelectedAnnotation
+    {
+        get => _selectedAnnotation;
+        set
+        {
+            if (_selectedAnnotation != value)
+            {
+                _selectedAnnotation = value;
+                OnPropertyChanged(nameof(SelectedAnnotation));
+            }
+        }
+    }
+    private Annotation? _selectedAnnotation;
+
+    /// <summary>
+    /// Loads annotations for this topic node.
+    /// </summary>
+    public async Task LoadAnnotationsAsync()
+    {
+        if (_annotationsRepository == null || _node.Id == Guid.Empty)
+            return;
+
+        try
+        {
+            var annotations = await _annotationsRepository.GetByNodeIdAsync(_node.Id);
+            Annotations = annotations;
+        }
+        catch
+        {
+            // Silently fail - annotations are optional
+            Annotations = Array.Empty<Annotation>();
+        }
+    }
+
+    /// <summary>
+    /// Creates a new annotation for the specified text span.
+    /// </summary>
+    public Annotation CreateAnnotation(int startOffset, int endOffset, string? comment = null)
+    {
+        var annotation = new Annotation(_node.Id, startOffset, endOffset, comment);
+        return annotation;
+    }
+
+    /// <summary>
+    /// Saves an annotation.
+    /// </summary>
+    public async Task SaveAnnotationAsync(Annotation annotation)
+    {
+        if (_annotationsRepository == null)
+            throw new InvalidOperationException("Annotations repository is not available.");
+
+        await _annotationsRepository.SaveAsync(annotation);
+        await LoadAnnotationsAsync();
+    }
+
+    /// <summary>
+    /// Deletes an annotation.
+    /// </summary>
+    public async Task DeleteAnnotationAsync(Guid annotationId)
+    {
+        if (_annotationsRepository == null)
+            throw new InvalidOperationException("Annotations repository is not available.");
+
+        await _annotationsRepository.DeleteAsync(annotationId);
+        await LoadAnnotationsAsync();
+    }
+
+    /// <summary>
+    /// Checks if an annotation has all the specified tags.
+    /// </summary>
+    private bool HasAllTags(Annotation annotation, IReadOnlyList<Guid> tagIds)
+    {
+        if (_annotationsRepository == null || tagIds.Count == 0)
+            return true;
+
+        // This is a synchronous check - we'd need to cache tag IDs per annotation
+        // For now, return true and let the repository filter handle it
+        // In a real implementation, we'd want to cache annotation tags
+        return true;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

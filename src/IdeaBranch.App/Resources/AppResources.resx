@@ -318,6 +318,58 @@
   <data name="TopicNodeDetailPage_SaveButton" xml:space="preserve">
     <value>Save</value>
   </data>
+  <data name="TopicNodeDetailPage_AnnotateButton" xml:space="preserve">
+    <value>Annotate</value>
+  </data>
+  <data name="TopicNodeDetailPage_AnnotationsLabel" xml:space="preserve">
+    <value>Annotations</value>
+  </data>
+  <data name="TopicNodeDetailPage_ShowCommentsLabel" xml:space="preserve">
+    <value>Show Comments</value>
+  </data>
+  <data name="TopicNodeDetailPage_NoAnnotationsLabel" xml:space="preserve">
+    <value>No annotations</value>
+  </data>
+  <!-- AnnotationEditPage -->
+  <data name="AnnotationEditPage_Title" xml:space="preserve">
+    <value>Edit Annotation</value>
+  </data>
+  <data name="AnnotationEditPage_SelectedTextLabel" xml:space="preserve">
+    <value>Selected Text</value>
+  </data>
+  <data name="AnnotationEditPage_CommentLabel" xml:space="preserve">
+    <value>Comment</value>
+  </data>
+  <data name="AnnotationEditPage_CommentPlaceholder" xml:space="preserve">
+    <value>Enter an optional comment</value>
+  </data>
+  <data name="AnnotationEditPage_TagsLabel" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="AnnotationEditPage_TagsNote" xml:space="preserve">
+    <value>Tag selection will be available in a future update</value>
+  </data>
+  <data name="AnnotationEditPage_OptionalValuesLabel" xml:space="preserve">
+    <value>Optional Values</value>
+  </data>
+  <data name="AnnotationEditPage_NumericValueLabel" xml:space="preserve">
+    <value>Numeric Value</value>
+  </data>
+  <data name="AnnotationEditPage_NumericValuePlaceholder" xml:space="preserve">
+    <value>Enter a numeric value (optional)</value>
+  </data>
+  <data name="AnnotationEditPage_TemporalValueLabel" xml:space="preserve">
+    <value>Temporal Value</value>
+  </data>
+  <data name="AnnotationEditPage_SaveButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="AnnotationEditPage_CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="AnnotationEditPage_DeleteButton" xml:space="preserve">
+    <value>Delete</value>
+  </data>
   <!-- TopicTreePage -->
   <data name="TopicTreePage_Title" xml:space="preserve">
     <value>Topic Tree</value>

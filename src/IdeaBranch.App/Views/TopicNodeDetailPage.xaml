@@ -17,6 +17,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!-- Parent path breadcrumb -->
@@ -47,16 +48,98 @@
 
             <!-- Response -->
             <VerticalStackLayout Grid.Row="3" Spacing="4">
-                <Label Text="{x:Static res:AppResources.TopicNodeDetailPage_ResponseLabel}" FontAttributes="Bold" />
-                <Editor Text="{Binding Response}"
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <Label Grid.Column="0"
+                           Text="{x:Static res:AppResources.TopicNodeDetailPage_ResponseLabel}" 
+                           FontAttributes="Bold" />
+                    <Button Grid.Column="1"
+                            Text="{x:Static res:AppResources.TopicNodeDetailPage_AnnotateButton}"
+                            Clicked="OnAnnotateSelectionClicked"
+                            IsEnabled="{Binding HasTextSelection}"
+                            Padding="8,4"
+                            FontSize="12"
+                            BackgroundColor="#E3F2FD"
+                            TextColor="#1976D2"
+                            AutomationId="TopicNodeDetailPage_AnnotateButton"
+                            SemanticProperties.Hint="Create an annotation for the selected text"
+                            IsVisible="{Binding HasTextSelection}" />
+                </Grid>
+                <Editor x:Name="ResponseEditor"
+                        Text="{Binding Response}"
                         Placeholder="{x:Static res:AppResources.TopicNodeDetailPage_ResponsePlaceholder}"
                         HeightRequest="200"
                         AutomationId="TopicNodeDetailPage_Response"
-                        SemanticProperties.Description="Enter or edit the response text for this topic node" />
+                        SemanticProperties.Description="Enter or edit the response text for this topic node"
+                        TextChanged="OnResponseTextChanged"
+                        Focused="OnResponseFocused" />
+            </VerticalStackLayout>
+
+            <!-- Annotations Section -->
+            <VerticalStackLayout Grid.Row="4" Spacing="4" Margin="0,8,0,0">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <Label Grid.Column="0"
+                           Text="{x:Static res:AppResources.TopicNodeDetailPage_AnnotationsLabel}"
+                           FontAttributes="Bold" />
+                    <CheckBox Grid.Column="1"
+                              IsChecked="{Binding ShowComments}"
+                              VerticalOptions="Center"
+                              AutomationId="TopicNodeDetailPage_ShowComments"
+                              SemanticProperties.Description="Toggle visibility of annotation comments" />
+                    <Label Grid.Column="1"
+                           Text="{x:Static res:AppResources.TopicNodeDetailPage_ShowCommentsLabel}"
+                           FontSize="12"
+                           VerticalOptions="Center"
+                           Margin="8,0,0,0" />
+                </Grid>
+                <CollectionView ItemsSource="{Binding FilteredAnnotations}"
+                                SelectionMode="Single"
+                                SelectedItem="{Binding SelectedAnnotation}"
+                                SelectionChanged="OnAnnotationSelected"
+                                AutomationId="TopicNodeDetailPage_AnnotationsList">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="8" BackgroundColor="#F5F5F5" Margin="0,4">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnAnnotationTapped" CommandParameter="{Binding .}" />
+                                </Grid.GestureRecognizers>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Label Grid.Row="0"
+                                       Text="{Binding Comment}"
+                                       FontSize="14"
+                                       IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:TopicNodeDetailViewModel}}, Path=ShowComments}"
+                                       AutomationId="{Binding Id, StringFormat='Annotation_{0}_Comment'}" />
+                                <Label Grid.Row="1"
+                                       FontSize="12"
+                                       TextColor="Gray"
+                                       Margin="0,4,0,0"
+                                       AutomationId="{Binding Id, StringFormat='Annotation_{0}_Offset'}">
+                                    <Label.Text>
+                                        <MultiBinding StringFormat="Offset: {0}-{1}">
+                                            <Binding Path="StartOffset" />
+                                            <Binding Path="EndOffset" />
+                                        </MultiBinding>
+                                    </Label.Text>
+                                </Label>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                    <CollectionView.EmptyView>
+                        <Label Text="{x:Static res:AppResources.TopicNodeDetailPage_NoAnnotationsLabel}"
+                               FontSize="14"
+                               TextColor="Gray"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Margin="0,20"
+                               AutomationId="TopicNodeDetailPage_NoAnnotations" />
+                    </CollectionView.EmptyView>
+                </CollectionView>
             </VerticalStackLayout>
 
             <!-- Error banner with retry -->
-            <Border Grid.Row="4"
+            <Border Grid.Row="5"
                     BackgroundColor="#FFEBEE"
                     StrokeThickness="1"
                     Stroke="#F44336"
@@ -99,7 +182,7 @@
             </Border>
 
             <!-- Action buttons (LLM actions and history) -->
-            <VerticalStackLayout Grid.Row="5" Spacing="8" Margin="0,8,0,0">
+            <VerticalStackLayout Grid.Row="6" Spacing="8" Margin="0,8,0,0">
                 <Button Text="{x:Static res:AppResources.TopicNodeDetailPage_ViewHistoryButton}"
                         Clicked="OnViewHistoryClicked"
                         IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
@@ -120,7 +203,7 @@
             </VerticalStackLayout>
 
             <!-- Save/Cancel buttons -->
-            <Grid Grid.Row="6" ColumnSpacing="8">
+            <Grid Grid.Row="7" ColumnSpacing="8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />

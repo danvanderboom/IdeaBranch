@@ -556,3 +556,4 @@ C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Debug\net9.0-windows
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\IdeaBranch.App.Resources.AppResources.resources
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\IdeaBranch.App.Resources.AppResources.es.resources
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\IdeaBranch.App.csproj.GenerateResource.cache
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\IdeaBranch.App.Resources.AppResources.fr.resources

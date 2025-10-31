@@ -17,7 +17,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IdeaBranch.App")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+eed2ca6000f267cb581a3de89d9e2c4290f1599c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+aea5fb3584a6c48f1d4894db9dad2931f67ed58f")]
 [assembly: System.Reflection.AssemblyProductAttribute("IdeaBranch.App")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IdeaBranch.App")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
