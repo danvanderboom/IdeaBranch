@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels"
+             xmlns:hierarchical="clr-namespace:CriticalInsight.Data.Hierarchical;assembly=CriticalInsight.Data"
+             xmlns:res="clr-namespace:IdeaBranch.App.Resources"
+             x:Class="IdeaBranch.App.Views.TagTaxonomyPage"
+             x:DataType="vm:TagTaxonomyViewModel"
+             Title="Tag Taxonomy">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <!-- Toolbar -->
+        <Grid Grid.Row="0" Padding="8" BackgroundColor="#F5F5F5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            
+            <Label Grid.Column="0" 
+                   Text="Tag Taxonomy" 
+                   FontSize="18" 
+                   FontAttributes="Bold"
+                   VerticalOptions="Center" />
+            
+            <Button Grid.Column="1"
+                    Text="Export"
+                    Clicked="OnExportClicked"
+                    Margin="8,0"
+                    Padding="12,8"
+                    AutomationId="TagTaxonomyPage_Export" />
+            
+            <Button Grid.Column="2"
+                    Text="Import"
+                    Clicked="OnImportClicked"
+                    Padding="12,8"
+                    AutomationId="TagTaxonomyPage_Import" />
+        </Grid>
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding ProjectedCollection}"
+                        x:Name="TagTaxonomyCollectionView"
+                        SemanticProperties.Description="Hierarchical tree view of tag taxonomy. Tap a node to expand/collapse. Long press for options.">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="hierarchical:ITreeNode">
+                    <Grid Margin="{Binding Depth, Converter={StaticResource DepthToThickness}, ConverterParameter=16}"
+                          Padding="8"
+                          BackgroundColor="Transparent"
+                          AutomationId="{Binding ., Converter={StaticResource TagTaxonomyDomainId}, StringFormat='TagTaxonomyPage_Node_{0}'}"
+                          SemanticProperties.Hint="Tap to expand or collapse. Long press for options.">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnNodeTapped" CommandParameter="{Binding .}" />
+                        </Grid.GestureRecognizers>
+                        
+                        <!-- Menu button -->
+                        <Button Text="⋯"
+                                HorizontalOptions="End"
+                                VerticalOptions="Center"
+                                BackgroundColor="Transparent"
+                                TextColor="Gray"
+                                FontSize="20"
+                                Padding="8"
+                                Margin="8,0,0,0"
+                                Clicked="OnMenuButtonClicked"
+                                CommandParameter="{Binding .}"
+                                AutomationId="{Binding ., Converter={StaticResource TagTaxonomyDomainId}, StringFormat='TagTaxonomyPage_Node_{0}_Menu'}" />
+                        
+                        <!-- Node content -->
+                        <Label Text="{Binding PayloadObject, Converter={StaticResource TagTaxonomyName}}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               AutomationId="{Binding ., Converter={StaticResource TagTaxonomyDomainId}, StringFormat='TagTaxonomyNode_{0}'}" />
+                        
+                        <!-- Expand/collapse indicator (if has children) -->
+                        <Label Text="▶"
+                               HorizontalOptions="End"
+                               VerticalOptions="Center"
+                               FontSize="12"
+                               Margin="8,0,0,0"
+                               IsVisible="{Binding Children.Count, Converter={StaticResource CountToBool}}"
+                               AutomationId="{Binding ., Converter={StaticResource TagTaxonomyDomainId}, StringFormat='TagTaxonomyPage_Node_{0}_ExpandIndicator'}" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        
+        <!-- Error message display -->
+        <Label Grid.Row="1"
+               Text="{Binding ErrorMessage}"
+               IsVisible="{Binding ErrorMessage, Converter={StaticResource IsNotNullConverter}}"
+               TextColor="Red"
+               BackgroundColor="LightYellow"
+               Padding="8"
+               HorizontalOptions="Fill"
+               VerticalOptions="Start"
+               Margin="8" />
+        
+        <!-- Busy indicator -->
+        <ActivityIndicator Grid.Row="1"
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           Color="Blue"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+    </Grid>
+</ContentPage>
+

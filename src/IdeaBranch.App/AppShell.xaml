@@ -50,4 +50,10 @@
         Route="SettingsPage"
         AutomationId="SettingsPage" />
 
+    <ShellContent
+        Title="Tag Taxonomy"
+        ContentTemplate="{DataTemplate views:TagTaxonomyPage}"
+        Route="TagTaxonomyPage"
+        AutomationId="TagTaxonomyPage" />
+
 </Shell>

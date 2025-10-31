@@ -17,6 +17,9 @@
             <converters:NodePayloadPromptConverter x:Key="NodePayloadPrompt" />
             <converters:CountToBoolConverter x:Key="CountToBool" />
             <converters:NodePayloadDomainIdConverter x:Key="NodePayloadDomainId" />
+            <converters:TagTaxonomyNameConverter x:Key="TagTaxonomyName" />
+            <converters:TagTaxonomyDomainIdConverter x:Key="TagTaxonomyDomainId" />
+            <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
             <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
             <converters:InvertedBoolToFontAttributesConverter x:Key="InvertedBoolToFontAttributesConverter" />
             <converters:StringEqualityToBoolConverter x:Key="StringToVisibilityConverter" />

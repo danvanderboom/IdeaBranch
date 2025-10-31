@@ -106,6 +106,13 @@ public static class MauiProgram
 			var notificationService = sp.GetService<INotificationService>();
 			return new NotificationsViewModel(repository, notificationService);
 		});
+		
+		builder.Services.AddTransient<TagTaxonomyViewModel>(sp =>
+		{
+			var repository = sp.GetRequiredService<ITagTaxonomyRepository>();
+			var annotationsRepository = sp.GetService<IAnnotationsRepository>();
+			return new TagTaxonomyViewModel(repository, annotationsRepository);
+		});
 
 		// Register resilience policies for HttpClientFactory and outbound I/O
 		builder.Services.AddResiliencePolicies();
