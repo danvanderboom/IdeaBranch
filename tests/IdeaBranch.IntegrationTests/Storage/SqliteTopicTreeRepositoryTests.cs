@@ -18,6 +18,7 @@ public class SqliteTopicTreeRepositoryTests
     private string? _dbPath;
     private TopicDb? _db;
     private SqliteTopicTreeRepository? _repository;
+    private SqliteVersionHistoryRepository? _versionHistoryRepository;
 
     [SetUp]
     public void SetUp()
@@ -25,7 +26,8 @@ public class SqliteTopicTreeRepositoryTests
         // Create temporary database file for testing
         _dbPath = Path.Combine(Path.GetTempPath(), $"ideabranch_test_{Guid.NewGuid():N}.db");
         _db = new TopicDb($"Data Source={_dbPath}");
-        _repository = new SqliteTopicTreeRepository(_db);
+        _versionHistoryRepository = new SqliteVersionHistoryRepository(_db.Connection);
+        _repository = new SqliteTopicTreeRepository(_db, _versionHistoryRepository);
     }
 
     [TearDown]
@@ -48,6 +50,7 @@ public class SqliteTopicTreeRepositoryTests
         }
         
         _repository = null;
+        _versionHistoryRepository = null;
         _db = null;
         _dbPath = null;
     }
@@ -244,6 +247,221 @@ public class SqliteTopicTreeRepositoryTests
         reloadedParent1.Children.Count.Should().Be(0);
         reloadedParent2.Children.Count.Should().Be(1);
         reloadedParent2.Children[0].Title.Should().Be("Child");
+    }
+
+    [Test]
+    public async Task SaveAsync_WhenNodeModified_ShouldCaptureVersionHistory()
+    {
+        // Arrange
+        var root = await _repository!.GetRootAsync();
+        root.Title = "Original Title";
+        root.Prompt = "Original Prompt";
+        root.SetResponse("Original Response", parseListItems: false);
+        await _repository.SaveAsync(root);
+
+        // Act - Modify and save
+        root.Title = "Updated Title";
+        root.Prompt = "Updated Prompt";
+        root.SetResponse("Updated Response", parseListItems: false);
+        await _repository.SaveAsync(root);
+
+        // Assert - Version history should capture previous state
+        // Note: First save creates a version for the default root state
+        var versions = await _versionHistoryRepository!.GetByNodeIdAsync(root.Id);
+        versions.Should().HaveCount(2); // Default root + Original state
+        var originalVersion = versions.First(v => v.Title == "Original Title");
+        originalVersion.Prompt.Should().Be("Original Prompt");
+        originalVersion.Response.Should().Be("Original Response");
+    }
+
+    [Test]
+    public async Task SaveAsync_WhenNewNodeAdded_ShouldNotCaptureVersionHistory()
+    {
+        // Arrange
+        var root = await _repository!.GetRootAsync();
+        await _repository.SaveAsync(root);
+
+        // Act - Add new child and save
+        var child = new TopicNode("Child Prompt", "Child Title");
+        root.AddChild(child);
+        await _repository.SaveAsync(root);
+
+        // Assert - New node should not have version history
+        var childVersions = await _versionHistoryRepository!.GetByNodeIdAsync(child.Id);
+        childVersions.Should().BeEmpty();
+    }
+
+    [Test]
+    public async Task SaveAsync_WhenNodeUnchanged_ShouldNotCaptureVersionHistory()
+    {
+        // Arrange
+        var root = await _repository!.GetRootAsync();
+        root.Title = "Test Title";
+        root.Prompt = "Test Prompt";
+        root.SetResponse("Test Response", parseListItems: false);
+        await _repository.SaveAsync(root);
+
+        // Act - Save again without changes
+        await _repository.SaveAsync(root);
+
+        // Assert - No new version should be created (first save creates version for default root)
+        var versions = await _versionHistoryRepository!.GetByNodeIdAsync(root.Id);
+        // Only the default root version should exist
+        versions.Should().HaveCount(1);
+        versions[0].Title.Should().Be("Root Topic"); // Default root title
+    }
+
+    [Test]
+    public async Task SaveAsync_ShouldCapturePreviousStateCorrectly()
+    {
+        // Arrange
+        var root = await _repository!.GetRootAsync();
+        root.Title = "First Title";
+        root.Prompt = "First Prompt";
+        root.SetResponse("First Response", parseListItems: false);
+        await _repository.SaveAsync(root);
+
+        // Act - Modify multiple times
+        root.Title = "Second Title";
+        root.Prompt = "Second Prompt";
+        await _repository.SaveAsync(root);
+
+        root.Title = "Third Title";
+        root.SetResponse("Third Response", parseListItems: false);
+        await _repository.SaveAsync(root);
+
+        // Assert - Version history should capture states before each save
+        // Note: First save creates a version for the default root state
+        var versions = await _versionHistoryRepository!.GetByNodeIdAsync(root.Id);
+        versions.Should().HaveCount(3); // Default root + First + Second
+        
+        // First version (after default) should have "First" values
+        var firstVersion = versions.Where(v => v.Title == "First Title").First();
+        firstVersion.Prompt.Should().Be("First Prompt");
+        firstVersion.Response.Should().Be("First Response");
+
+        // Second version should have "Second" values (state before third save)
+        var secondVersion = versions.Where(v => v.Title == "Second Title").First();
+        secondVersion.Prompt.Should().Be("Second Prompt");
+        secondVersion.Response.Should().Be("First Response"); // Response wasn't changed in second save
+    }
+
+    [Test]
+    public async Task SaveAsync_WithMultipleEdits_ShouldCreateMultipleVersions()
+    {
+        // Arrange
+        var root = await _repository!.GetRootAsync();
+        root.Title = "Version 1";
+        await _repository.SaveAsync(root);
+
+        // Act - Make multiple edits
+        root.Title = "Version 2";
+        await _repository.SaveAsync(root);
+
+        root.Title = "Version 3";
+        await _repository.SaveAsync(root);
+
+        root.Title = "Version 4";
+        await _repository.SaveAsync(root);
+
+        // Assert - Each edit should create a version
+        // Note: First save creates a version for the default root state
+        var versions = await _versionHistoryRepository!.GetByNodeIdAsync(root.Id);
+        versions.Should().HaveCount(4); // Default root + Version 1 + Version 2 + Version 3
+        versions.Should().BeInDescendingOrder(v => v.VersionTimestamp);
+    }
+
+    [Test]
+    public async Task SaveAsync_WithVersionHistoryRepository_ShouldPersistVersionsAcrossRestarts()
+    {
+        // Arrange
+        var root = await _repository!.GetRootAsync();
+        root.Title = "Original Title";
+        root.Prompt = "Original Prompt";
+        await _repository.SaveAsync(root);
+
+        root.Title = "Updated Title";
+        root.Prompt = "Updated Prompt";
+        await _repository.SaveAsync(root);
+
+        // Act - Dispose and recreate repository (simulating app restart)
+        // Note: First save creates a version for the default root state
+        var versionsBeforeRestart = await _versionHistoryRepository!.GetByNodeIdAsync(root.Id);
+        versionsBeforeRestart.Should().HaveCount(2); // Default root + Original
+
+        _repository?.Dispose();
+        _versionHistoryRepository = null;
+        _db?.Dispose();
+
+        // Recreate with same database
+        _db = new TopicDb($"Data Source={_dbPath}");
+        _versionHistoryRepository = new SqliteVersionHistoryRepository(_db.Connection);
+        _repository = new SqliteTopicTreeRepository(_db, _versionHistoryRepository);
+
+        // Assert - Versions should still be available
+        var versionsAfterRestart = await _versionHistoryRepository.GetByNodeIdAsync(root.Id);
+        versionsAfterRestart.Should().HaveCount(2); // Default root + Original
+        var originalVersion = versionsAfterRestart.First(v => v.Title == "Original Title");
+        originalVersion.Prompt.Should().Be("Original Prompt");
+    }
+
+    [Test]
+    public async Task SaveAsync_WhenChildNodeModified_ShouldCaptureChildVersionHistory()
+    {
+        // Arrange
+        var root = await _repository!.GetRootAsync();
+        var child = new TopicNode("Child Prompt", "Child Title");
+        root.AddChild(child);
+        await _repository.SaveAsync(root);
+
+        // Act - Modify child and save
+        child.Title = "Updated Child Title";
+        child.Prompt = "Updated Child Prompt";
+        await _repository.SaveAsync(root);
+
+        // Assert - Version history should capture child's previous state
+        var childVersions = await _versionHistoryRepository!.GetByNodeIdAsync(child.Id);
+        childVersions.Should().HaveCount(1);
+        childVersions[0].Title.Should().Be("Child Title");
+        childVersions[0].Prompt.Should().Be("Child Prompt");
+    }
+
+    [Test]
+    public async Task SaveAsync_WhenOnlyOrderChanged_ShouldCaptureVersionHistory()
+    {
+        // Arrange
+        var root = await _repository!.GetRootAsync();
+        var child1 = new TopicNode("Prompt 1", "Title 1");
+        var child2 = new TopicNode("Prompt 2", "Title 2");
+        root.AddChild(child1);
+        root.AddChild(child2);
+        await _repository.SaveAsync(root);
+
+        // Act - Change order only
+        child1.Order = 1;
+        child2.Order = 0;
+        await _repository.SaveAsync(root);
+
+        // Assert - Version history should be captured for nodes with changed order
+        // Note: Order changes are detected, but both children were initially at order 0 implicitly
+        var child1Versions = await _versionHistoryRepository!.GetByNodeIdAsync(child1.Id);
+        // Order changes may not create versions if the detection logic doesn't catch it
+        // This test verifies the behavior - if order tracking isn't working, it will fail
+        if (child1Versions.Count > 0)
+        {
+            child1Versions[0].Order.Should().Be(0); // Previous order
+        }
+
+        var child2Versions = await _versionHistoryRepository!.GetByNodeIdAsync(child2.Id);
+        // Both children start at order 0, so changing order might not trigger version capture
+        // This test documents the current behavior
+        if (child2Versions.Count > 0)
+        {
+            child2Versions[0].Order.Should().Be(0); // Previous order
+        }
+        
+        // At least one should have version history if order change detection works
+        (child1Versions.Count + child2Versions.Count).Should().BeGreaterThan(0);
     }
 }
 
