@@ -21,9 +21,9 @@ public class TopicTreeViewProvider
     /// <summary>
     /// Creates a TreeView from a domain topic tree.
     /// </summary>
-    /// <param name="rootDomainNode">The root domain node (placeholder until domain model exists)</param>
+    /// <param name="rootDomainNode">The root domain TopicNode</param>
     /// <param name="defaultExpanded">Whether nodes should be expanded by default</param>
-    public void InitializeTreeView(object rootDomainNode, bool defaultExpanded = true)
+    public void InitializeTreeView(IdeaBranch.Domain.TopicNode rootDomainNode, bool defaultExpanded = true)
     {
         var rootTreeNode = _adapter.BuildTree(rootDomainNode);
         _treeView = new TreeView(rootTreeNode, defaultExpanded);

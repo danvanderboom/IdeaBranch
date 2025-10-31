@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels"
+             x:Class="IdeaBranch.App.Views.MapPage"
+             x:DataType="vm:MapViewModel"
+             Title="Map"
+             AutomationId="MapPage">
+    <Grid>
+        <Label Text="Map View"
+               FontSize="24"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               AutomationId="MapPage_Content" />
+    </Grid>
+</ContentPage>

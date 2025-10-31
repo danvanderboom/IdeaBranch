@@ -75,9 +75,19 @@ steps:
 
 - task: PublishTestResults@2
   displayName: 'Publish unit test results'
+  condition: always()
   inputs:
     testResultsFormat: 'VSTest'
     testResultsFiles: '$(Agent.TempDirectory)/**/*.trx'
+    failTaskOnFailedTests: false
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish test artifacts on failure'
+  condition: failed()
+  inputs:
+    pathToPublish: 'tests/**'
+    artifactName: 'test-artifacts'
+    continueOnError: true
 
 - script: 'dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.4.4'
   displayName: 'Install ReportGenerator tool'

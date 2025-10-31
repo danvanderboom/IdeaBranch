@@ -29,6 +29,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\IdeaBranch.Domain\IdeaBranch.Domain.csproj" />
     <ProjectReference Include="..\..\src\IdeaBranch.Infrastructure\IdeaBranch.Infrastructure.csproj" />
+    <ProjectReference Include="..\IdeaBranch.TestHelpers\IdeaBranch.TestHelpers.csproj" />
   </ItemGroup>
 
 </Project>

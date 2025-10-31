@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using CriticalInsight.Data.Hierarchical;
 using IdeaBranch.App.Adapters;
+using IdeaBranch.Domain;
 
 namespace IdeaBranch.App.ViewModels;
 
@@ -13,16 +14,42 @@ public class TopicTreeViewModel : INotifyPropertyChanged
 {
     private readonly TopicTreeViewProvider _viewProvider;
     private readonly TopicTreeAdapter _adapter;
+    private readonly ITopicTreeRepository _repository;
 
-    public TopicTreeViewModel()
+    /// <summary>
+    /// Initializes a new instance with the topic tree repository.
+    /// </summary>
+    public TopicTreeViewModel(ITopicTreeRepository repository)
     {
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         _adapter = new TopicTreeAdapter();
         _viewProvider = new TopicTreeViewProvider(_adapter);
         
-        // TODO: Initialize from domain repository once implemented
-        // For now, create a placeholder tree for testing
-        var placeholderRoot = new { Id = Guid.NewGuid() };
-        _viewProvider.InitializeTreeView(placeholderRoot, defaultExpanded: false);
+        // Initialize from repository
+        InitializeFromRepository();
+    }
+
+    /// <summary>
+    /// Initializes the tree view from the repository (parameterless constructor for XAML).
+    /// </summary>
+    public TopicTreeViewModel() : this(new InMemoryTopicTreeRepository())
+    {
+    }
+
+    private async void InitializeFromRepository()
+    {
+        try
+        {
+            var root = await _repository.GetRootAsync();
+            _viewProvider.InitializeTreeView(root, defaultExpanded: false);
+            OnPropertyChanged(nameof(ProjectedCollection));
+        }
+        catch
+        {
+            // Fallback to placeholder if repository fails
+            var placeholderRoot = new TopicNode("What would you like to explore?", "Root Topic");
+            _viewProvider.InitializeTreeView(placeholderRoot, defaultExpanded: false);
+        }
     }
 
     /// <summary>

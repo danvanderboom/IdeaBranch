@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -27,6 +27,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\IdeaBranch.Infrastructure\IdeaBranch.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\IdeaBranch.Domain\IdeaBranch.Domain.csproj" />
+    <ProjectReference Include="..\..\CriticalInsight.Data\CriticalInsight.Data\CriticalInsight.Data.csproj" />
+    <ProjectReference Include="..\IdeaBranch.TestHelpers\IdeaBranch.TestHelpers.csproj" />
   </ItemGroup>
 
 </Project>

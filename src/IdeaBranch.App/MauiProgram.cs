@@ -1,4 +1,6 @@
-﻿using IdeaBranch.Infrastructure.Resilience;
+﻿using System.Diagnostics;
+using IdeaBranch.App.Services;
+using IdeaBranch.Infrastructure.Resilience;
 using Microsoft.Extensions.Logging;
 
 namespace IdeaBranch.App;
@@ -20,6 +22,9 @@ public static class MauiProgram
 		builder.Logging.AddDebug();
 #endif
 
+		// Register telemetry service (consent-aware)
+		builder.Services.AddSingleton<TelemetryService>();
+
 		// Register resilience policies for HttpClientFactory and outbound I/O
 		builder.Services.AddResiliencePolicies();
 
@@ -34,6 +39,14 @@ public static class MauiProgram
 
 		// Register example service for demonstration
 		builder.Services.AddSingleton<IdeaBranch.App.Services.ExampleApiService>();
+
+		// Enable OpenTelemetry ActivitySource listeners
+		ActivitySource.AddActivityListener(new ActivityListener
+		{
+			ShouldListenTo = source => source.Name.StartsWith("IdeaBranch."),
+			ActivityStarted = activity => { },
+			ActivityStopped = activity => { }
+		});
 
 		return builder.Build();
 	}

@@ -16,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\CriticalInsight.Data\CriticalInsight.Data\CriticalInsight.Data.csproj" />
+    <ProjectReference Include="..\IdeaBranch.TestHelpers\IdeaBranch.TestHelpers.csproj" />
     <!-- Note: App path will be configured via environment/config rather than direct project reference -->
   </ItemGroup>
 </Project>

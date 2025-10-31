@@ -102,16 +102,14 @@ public class SmokeTests : AppiumTestFixture
         Thread.Sleep(2000); // Wait for app to load
         
         // Act - Navigate to Map
-        // Note: Map page not yet added to AppShell
-        // When available, navigation will be:
-        // var mapNav = Driver!.FindElementByAutomationId("MapPage");
-        // mapNav.Click();
+        var mapNav = Driver!.FindElementByAutomationId("MapPage");
+        mapNav.Click();
         
         // Assert
-        // Placeholder until Map page is implemented
-        // Expected: Verify MapPage is displayed
-        
-        Assert.Inconclusive("Map page not yet implemented in AppShell. Test will be updated when page is available.");
+        // Verify MapPage is displayed
+        var mapPageContent = Driver.FindElementByAutomationId("MapPage_Content");
+        mapPageContent.Should().NotBeNull();
+        mapPageContent.Text.Should().Be("Map View");
     }
 
     [Test]
@@ -122,15 +120,13 @@ public class SmokeTests : AppiumTestFixture
         Thread.Sleep(2000); // Wait for app to load
         
         // Act - Navigate to Timeline
-        // Note: Timeline page not yet added to AppShell
-        // When available, navigation will be:
-        // var timelineNav = Driver!.FindElementByAutomationId("TimelinePage");
-        // timelineNav.Click();
+        var timelineNav = Driver!.FindElementByAutomationId("TimelinePage");
+        timelineNav.Click();
         
         // Assert
-        // Placeholder until Timeline page is implemented
-        // Expected: Verify TimelinePage is displayed
-        
-        Assert.Inconclusive("Timeline page not yet implemented in AppShell. Test will be updated when page is available.");
+        // Verify TimelinePage is displayed
+        var timelinePageContent = Driver.FindElementByAutomationId("TimelinePage_Content");
+        timelinePageContent.Should().NotBeNull();
+        timelinePageContent.Text.Should().Be("Timeline View");
     }
 }

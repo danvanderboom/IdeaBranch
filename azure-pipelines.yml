@@ -1,0 +1,75 @@
+# Azure Pipeline for IdeaBranch
+# Build, test, and publish artifacts
+
+trigger:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/IdeaBranch.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'Restore NuGet packages'
+  inputs:
+    command: 'restore'
+    projects: '$(solution)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build solution'
+  inputs:
+    command: 'build'
+    projects: '$(solution)'
+    arguments: '--configuration $(buildConfiguration) --no-restore'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run unit tests'
+  inputs:
+    command: 'test'
+    projects: '**/*.UnitTests.csproj'
+    arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code coverage" --logger:"trx;LogFileName=test-results.trx" --results-directory:"$(Agent.TempDirectory)" --no-build'
+    testRunTitle: 'Unit Tests'
+
+- task: PublishTestResults@2
+  displayName: 'Publish unit test results'
+  condition: always()
+  inputs:
+    testResultsFormat: 'VSTest'
+    testResultsFiles: '$(Agent.TempDirectory)/**/*.trx'
+    failTaskOnFailedTests: false
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish test artifacts'
+  condition: failed()
+  inputs:
+    pathToPublish: 'tests/**'
+    artifactName: 'test-artifacts'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run integration tests'
+  inputs:
+    command: 'test'
+    projects: '**/*.IntegrationTests.csproj'
+    arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code coverage" --logger:"trx;LogFileName=test-results.trx" --results-directory:"$(Agent.TempDirectory)" --no-build'
+    testRunTitle: 'Integration Tests'
+
+- task: PublishTestResults@2
+  displayName: 'Publish integration test results'
+  condition: always()
+  inputs:
+    testResultsFormat: 'VSTest'
+    testResultsFiles: '$(Agent.TempDirectory)/**/*.trx'
+    failTaskOnFailedTests: false
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish integration test artifacts'
+  condition: failed()
+  inputs:
+    pathToPublish: 'tests/**'
+    artifactName: 'test-artifacts'
+    continueOnError: true
+

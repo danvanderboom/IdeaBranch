@@ -43,12 +43,18 @@ Our testing strategy uses multiple layers:
 ### Integration Tests
 
 **Requirements covered**:
-- Data persistence (Save topic tree changes - IB-UI-080)
+- Data persistence (Save topic tree changes - IB-UI-080) ✅
 - Sync/offline (Edit offline then sync - IB-UI-090)
 - Version history (from data-storage capability)
 - API/Model interactions (Model/API error - IB-UI-051)
 
-**Location**: `tests/IdeaBranch.IntegrationTests/` (to be created)
+**Location**: `tests/IdeaBranch.IntegrationTests/`
+
+**Implementation**:
+- SQLite-based persistence tests for topic trees
+- `SqliteTopicTreeStore` in `src/IdeaBranch.Infrastructure/Storage/`
+- File-based and in-memory database test helpers
+- Tests verify save, reload, and app restart scenarios
 
 **Focus areas**:
 - Database/ORM operations

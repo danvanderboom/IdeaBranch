@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Polly;
 
@@ -5,10 +6,12 @@ namespace IdeaBranch.Infrastructure.Resilience;
 
 /// <summary>
 /// Emits telemetry events for resilience policy operations (retries, circuit breaker state, outcomes).
+/// Uses structured logging and OpenTelemetry for observability.
 /// </summary>
 public sealed class ResilienceTelemetryEmitter
 {
     private readonly ILogger _logger;
+    private static readonly ActivitySource ActivitySource = new("IdeaBranch.Resilience");
 
     public ResilienceTelemetryEmitter(ILogger logger)
     {
@@ -33,16 +36,21 @@ public sealed class ResilienceTelemetryEmitter
             correlationId = Guid.NewGuid().ToString("N")[..8];
         }
         
+        // Structured logging with event name
         _logger.LogInformation(
-            "[Resilience] Retry attempt {AttemptNumber} for policy '{PolicyName}'. Delay: {Delay}ms, Reason: {Reason}, CorrelationId: {CorrelationId}",
-            attemptNumber,
+            "Resilience retry event: {Operation} attempt {Attempt} delay {DelayMs}ms reason {Reason}",
             policyName,
+            attemptNumber,
             delay.TotalMilliseconds,
-            reason,
-            correlationId);
+            reason);
 
-        // TODO: Add structured telemetry/metrics collection here
-        // e.g., Application Insights, OpenTelemetry, or custom metrics
+        // OpenTelemetry activity event
+        using var activity = ActivitySource.StartActivity("resilience.retry");
+        activity?.SetTag("operation", policyName);
+        activity?.SetTag("attempt", attemptNumber);
+        activity?.SetTag("delayMs", delay.TotalMilliseconds);
+        activity?.SetTag("outcome", "retry");
+        activity?.SetTag("reason", reason);
     }
 
     /// <summary>
@@ -62,14 +70,19 @@ public sealed class ResilienceTelemetryEmitter
             correlationId = Guid.NewGuid().ToString("N")[..8];
         }
         
+        // Structured logging with event name
         _logger.LogWarning(
-            "[Resilience] Circuit breaker opened for policy '{PolicyName}'. Duration: {Duration}s, Reason: {Reason}, CorrelationId: {CorrelationId}",
+            "Resilience circuit open event: {Operation} duration {DurationMs}ms reason {Reason}",
             policyName,
-            duration.TotalSeconds,
-            reason,
-            correlationId);
+            duration.TotalMilliseconds,
+            reason);
 
-        // TODO: Add structured telemetry/metrics collection here
+        // OpenTelemetry activity event
+        using var activity = ActivitySource.StartActivity("resilience.circuit_open");
+        activity?.SetTag("operation", policyName);
+        activity?.SetTag("durationMs", duration.TotalMilliseconds);
+        activity?.SetTag("outcome", "circuit_open");
+        activity?.SetTag("reason", reason);
     }
 
     /// <summary>
@@ -85,12 +98,15 @@ public sealed class ResilienceTelemetryEmitter
             correlationId = Guid.NewGuid().ToString("N")[..8];
         }
         
+        // Structured logging with event name
         _logger.LogInformation(
-            "[Resilience] Circuit breaker reset for policy '{PolicyName}'. CorrelationId: {CorrelationId}",
-            policyName,
-            correlationId);
+            "Resilience circuit reset event: {Operation}",
+            policyName);
 
-        // TODO: Add structured telemetry/metrics collection here
+        // OpenTelemetry activity event
+        using var activity = ActivitySource.StartActivity("resilience.circuit_reset");
+        activity?.SetTag("operation", policyName);
+        activity?.SetTag("outcome", "circuit_reset");
     }
 
     /// <summary>
@@ -98,11 +114,15 @@ public sealed class ResilienceTelemetryEmitter
     /// </summary>
     public void EmitCircuitBreakerHalfOpen(string policyName)
     {
+        // Structured logging with event name
         _logger.LogInformation(
-            "[Resilience] Circuit breaker half-open for policy '{PolicyName}'",
+            "Resilience circuit half-open event: {Operation}",
             policyName);
 
-        // TODO: Add structured telemetry/metrics collection here
+        // OpenTelemetry activity event
+        using var activity = ActivitySource.StartActivity("resilience.circuit_half_open");
+        activity?.SetTag("operation", policyName);
+        activity?.SetTag("outcome", "circuit_half_open");
     }
 
     /// <summary>
@@ -118,13 +138,17 @@ public sealed class ResilienceTelemetryEmitter
             correlationId = Guid.NewGuid().ToString("N")[..8];
         }
         
+        // Structured logging with event name
         _logger.LogDebug(
-            "[Resilience] Operation succeeded for policy '{PolicyName}'. Duration: {Duration}ms, CorrelationId: {CorrelationId}",
+            "Resilience success event: {Operation} duration {DurationMs}ms",
             policyName,
-            duration.TotalMilliseconds,
-            correlationId);
+            duration.TotalMilliseconds);
 
-        // TODO: Add structured telemetry/metrics collection here
+        // OpenTelemetry activity event
+        using var activity = ActivitySource.StartActivity("resilience.success");
+        activity?.SetTag("operation", policyName);
+        activity?.SetTag("durationMs", duration.TotalMilliseconds);
+        activity?.SetTag("outcome", "success");
     }
 
     /// <summary>
@@ -140,13 +164,17 @@ public sealed class ResilienceTelemetryEmitter
             correlationId = Guid.NewGuid().ToString("N")[..8];
         }
         
+        // Structured logging with event name
         _logger.LogError(
-            "[Resilience] Operation failed for policy '{PolicyName}'. Reason: {Reason}, CorrelationId: {CorrelationId}",
+            "Resilience failure event: {Operation} reason {Reason}",
             policyName,
-            reason,
-            correlationId);
+            reason);
 
-        // TODO: Add structured telemetry/metrics collection here
+        // OpenTelemetry activity event
+        using var activity = ActivitySource.StartActivity("resilience.failure");
+        activity?.SetTag("operation", policyName);
+        activity?.SetTag("outcome", "failure");
+        activity?.SetTag("reason", reason);
     }
 }
 

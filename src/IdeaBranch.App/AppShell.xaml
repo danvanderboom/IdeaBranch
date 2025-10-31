@@ -23,4 +23,16 @@
         Route="TopicTreePage"
         AutomationId="TopicTreePage" />
 
+    <ShellContent
+        Title="Map"
+        ContentTemplate="{DataTemplate views:MapPage}"
+        Route="MapPage"
+        AutomationId="MapPage" />
+
+    <ShellContent
+        Title="Timeline"
+        ContentTemplate="{DataTemplate views:TimelinePage}"
+        Route="TimelinePage"
+        AutomationId="TimelinePage" />
+
 </Shell>
