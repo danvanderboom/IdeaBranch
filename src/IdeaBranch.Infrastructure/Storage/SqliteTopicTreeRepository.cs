@@ -98,8 +98,17 @@ public class SqliteTopicTreeRepository : ITopicTreeRepository, IDisposable
                 await CaptureVersionHistoryAsync(root, cancellationToken);
             }
 
+            // Ensure UpdatedAt reflects any property changes since last save
+            var modifiedNodeIds = await GetModifiedNodeIdsAsync(root, cancellationToken);
+
             // Convert TopicNode to ITreeNode
             var rootTreeNode = ConvertToTreeNode(root);
+            if (modifiedNodeIds.Count > 0)
+            {
+                // Override UpdatedAt for modified nodes to current time so SaveTree persists the bump
+                var now = DateTime.UtcNow;
+                ApplyUpdatedAtOverrides(rootTreeNode, modifiedNodeIds, now);
+            }
             _store.SaveTree(rootTreeNode);
         }, cancellationToken);
     }
@@ -164,6 +173,67 @@ public class SqliteTopicTreeRepository : ITopicTreeRepository, IDisposable
                     }
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Returns the set of node IDs whose stored properties differ from the current values.
+    /// These nodes should have UpdatedAt bumped.
+    /// </summary>
+    private async Task<HashSet<Guid>> GetModifiedNodeIdsAsync(TopicNode root, CancellationToken cancellationToken)
+    {
+        var modified = new HashSet<Guid>();
+        var allNodes = CollectAllNodes(root);
+        foreach (var node in allNodes)
+        {
+            var connection = GetConnection();
+            using var checkCommand = connection.CreateCommand();
+            checkCommand.CommandText = @"
+                SELECT Title, Prompt, Response, Ordinal
+                FROM topic_nodes
+                WHERE NodeId = @NodeId
+            ";
+            checkCommand.Parameters.AddWithValue("@NodeId", node.Id.ToString());
+
+            using var reader = checkCommand.ExecuteReader();
+            if (reader.Read())
+            {
+                var storedTitle = reader.IsDBNull(0) ? null : reader.GetString(0);
+                var storedPrompt = reader.GetString(1);
+                var storedResponse = reader.GetString(2);
+                var storedOrdinal = reader.GetInt32(3);
+
+                if (!string.Equals(storedTitle, node.Title, StringComparison.Ordinal)
+                    || !string.Equals(storedPrompt, node.Prompt, StringComparison.Ordinal)
+                    || !string.Equals(storedResponse, node.Response, StringComparison.Ordinal)
+                    || storedOrdinal != node.Order)
+                {
+                    modified.Add(node.Id);
+                }
+            }
+        }
+        return await Task.FromResult(modified);
+    }
+
+    /// <summary>
+    /// Applies UpdatedAt overrides for the given node IDs within a TreeNode payload tree.
+    /// </summary>
+    private void ApplyUpdatedAtOverrides(CriticalInsight.Data.Hierarchical.ITreeNode node, HashSet<Guid> modifiedIds, DateTime updatedAt)
+    {
+        if (Guid.TryParse(node.NodeId, out var id) && modifiedIds.Contains(id))
+        {
+            if (node is CriticalInsight.Data.Hierarchical.TreeNode<SqliteTopicTreeStore.TopicNodeData> typed)
+            {
+                typed.Payload.UpdatedAt = updatedAt;
+            }
+            else if (node.PayloadObject is SqliteTopicTreeStore.TopicNodeData payload)
+            {
+                payload.UpdatedAt = updatedAt;
+            }
+        }
+        foreach (var child in node.Children)
+        {
+            ApplyUpdatedAtOverrides(child, modifiedIds, updatedAt);
         }
     }
 

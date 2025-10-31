@@ -5,6 +5,7 @@ using IdeaBranch.App.ViewModels;
 using IdeaBranch.Domain;
 using IdeaBranch.Infrastructure.Resilience;
 using IdeaBranch.Infrastructure.Storage;
+using IdeaBranch.Infrastructure.Sync;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Storage;
 
@@ -82,6 +83,20 @@ public static class MauiProgram
 
 		// Register example service for demonstration
 		builder.Services.AddSingleton<IdeaBranch.App.Services.ExampleApiService>();
+
+		// Register sync services
+		builder.Services.AddSingleton<IConnectivityService, MauiConnectivityService>();
+		builder.Services.AddSingleton<IRemoteSyncClient, InMemoryRemoteSyncClient>();
+		builder.Services.AddSingleton<ISyncService>(sp =>
+		{
+			var connectivityService = sp.GetRequiredService<IConnectivityService>();
+			var remoteClient = sp.GetRequiredService<IRemoteSyncClient>();
+			var repository = sp.GetRequiredService<ITopicTreeRepository>();
+			var versionHistoryRepository = sp.GetRequiredService<IVersionHistoryRepository>();
+			var db = sp.GetRequiredService<TopicDb>();
+			var logger = sp.GetService<ILogger<SyncService>>();
+			return new SyncService(connectivityService, remoteClient, repository, versionHistoryRepository, db.Connection, logger);
+		});
 
 		// Enable OpenTelemetry ActivitySource listeners
 		ActivitySource.AddActivityListener(new ActivityListener
