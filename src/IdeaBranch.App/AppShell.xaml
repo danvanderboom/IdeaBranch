@@ -35,4 +35,10 @@
         Route="TimelinePage"
         AutomationId="TimelinePage" />
 
+    <ShellContent
+        Title="Settings"
+        ContentTemplate="{DataTemplate views:SettingsPage}"
+        Route="SettingsPage"
+        AutomationId="SettingsPage" />
+
 </Shell>

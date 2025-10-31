@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels"
+             x:Class="IdeaBranch.App.Views.SettingsPage"
+             x:DataType="vm:SettingsViewModel"
+             Title="Settings">
+    <Grid ColumnDefinitions="240,*">
+        <!-- Category list -->
+        <Border Grid.Column="0"
+                StrokeThickness="0"
+                BackgroundColor="{StaticResource Gray100}">
+            <CollectionView ItemsSource="{Binding Categories}"
+                            SelectionMode="Single"
+                            SelectedItem="{Binding SelectedCategory}"
+                            SelectionChanged="OnCategorySelectionChanged">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="12,8">
+                            <Label Text="{Binding .}"
+                                   FontSize="16"
+                                   VerticalOptions="Center"
+                                   AutomationId="{Binding ., StringFormat='SettingsCategory_{0}'}"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Border>
+
+        <!-- Detail panel -->
+        <ScrollView Grid.Column="1" Padding="16">
+            <StackLayout Spacing="16">
+                <!-- User Category -->
+                <StackLayout IsVisible="{Binding SelectedCategory, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=User}"
+                             Spacing="12">
+                    <Label Text="User Settings"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           AutomationId="UserSettingsTitle"/>
+                    <Label Text="User settings coming soon."
+                           FontSize="14"
+                           TextColor="Gray"/>
+                </StackLayout>
+
+                <!-- Project Category -->
+                <StackLayout IsVisible="{Binding SelectedCategory, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=Project}"
+                             Spacing="12">
+                    <Label Text="Project Settings"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           AutomationId="ProjectSettingsTitle"/>
+                    <Label Text="Project settings coming soon."
+                           FontSize="14"
+                           TextColor="Gray"/>
+                </StackLayout>
+
+                <!-- Display Category -->
+                <StackLayout IsVisible="{Binding SelectedCategory, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=Display}"
+                             Spacing="12">
+                    <Label Text="Display Settings"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           AutomationId="DisplaySettingsTitle"/>
+                    
+                    <StackLayout Spacing="8">
+                        <Label Text="Language"
+                               FontSize="16"
+                               FontAttributes="Bold"/>
+                        <Picker ItemsSource="{Binding LanguageOptions}"
+                                SelectedItem="{Binding SelectedLanguage}"
+                                AutomationId="LanguagePicker">
+                            <Picker.ItemDisplayBinding>
+                                <Binding Path="."/>
+                            </Picker.ItemDisplayBinding>
+                        </Picker>
+                        <Label Text="Changes apply after restart."
+                               FontSize="12"
+                               TextColor="Gray"
+                               Margin="0,4,0,0"/>
+                    </StackLayout>
+                </StackLayout>
+
+                <!-- Search/Filter Category -->
+                <StackLayout IsVisible="{Binding SelectedCategory, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=Search/Filter}"
+                             Spacing="12">
+                    <Label Text="Search and Filter Settings"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           AutomationId="SearchFilterSettingsTitle"/>
+                    <Label Text="Search and filter settings coming soon."
+                           FontSize="14"
+                           TextColor="Gray"/>
+                </StackLayout>
+
+                <!-- Integrations Category -->
+                <StackLayout IsVisible="{Binding SelectedCategory, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=Integrations}"
+                             Spacing="12">
+                    <Label Text="Integration Settings"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           AutomationId="IntegrationsSettingsTitle"/>
+                    
+                    <StackLayout Spacing="16">
+                        <!-- Provider Selection -->
+                        <StackLayout Spacing="8">
+                            <Label Text="LLM Provider"
+                                   FontSize="16"
+                                   FontAttributes="Bold"/>
+                            <Picker ItemsSource="{Binding ProviderOptions}"
+                                    SelectedItem="{Binding Provider}"
+                                    AutomationId="ProviderPicker">
+                                <Picker.ItemDisplayBinding>
+                                    <Binding Path="."/>
+                                </Picker.ItemDisplayBinding>
+                            </Picker>
+                        </StackLayout>
+
+                        <!-- LM Studio Settings -->
+                        <StackLayout IsVisible="{Binding Provider, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=lmstudio}"
+                                     Spacing="8">
+                            <Label Text="LM Studio Configuration"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   Margin="0,8,0,0"/>
+                            <StackLayout Spacing="8">
+                                <Label Text="Endpoint"
+                                       FontSize="14"/>
+                                <Entry Text="{Binding LmEndpoint}"
+                                       Placeholder="http://localhost:1234/v1"
+                                       AutomationId="LmEndpointEntry"/>
+                            </StackLayout>
+                            <StackLayout Spacing="8">
+                                <Label Text="Model"
+                                       FontSize="14"/>
+                                <Entry Text="{Binding LmModel}"
+                                       Placeholder="phi-4"
+                                       AutomationId="LmModelEntry"/>
+                            </StackLayout>
+                        </StackLayout>
+
+                        <!-- Azure Settings -->
+                        <StackLayout IsVisible="{Binding Provider, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=azure}"
+                                     Spacing="8">
+                            <Label Text="Azure OpenAI Configuration"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   Margin="0,8,0,0"/>
+                            <StackLayout Spacing="8">
+                                <Label Text="Endpoint"
+                                       FontSize="14"/>
+                                <Entry Text="{Binding AzureEndpoint}"
+                                       Placeholder="https://your-resource.openai.azure.com"
+                                       AutomationId="AzureEndpointEntry"/>
+                            </StackLayout>
+                            <StackLayout Spacing="8">
+                                <Label Text="Deployment"
+                                       FontSize="14"/>
+                                <Entry Text="{Binding AzureDeployment}"
+                                       Placeholder="deployment-name"
+                                       AutomationId="AzureDeploymentEntry"/>
+                            </StackLayout>
+                            <StackLayout Spacing="8">
+                                <Label Text="API Key"
+                                       FontSize="14"/>
+                                <Entry Text="{Binding AzureApiKey}"
+                                       Placeholder="Enter API key"
+                                       IsPassword="True"
+                                       AutomationId="AzureApiKeyEntry"/>
+                            </StackLayout>
+                        </StackLayout>
+                    </StackLayout>
+                </StackLayout>
+
+                <!-- AI Safety Category -->
+                <StackLayout IsVisible="{Binding SelectedCategory, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=AI Safety}"
+                             Spacing="12">
+                    <Label Text="AI Safety Settings"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           AutomationId="AISafetySettingsTitle"/>
+                    <Label Text="AI Safety settings coming soon."
+                           FontSize="14"
+                           TextColor="Gray"/>
+                </StackLayout>
+
+                <!-- Import/Export Category -->
+                <StackLayout IsVisible="{Binding SelectedCategory, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=Import/Export}"
+                             Spacing="12">
+                    <Label Text="Import/Export Settings"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           AutomationId="ImportExportSettingsTitle"/>
+                    <Label Text="Import/Export settings coming soon."
+                           FontSize="14"
+                           TextColor="Gray"/>
+                </StackLayout>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>
+

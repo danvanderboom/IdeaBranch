@@ -68,6 +68,12 @@ public static class MauiProgram
 			var telemetry = sp.GetService<TelemetryService>();
 			return new TopicTreeViewModel(repository, llmFactory, telemetry);
 		});
+		
+		builder.Services.AddTransient<SettingsViewModel>(sp =>
+		{
+			var settingsService = sp.GetRequiredService<Services.SettingsService>();
+			return new SettingsViewModel(settingsService);
+		});
 
 		// Register resilience policies for HttpClientFactory and outbound I/O
 		builder.Services.AddResiliencePolicies();

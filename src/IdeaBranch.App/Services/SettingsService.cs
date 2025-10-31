@@ -15,10 +15,12 @@ public class SettingsService
     private const string AzureEndpointKey = "azure_endpoint";
     private const string AzureDeploymentKey = "azure_deployment";
     private const string AzureApiKeyKey = "azure_api_key";
+    private const string LanguageKey = "app_language";
 
     private const string DefaultProvider = "lmstudio";
     private const string DefaultLmStudioEndpoint = "http://localhost:1234/v1";
     private const string DefaultLmStudioModel = "phi-4";
+    private const string DefaultLanguage = "system";
 
     /// <summary>
     /// Gets or sets the current LLM provider name ("lmstudio" or "azure").
@@ -147,6 +149,26 @@ public class SettingsService
         {
             await SecureStorage.SetAsync(AzureApiKeyKey, apiKey.Trim());
         }
+    }
+
+    /// <summary>
+    /// Gets the application language preference (values: "system", "en", "es", "fr").
+    /// </summary>
+    public async Task<string> GetLanguageAsync()
+    {
+        var language = await SecureStorage.GetAsync(LanguageKey);
+        return language ?? DefaultLanguage;
+    }
+
+    /// <summary>
+    /// Sets the application language preference.
+    /// </summary>
+    public async Task SetLanguageAsync(string language)
+    {
+        if (string.IsNullOrWhiteSpace(language))
+            throw new ArgumentException("Language cannot be null or empty.", nameof(language));
+
+        await SecureStorage.SetAsync(LanguageKey, language.Trim().ToLowerInvariant());
     }
 }
 
