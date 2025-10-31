@@ -8,6 +8,6 @@
 - [x] 1.7 Add optional EF Core DbContext factory and EnsureCreated (deferred - not needed for current SQLite-only tests)
 - [x] 1.8 Add NUnit UI TestBase for artifact capture and cleanup
 - [x] 1.9 Write tests/README.md with examples and lifecycle notes
-- [ ] 1.10 Configure CI to collect artifacts/tests/** on failure (CI configuration pending)
+- [x] 1.10 Configure CI to collect artifacts/tests/** on failure (Azure Pipeline and GitHub Actions workflows updated)
 - [x] 1.11 Add sample NUnit tests using builders and DB helpers
 

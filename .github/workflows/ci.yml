@@ -27,15 +27,85 @@ jobs:
     - name: Build
       run: dotnet build --no-restore -c Release
     
+    - name: Build MAUI App for UI Tests
+      run: dotnet build src/IdeaBranch.App/IdeaBranch.App.csproj -c Release -f net9.0-windows10.0.19041.0 --no-restore
+    
     - name: Run unit tests
       run: dotnet test tests/IdeaBranch.UnitTests/IdeaBranch.UnitTests.csproj --no-build -c Release --collect:"XPlat Code Coverage" --verbosity normal
     
     - name: Run integration tests
       run: dotnet test tests/IdeaBranch.IntegrationTests/IdeaBranch.IntegrationTests.csproj --no-build -c Release --collect:"XPlat Code Coverage" --verbosity normal
     
+    - name: Enable Developer Mode
+      shell: powershell
+      run: |
+        reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"
+    
+    - name: Install WinAppDriver
+      shell: powershell
+      run: |
+        $winAppDriverUrl = "https://github.com/microsoft/WinAppDriver/releases/download/v1.2.99/WindowsApplicationDriver_1.2.99_x64.msi"
+        $installerPath = "$env:TEMP\WinAppDriver.msi"
+        Write-Host "Downloading WinAppDriver..."
+        Invoke-WebRequest -Uri $winAppDriverUrl -OutFile $installerPath
+        Write-Host "Installing WinAppDriver..."
+        Start-Process msiexec.exe -ArgumentList "/i $installerPath /quiet /norestart" -Wait
+        Write-Host "WinAppDriver installed successfully"
+      continue-on-error: true # Continue if already installed
+    
+    - name: Start WinAppDriver
+      shell: powershell
+      run: |
+        $winAppDriverPath = "C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe"
+        if (Test-Path $winAppDriverPath) {
+          Write-Host "Starting WinAppDriver..."
+          Start-Process -FilePath $winAppDriverPath -WindowStyle Hidden
+          Start-Sleep -Seconds 5
+          
+          # Wait for WinAppDriver to be ready
+          $maxRetries = 10
+          $retryCount = 0
+          $ready = $false
+          
+          while ($retryCount -lt $maxRetries -and -not $ready) {
+            try {
+              $response = Invoke-WebRequest -Uri "http://127.0.0.1:4723/status" -TimeoutSec 2 -ErrorAction Stop
+              if ($response.StatusCode -eq 200) {
+                $ready = $true
+                Write-Host "WinAppDriver is ready!"
+              }
+            } catch {
+              $retryCount++
+              if ($retryCount -lt $maxRetries) {
+                Start-Sleep -Seconds 2
+              }
+            }
+          }
+          
+          if (-not $ready) {
+            Write-Warning "WinAppDriver may not be fully ready, but continuing..."
+          }
+        } else {
+          Write-Warning "WinAppDriver not found, UI tests may be skipped"
+        }
+    
     - name: Run UI tests
       run: dotnet test tests/IdeaBranch.UITests/IdeaBranch.UITests.csproj --no-build -c Release --verbosity normal
-      continue-on-error: true  # UI tests may require app to be built/deployed first
+      env:
+        ENABLE_UI_TESTS: '1'
+        MAUI_APP_PATH: ${{ github.workspace }}\src\IdeaBranch.App\bin\Release\net9.0-windows10.0.19041.0\win10-x64\IdeaBranch.App.exe
+        WINAPPDRIVER_PATH: C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe
+      continue-on-error: true  # UI tests may fail if WinAppDriver isn't ready or app has issues
+    
+    - name: Cleanup WinAppDriver
+      if: always()
+      shell: powershell
+      run: |
+        $processes = Get-Process -Name "WinAppDriver" -ErrorAction SilentlyContinue
+        if ($processes) {
+          Write-Host "Stopping WinAppDriver processes..."
+          $processes | Stop-Process -Force -ErrorAction SilentlyContinue
+        }
     
     - name: Upload coverage reports
       uses: codecov/codecov-action@v4
@@ -45,4 +115,13 @@ jobs:
         flags: unittests
         name: codecov-umbrella
         fail_ci_if_error: false
+    
+    - name: Upload test artifacts on failure
+      uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: test-artifacts
+        path: artifacts/tests/**
+        retention-days: 7
+        if-no-files-found: ignore
 

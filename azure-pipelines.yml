@@ -27,6 +27,13 @@ steps:
     arguments: '--configuration $(buildConfiguration) --no-restore'
 
 - task: DotNetCoreCLI@2
+  displayName: 'Build MAUI App for UI Tests'
+  inputs:
+    command: 'build'
+    projects: 'src/IdeaBranch.App/IdeaBranch.App.csproj'
+    arguments: '--configuration $(buildConfiguration) --framework net9.0-windows10.0.19041.0 --no-restore'
+
+- task: DotNetCoreCLI@2
   displayName: 'Run unit tests'
   inputs:
     command: 'test'
@@ -46,7 +53,7 @@ steps:
   displayName: 'Publish test artifacts'
   condition: failed()
   inputs:
-    pathToPublish: 'tests/**'
+    pathToPublish: 'artifacts/tests/**'
     artifactName: 'test-artifacts'
 
 - task: DotNetCoreCLI@2
@@ -69,7 +76,109 @@ steps:
   displayName: 'Publish integration test artifacts'
   condition: failed()
   inputs:
-    pathToPublish: 'tests/**'
+    pathToPublish: 'artifacts/tests/**'
     artifactName: 'test-artifacts'
     continueOnError: true
+
+- task: PowerShell@2
+  displayName: 'Enable Developer Mode'
+  inputs:
+    targetType: 'inline'
+    script: |
+      reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"
+
+- task: PowerShell@2
+  displayName: 'Install WinAppDriver'
+  inputs:
+    targetType: 'inline'
+    script: |
+      $winAppDriverUrl = "https://github.com/microsoft/WinAppDriver/releases/download/v1.2.99/WindowsApplicationDriver_1.2.99_x64.msi"
+      $installerPath = "$env:TEMP\WinAppDriver.msi"
+      Write-Host "Downloading WinAppDriver..."
+      Invoke-WebRequest -Uri $winAppDriverUrl -OutFile $installerPath
+      Write-Host "Installing WinAppDriver..."
+      Start-Process msiexec.exe -ArgumentList "/i $installerPath /quiet /norestart" -Wait
+      Write-Host "WinAppDriver installed successfully"
+    failOnStderr: false
+    continueOnError: true
+
+- task: PowerShell@2
+  displayName: 'Start WinAppDriver'
+  inputs:
+    targetType: 'inline'
+    script: |
+      $winAppDriverPath = "C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe"
+      if (Test-Path $winAppDriverPath) {
+        Write-Host "Starting WinAppDriver..."
+        Start-Process -FilePath $winAppDriverPath -WindowStyle Hidden
+        Start-Sleep -Seconds 5
+        
+        # Wait for WinAppDriver to be ready
+        $maxRetries = 10
+        $retryCount = 0
+        $ready = $false
+        
+        while ($retryCount -lt $maxRetries -and -not $ready) {
+          try {
+            $response = Invoke-WebRequest -Uri "http://127.0.0.1:4723/status" -TimeoutSec 2 -ErrorAction Stop
+            if ($response.StatusCode -eq 200) {
+              $ready = $true
+              Write-Host "WinAppDriver is ready!"
+            }
+          } catch {
+            $retryCount++
+            if ($retryCount -lt $maxRetries) {
+              Start-Sleep -Seconds 2
+            }
+          }
+        }
+        
+        if (-not $ready) {
+          Write-Warning "WinAppDriver may not be fully ready, but continuing..."
+        }
+      } else {
+        Write-Warning "WinAppDriver not found, UI tests may be skipped"
+      }
+    continueOnError: true
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run UI tests'
+  inputs:
+    command: 'test'
+    projects: '**/*.UITests.csproj'
+    arguments: '--configuration $(buildConfiguration) --logger:"trx;LogFileName=test-results.trx" --results-directory:"$(Agent.TempDirectory)" --no-build'
+    testRunTitle: 'UI Tests'
+  env:
+    ENABLE_UI_TESTS: '1'
+    MAUI_APP_PATH: '$(Build.SourcesDirectory)\src\IdeaBranch.App\bin\$(buildConfiguration)\net9.0-windows10.0.19041.0\win10-x64\IdeaBranch.App.exe'
+    WINAPPDRIVER_PATH: 'C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe'
+  continueOnError: true
+
+- task: PublishTestResults@2
+  displayName: 'Publish UI test results'
+  condition: always()
+  inputs:
+    testResultsFormat: 'VSTest'
+    testResultsFiles: '$(Agent.TempDirectory)/**/*.trx'
+    failTaskOnFailedTests: false
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish UI test artifacts'
+  condition: failed()
+  inputs:
+    pathToPublish: 'artifacts/tests/**'
+    artifactName: 'test-artifacts'
+    continueOnError: true
+
+- task: PowerShell@2
+  displayName: 'Cleanup WinAppDriver'
+  condition: always()
+  inputs:
+    targetType: 'inline'
+    script: |
+      $processes = Get-Process -Name "WinAppDriver" -ErrorAction SilentlyContinue
+      if ($processes) {
+        Write-Host "Stopping WinAppDriver processes..."
+        $processes | Stop-Process -Force -ErrorAction SilentlyContinue
+      }
 
