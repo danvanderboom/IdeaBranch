@@ -77,3 +77,9 @@ build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = IdeaBranch.App.Views.TopicTreePage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\TopicTreePage.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\TopicTreePage.xaml
+
+[C:/Source/CriticalInsight/IdeaBranch/src/IdeaBranch.App/Views/VersionHistoryPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = IdeaBranch.App.Views.VersionHistoryPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\VersionHistoryPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\VersionHistoryPage.xaml

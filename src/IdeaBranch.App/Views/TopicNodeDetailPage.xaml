@@ -93,8 +93,14 @@
                 </Grid>
             </Border>
 
-            <!-- Action buttons (LLM actions) -->
+            <!-- Action buttons (LLM actions and history) -->
             <VerticalStackLayout Grid.Row="5" Spacing="8" Margin="0,8,0,0">
+                <Button Text="View History"
+                        Clicked="OnViewHistoryClicked"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                        BackgroundColor="#E3F2FD"
+                        TextColor="#1976D2"
+                        AutomationId="TopicNodeDetailPage_ViewHistory" />
                 <Button Text="Generate Response"
                         Clicked="OnGenerateResponseClicked"
                         IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"

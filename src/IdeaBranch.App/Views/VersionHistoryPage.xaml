@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels"
+             x:Class="IdeaBranch.App.Views.VersionHistoryPage"
+             x:DataType="vm:VersionHistoryViewModel"
+             Title="Version History"
+             AutomationId="VersionHistoryPage">
+    <ScrollView>
+        <Grid Padding="16" RowSpacing="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Node title header -->
+            <Label Grid.Row="0"
+                   Text="{Binding NodeTitle, StringFormat='History for: {0}'}"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   IsVisible="{Binding NodeTitle}"
+                   AutomationId="VersionHistoryPage_NodeTitle" />
+
+            <!-- Loading indicator -->
+            <ActivityIndicator Grid.Row="1"
+                                IsRunning="{Binding IsLoading}"
+                                IsVisible="{Binding IsLoading}"
+                                AutomationId="VersionHistoryPage_LoadingIndicator" />
+
+            <!-- Error message -->
+            <Label Grid.Row="1"
+                   Text="{Binding ErrorMessage}"
+                   TextColor="Red"
+                   IsVisible="{Binding ErrorMessage}"
+                   AutomationId="VersionHistoryPage_ErrorMessage" />
+
+            <!-- Version list -->
+            <CollectionView Grid.Row="2"
+                            ItemsSource="{Binding Versions}"
+                            Margin="0,8,0,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BackgroundColor="White"
+                                StrokeThickness="1"
+                                Stroke="#E0E0E0"
+                                Padding="12"
+                                Margin="0,0,0,8">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="4" />
+                            </Border.StrokeShape>
+                            <VerticalStackLayout Spacing="8">
+                                <!-- Timestamp and author -->
+                                <HorizontalStackLayout Spacing="8">
+                                    <Label Text="{Binding VersionTimestamp, StringFormat='{0:g}'}"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="Gray" />
+                                    <Label Text="{Binding AuthorName, StringFormat='by {0}'}"
+                                           FontSize="12"
+                                           TextColor="Gray"
+                                           IsVisible="{Binding AuthorName}" />
+                                </HorizontalStackLayout>
+
+                                <!-- Title (if present) -->
+                                <Label Text="{Binding Title}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       IsVisible="{Binding Title}" />
+
+                                <!-- Prompt -->
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="Prompt:" FontSize="12" FontAttributes="Bold" TextColor="Gray" />
+                                    <Label Text="{Binding Prompt}"
+                                           FontSize="14"
+                                           TextColor="Black" />
+                                </VerticalStackLayout>
+
+                                <!-- Response -->
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="Response:" FontSize="12" FontAttributes="Bold" TextColor="Gray" />
+                                    <Label Text="{Binding Response}"
+                                           FontSize="14"
+                                           TextColor="Black"
+                                           MaxLines="5"
+                                           LineBreakMode="TailTruncation" />
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Empty state -->
+            <Label Grid.Row="2"
+                   Text="No version history available for this node."
+                   FontSize="14"
+                   TextColor="Gray"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   IsVisible="{Binding HasVersions, Converter={StaticResource InvertedBoolConverter}}"
+                   AutomationId="VersionHistoryPage_EmptyState" />
+        </Grid>
+    </ScrollView>
+</ContentPage>
+

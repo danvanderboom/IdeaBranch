@@ -19,26 +19,29 @@ public class SqliteTopicTreeRepository : ITopicTreeRepository, IDisposable
     private readonly TopicDb? _db;
     private readonly SqliteConnection? _connection; // For backward compatibility
     private readonly SqliteTopicTreeStore _store;
+    private readonly IVersionHistoryRepository? _versionHistoryRepository;
     private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance with a TopicDb instance.
     /// </summary>
-    public SqliteTopicTreeRepository(TopicDb db)
+    public SqliteTopicTreeRepository(TopicDb db, IVersionHistoryRepository? versionHistoryRepository = null)
     {
         _db = db ?? throw new ArgumentNullException(nameof(db));
         _connection = null;
         _store = new SqliteTopicTreeStore(_db.Connection, ExtractTopicNodePayload);
+        _versionHistoryRepository = versionHistoryRepository;
     }
 
     /// <summary>
     /// Initializes a new instance with a SQLite connection (backward compatibility).
     /// </summary>
-    public SqliteTopicTreeRepository(SqliteConnection connection)
+    public SqliteTopicTreeRepository(SqliteConnection connection, IVersionHistoryRepository? versionHistoryRepository = null)
     {
         _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         _db = null;
         _store = new SqliteTopicTreeStore(_connection, ExtractTopicNodePayload);
+        _versionHistoryRepository = versionHistoryRepository;
     }
 
     /// <summary>
@@ -87,12 +90,103 @@ public class SqliteTopicTreeRepository : ITopicTreeRepository, IDisposable
     /// <inheritdoc/>
     public async Task SaveAsync(TopicNode root, CancellationToken cancellationToken = default)
     {
-        await Task.Run(() =>
+        await Task.Run(async () =>
         {
+            // Capture version history before saving if repository is available
+            if (_versionHistoryRepository != null)
+            {
+                await CaptureVersionHistoryAsync(root, cancellationToken);
+            }
+
             // Convert TopicNode to ITreeNode
             var rootTreeNode = ConvertToTreeNode(root);
             _store.SaveTree(rootTreeNode);
         }, cancellationToken);
+    }
+
+    /// <summary>
+    /// Captures version history for nodes that are being updated.
+    /// </summary>
+    private async Task CaptureVersionHistoryAsync(TopicNode root, CancellationToken cancellationToken)
+    {
+        // Collect all nodes in the tree
+        var allNodes = CollectAllNodes(root);
+
+        // For each node, check if it exists in the database and if so, capture the previous state
+        foreach (var node in allNodes)
+        {
+            // Check if node exists (has been saved before)
+            var connection = GetConnection();
+            using var checkCommand = connection.CreateCommand();
+            checkCommand.CommandText = "SELECT UpdatedAt FROM topic_nodes WHERE NodeId = @NodeId";
+            checkCommand.Parameters.AddWithValue("@NodeId", node.Id.ToString());
+
+            var existingUpdatedAt = checkCommand.ExecuteScalar();
+            
+            if (existingUpdatedAt != null)
+            {
+                // Node exists - load previous state and create version history entry
+                using var loadCommand = connection.CreateCommand();
+                loadCommand.CommandText = @"
+                    SELECT Title, Prompt, Response, Ordinal
+                    FROM topic_nodes
+                    WHERE NodeId = @NodeId
+                ";
+                loadCommand.Parameters.AddWithValue("@NodeId", node.Id.ToString());
+
+                using var reader = loadCommand.ExecuteReader();
+                if (reader.Read())
+                {
+                    var previousTitle = reader.IsDBNull(0) ? null : reader.GetString(0);
+                    var previousPrompt = reader.GetString(1);
+                    var previousResponse = reader.GetString(2);
+                    var previousOrdinal = reader.GetInt32(3);
+
+                    // Check if anything actually changed
+                    if (previousPrompt != node.Prompt ||
+                        previousResponse != node.Response ||
+                        previousTitle != node.Title ||
+                        previousOrdinal != node.Order)
+                    {
+                        // Create version history entry from previous state
+                        var previousVersion = new TopicNodeVersion(
+                            Guid.NewGuid(),
+                            node.Id,
+                            previousTitle,
+                            previousPrompt,
+                            previousResponse,
+                            previousOrdinal,
+                            DateTime.UtcNow,
+                            authorId: null, // TODO: Get from current user context when available
+                            authorName: null);
+
+                        await _versionHistoryRepository!.SaveAsync(previousVersion, cancellationToken);
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Collects all nodes in the tree starting from the root.
+    /// </summary>
+    private static List<TopicNode> CollectAllNodes(TopicNode root)
+    {
+        var nodes = new List<TopicNode>();
+        CollectNodesRecursive(root, nodes);
+        return nodes;
+    }
+
+    /// <summary>
+    /// Recursively collects nodes from a tree.
+    /// </summary>
+    private static void CollectNodesRecursive(TopicNode node, List<TopicNode> nodes)
+    {
+        nodes.Add(node);
+        foreach (var child in node.Children)
+        {
+            CollectNodesRecursive(child, nodes);
+        }
     }
 
     /// <summary>

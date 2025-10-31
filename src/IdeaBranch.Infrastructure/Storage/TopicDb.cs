@@ -11,7 +11,7 @@ public class TopicDb : IDisposable
 {
     private readonly SqliteConnection _connection;
     private bool _disposed;
-    private const int CurrentSchemaVersion = 1;
+    private const int CurrentSchemaVersion = 2;
     private const string SchemaInfoKey = "schema_version";
 
     /// <summary>
@@ -113,6 +113,12 @@ public class TopicDb : IDisposable
         {
             ApplyMigrationV1();
         }
+
+        // Migration v2: Create version_history table
+        if (fromVersion < 2)
+        {
+            ApplyMigrationV2();
+        }
     }
 
     /// <summary>
@@ -139,6 +145,35 @@ public class TopicDb : IDisposable
 
             CREATE INDEX IF NOT EXISTS idx_topic_nodes_parent 
                 ON topic_nodes(ParentId);
+        ";
+        command.ExecuteNonQuery();
+    }
+
+    /// <summary>
+    /// Applies migration v2: Creates the version_history table.
+    /// </summary>
+    private void ApplyMigrationV2()
+    {
+        using var command = _connection.CreateCommand();
+        command.CommandText = @"
+            CREATE TABLE IF NOT EXISTS version_history (
+                VersionId TEXT PRIMARY KEY,
+                NodeId TEXT NOT NULL,
+                Title TEXT,
+                Prompt TEXT NOT NULL DEFAULT '',
+                Response TEXT NOT NULL DEFAULT '',
+                Ordinal INTEGER NOT NULL DEFAULT 0,
+                VersionTimestamp TEXT NOT NULL,
+                AuthorId TEXT,
+                AuthorName TEXT,
+                FOREIGN KEY (NodeId) REFERENCES topic_nodes(NodeId) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_version_history_node_id 
+                ON version_history(NodeId);
+
+            CREATE INDEX IF NOT EXISTS idx_version_history_node_timestamp 
+                ON version_history(NodeId, VersionTimestamp DESC);
         ";
         command.ExecuteNonQuery();
     }

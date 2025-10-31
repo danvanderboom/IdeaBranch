@@ -47,10 +47,16 @@ public static class MauiProgram
 			var dbPath = Path.Combine(FileSystem.AppDataDirectory, "ideabranch.db");
 			return new TopicDb(dbPath);
 		});
+		builder.Services.AddSingleton<IVersionHistoryRepository>(sp =>
+		{
+			var db = sp.GetRequiredService<TopicDb>();
+			return new SqliteVersionHistoryRepository(db.Connection);
+		});
 		builder.Services.AddSingleton<ITopicTreeRepository>(sp =>
 		{
 			var db = sp.GetRequiredService<TopicDb>();
-			return new SqliteTopicTreeRepository(db);
+			var versionHistoryRepository = sp.GetRequiredService<IVersionHistoryRepository>();
+			return new SqliteTopicTreeRepository(db, versionHistoryRepository);
 		});
 
 		// Register ViewModels

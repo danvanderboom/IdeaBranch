@@ -58,5 +58,24 @@ public partial class TopicNodeDetailPage : ContentPage
     {
         await _viewModel.RetryAsync();
     }
+
+    private async void OnViewHistoryClicked(object? sender, EventArgs e)
+    {
+        // Get node ID from ViewModel
+        var nodeId = _viewModel.NodeId;
+        if (nodeId == Guid.Empty)
+            return;
+
+        // Get version history repository from services
+        var versionHistoryRepository = Handler?.MauiContext?.Services?.GetService<Domain.IVersionHistoryRepository>();
+        if (versionHistoryRepository == null)
+            return;
+
+        // Create ViewModel and navigate to VersionHistoryPage
+        var historyViewModel = new VersionHistoryViewModel(nodeId, versionHistoryRepository, _viewModel.Title);
+        var historyPage = new VersionHistoryPage(historyViewModel);
+        
+        await Navigation.PushAsync(historyPage);
+    }
 }
 

@@ -98,6 +98,11 @@ public class TopicNodeDetailViewModel : INotifyPropertyChanged
     }
 
     /// <summary>
+    /// Gets the ID of the topic node.
+    /// </summary>
+    public Guid NodeId => _node.Id;
+
+    /// <summary>
     /// Gets or sets whether an operation is in progress.
     /// </summary>
     public bool IsBusy
