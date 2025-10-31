@@ -25,6 +25,9 @@
         </uap:DefaultTile>
         <uap:SplashScreen Image="splashSplashScreen.png" />
       </uap:VisualElements>
+      <uap:ApplicationDefinition>
+        <uap:ToastCapable>true</uap:ToastCapable>
+      </uap:ApplicationDefinition>
     </Application>
   </Applications>
   <Capabilities>

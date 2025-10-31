@@ -11,7 +11,7 @@ public class TopicDb : IDisposable
 {
     private readonly SqliteConnection _connection;
     private bool _disposed;
-    private const int CurrentSchemaVersion = 2;
+    private const int CurrentSchemaVersion = 3;
     private const string SchemaInfoKey = "schema_version";
 
     /// <summary>
@@ -119,6 +119,12 @@ public class TopicDb : IDisposable
         {
             ApplyMigrationV2();
         }
+
+        // Migration v3: Create notifications table
+        if (fromVersion < 3)
+        {
+            ApplyMigrationV3();
+        }
     }
 
     /// <summary>
@@ -174,6 +180,31 @@ public class TopicDb : IDisposable
 
             CREATE INDEX IF NOT EXISTS idx_version_history_node_timestamp 
                 ON version_history(NodeId, VersionTimestamp DESC);
+        ";
+        command.ExecuteNonQuery();
+    }
+
+    /// <summary>
+    /// Applies migration v3: Creates the notifications table.
+    /// </summary>
+    private void ApplyMigrationV3()
+    {
+        using var command = _connection.CreateCommand();
+        command.CommandText = @"
+            CREATE TABLE IF NOT EXISTS notifications (
+                Id TEXT PRIMARY KEY,
+                Title TEXT NOT NULL,
+                Message TEXT NOT NULL,
+                Type TEXT NOT NULL DEFAULT 'general',
+                CreatedAt TEXT NOT NULL,
+                IsRead INTEGER NOT NULL DEFAULT 0
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_notifications_created_at 
+                ON notifications(CreatedAt DESC);
+
+            CREATE INDEX IF NOT EXISTS idx_notifications_is_read 
+                ON notifications(IsRead);
         ";
         command.ExecuteNonQuery();
     }

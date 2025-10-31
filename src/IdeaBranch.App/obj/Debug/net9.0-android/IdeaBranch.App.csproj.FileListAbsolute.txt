@@ -1452,3 +1452,17 @@ C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\android\src\crc64ed1888fb4925e3b7\AuthenticationAgentActivity.java
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\android\src\crc64ed1888fb4925e3b7\AuthenticationAgentActivity_CoreWebViewClient.java
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\android\src\microsoft\identity\client\AuthenticationActivity.java
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\lp\104\jl\files.cache
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\lp\105\jl\files.cache
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\lp\109\jl\files.cache
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\lp\116\jl\files.cache
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\lp\131\jl\files.cache
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\lp\146\jl\files.cache
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\lp\157\jl\files.cache
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\lp\158\jl\files.cache
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\lp\163\jl\files.cache
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\lp\164\jl\files.cache
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\lp\168\jl\files.cache
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\IdeaBranch.App.Resources.AppResources.resources
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\IdeaBranch.App.csproj.GenerateResource.cache
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\IdeaBranch.App.Resources.AppResources.es.resources

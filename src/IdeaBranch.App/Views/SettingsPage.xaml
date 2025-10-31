@@ -171,6 +171,39 @@
                     </StackLayout>
                 </StackLayout>
 
+                <!-- Notifications Category -->
+                <StackLayout IsVisible="{Binding SelectedCategory, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=Notifications}"
+                             Spacing="12">
+                    <Label Text="Notification Settings"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           AutomationId="NotificationsSettingsTitle"/>
+                    
+                    <StackLayout Spacing="16">
+                        <StackLayout Spacing="8">
+                            <Label Text="In-App Notifications"
+                                   FontSize="16"
+                                   FontAttributes="Bold"/>
+                            <Label Text="Show notifications within the app (snackbars/toasts)."
+                                   FontSize="14"
+                                   TextColor="Gray"/>
+                            <Switch IsToggled="{Binding InAppNotificationsEnabled}"
+                                    AutomationId="InAppNotificationsSwitch"/>
+                        </StackLayout>
+
+                        <StackLayout Spacing="8">
+                            <Label Text="Push Notifications"
+                                   FontSize="16"
+                                   FontAttributes="Bold"/>
+                            <Label Text="Receive push notifications from the system. Requires OS permission."
+                                   FontSize="14"
+                                   TextColor="Gray"/>
+                            <Switch IsToggled="{Binding PushNotificationsEnabled}"
+                                    AutomationId="PushNotificationsSwitch"/>
+                        </StackLayout>
+                    </StackLayout>
+                </StackLayout>
+
                 <!-- AI Safety Category -->
                 <StackLayout IsVisible="{Binding SelectedCategory, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=AI Safety}"
                              Spacing="12">

@@ -18,6 +18,7 @@
             <converters:CountToBoolConverter x:Key="CountToBool" />
             <converters:NodePayloadDomainIdConverter x:Key="NodePayloadDomainId" />
             <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <converters:InvertedBoolToFontAttributesConverter x:Key="InvertedBoolToFontAttributesConverter" />
             <converters:StringEqualityToBoolConverter x:Key="StringToVisibilityConverter" />
         </ResourceDictionary>
     </Application.Resources>

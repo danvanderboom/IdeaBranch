@@ -177,6 +177,10 @@
               "target": "Package",
               "version": "[1.12.0, )"
             },
+            "CommunityToolkit.Maui": {
+              "target": "Package",
+              "version": "[9.0.3, )"
+            },
             "Microsoft.Agents.AI.OpenAI": {
               "target": "Package",
               "version": "[1.0.0-preview.251028.1, )"
@@ -227,6 +231,10 @@
             "Azure.Identity": {
               "target": "Package",
               "version": "[1.12.0, )"
+            },
+            "CommunityToolkit.Maui": {
+              "target": "Package",
+              "version": "[9.0.3, )"
             },
             "Microsoft.Agents.AI.OpenAI": {
               "target": "Package",
@@ -279,6 +287,10 @@
               "target": "Package",
               "version": "[1.12.0, )"
             },
+            "CommunityToolkit.Maui": {
+              "target": "Package",
+              "version": "[9.0.3, )"
+            },
             "Microsoft.Agents.AI.OpenAI": {
               "target": "Package",
               "version": "[1.0.0-preview.251028.1, )"
@@ -330,6 +342,10 @@
             "Azure.Identity": {
               "target": "Package",
               "version": "[1.12.0, )"
+            },
+            "CommunityToolkit.Maui": {
+              "target": "Package",
+              "version": "[9.0.3, )"
             },
             "Microsoft.Agents.AI.OpenAI": {
               "target": "Package",

@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using CommunityToolkit.Maui;
 using IdeaBranch.App.Services;
+using IdeaBranch.App.Services.Notifications;
 using IdeaBranch.App.ViewModels;
 using IdeaBranch.Domain;
 using IdeaBranch.Infrastructure.Resilience;
@@ -18,6 +20,7 @@ public static class MauiProgram
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
+			.UseMauiCommunityToolkit()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -59,6 +62,11 @@ public static class MauiProgram
 			var versionHistoryRepository = sp.GetRequiredService<IVersionHistoryRepository>();
 			return new SqliteTopicTreeRepository(db, versionHistoryRepository);
 		});
+		builder.Services.AddSingleton<INotificationsRepository>(sp =>
+		{
+			var db = sp.GetRequiredService<TopicDb>();
+			return new SqliteNotificationsRepository(db.Connection);
+		});
 
 		// Register ViewModels
 		builder.Services.AddTransient<TopicTreeViewModel>(sp =>
@@ -73,6 +81,13 @@ public static class MauiProgram
 		{
 			var settingsService = sp.GetRequiredService<Services.SettingsService>();
 			return new SettingsViewModel(settingsService);
+		});
+		
+		builder.Services.AddTransient<NotificationsViewModel>(sp =>
+		{
+			var repository = sp.GetRequiredService<INotificationsRepository>();
+			var notificationService = sp.GetService<INotificationService>();
+			return new NotificationsViewModel(repository, notificationService);
 		});
 
 		// Register resilience policies for HttpClientFactory and outbound I/O
@@ -102,6 +117,15 @@ public static class MauiProgram
 			var db = sp.GetRequiredService<TopicDb>();
 			var logger = sp.GetService<ILogger<SyncService>>();
 			return new SyncService(connectivityService, remoteClient, repository, versionHistoryRepository, db.Connection, logger);
+		});
+
+		// Register notification services
+		// Note: INotificationsRepository will be registered after we create SqliteNotificationsRepository
+		builder.Services.AddSingleton<INotificationService>(sp =>
+		{
+			var repository = sp.GetRequiredService<INotificationsRepository>();
+			var settingsService = sp.GetRequiredService<Services.SettingsService>();
+			return new NotificationService(repository, settingsService);
 		});
 
 		// Enable OpenTelemetry ActivitySource listeners

@@ -11,5 +11,13 @@ public class MainApplication : MauiApplication
 	{
 	}
 
-	protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+	protected override MauiApp CreateMauiApp()
+	{
+		var app = MauiProgram.CreateMauiApp();
+		
+		// Create notification channel for Android 8.0+
+		Platforms.Android.AndroidNotificationService.CreateNotificationChannel();
+		
+		return app;
+	}
 }

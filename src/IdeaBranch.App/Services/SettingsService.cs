@@ -16,6 +16,8 @@ public class SettingsService
     private const string AzureDeploymentKey = "azure_deployment";
     private const string AzureApiKeyKey = "azure_api_key";
     private const string LanguageKey = "app_language";
+    private const string InAppNotificationsEnabledKey = "in_app_notifications_enabled";
+    private const string PushNotificationsEnabledKey = "push_notifications_enabled";
 
     private const string DefaultProvider = "lmstudio";
     private const string DefaultLmStudioEndpoint = "http://localhost:1234/v1";
@@ -169,6 +171,44 @@ public class SettingsService
             throw new ArgumentException("Language cannot be null or empty.", nameof(language));
 
         await SecureStorage.SetAsync(LanguageKey, language.Trim().ToLowerInvariant());
+    }
+
+    /// <summary>
+    /// Gets whether in-app notifications are enabled (default: true).
+    /// </summary>
+    public async Task<bool> GetInAppNotificationsEnabledAsync()
+    {
+        var value = await SecureStorage.GetAsync(InAppNotificationsEnabledKey);
+        if (value == null)
+            return true; // Default to enabled
+        return bool.TryParse(value, out var result) && result;
+    }
+
+    /// <summary>
+    /// Sets whether in-app notifications are enabled.
+    /// </summary>
+    public async Task SetInAppNotificationsEnabledAsync(bool enabled)
+    {
+        await SecureStorage.SetAsync(InAppNotificationsEnabledKey, enabled.ToString().ToLowerInvariant());
+    }
+
+    /// <summary>
+    /// Gets whether push notifications are enabled (default: false).
+    /// </summary>
+    public async Task<bool> GetPushNotificationsEnabledAsync()
+    {
+        var value = await SecureStorage.GetAsync(PushNotificationsEnabledKey);
+        if (value == null)
+            return false; // Default to disabled
+        return bool.TryParse(value, out var result) && result;
+    }
+
+    /// <summary>
+    /// Sets whether push notifications are enabled.
+    /// </summary>
+    public async Task SetPushNotificationsEnabledAsync(bool enabled)
+    {
+        await SecureStorage.SetAsync(PushNotificationsEnabledKey, enabled.ToString().ToLowerInvariant());
     }
 }
 

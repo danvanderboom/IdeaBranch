@@ -22,6 +22,8 @@ public class SettingsViewModel : INotifyPropertyChanged
     private string? _azureEndpoint;
     private string? _azureDeployment;
     private string? _azureApiKey;
+    private bool _inAppNotificationsEnabled;
+    private bool _pushNotificationsEnabled;
     private bool _isLoading;
 
     private static readonly IReadOnlyList<string> CategoryList = new[]
@@ -31,6 +33,7 @@ public class SettingsViewModel : INotifyPropertyChanged
         "Display",
         "Search/Filter",
         "Integrations",
+        "Notifications",
         "AI Safety",
         "Import/Export"
     };
@@ -218,6 +221,40 @@ public class SettingsViewModel : INotifyPropertyChanged
     }
 
     /// <summary>
+    /// Gets or sets whether in-app notifications are enabled.
+    /// </summary>
+    public bool InAppNotificationsEnabled
+    {
+        get => _inAppNotificationsEnabled;
+        set
+        {
+            if (_inAppNotificationsEnabled != value)
+            {
+                _inAppNotificationsEnabled = value;
+                OnPropertyChanged(nameof(InAppNotificationsEnabled));
+                SaveInAppNotificationsEnabledAsync();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets whether push notifications are enabled.
+    /// </summary>
+    public bool PushNotificationsEnabled
+    {
+        get => _pushNotificationsEnabled;
+        set
+        {
+            if (_pushNotificationsEnabled != value)
+            {
+                _pushNotificationsEnabled = value;
+                OnPropertyChanged(nameof(PushNotificationsEnabled));
+                SavePushNotificationsEnabledAsync();
+            }
+        }
+    }
+
+    /// <summary>
     /// Gets whether settings are currently being loaded.
     /// </summary>
     public bool IsLoading
@@ -252,6 +289,8 @@ public class SettingsViewModel : INotifyPropertyChanged
             _azureEndpoint = await _settingsService.GetAzureEndpointAsync();
             _azureDeployment = await _settingsService.GetAzureDeploymentAsync();
             _azureApiKey = await _settingsService.GetAzureApiKeyAsync();
+            _inAppNotificationsEnabled = await _settingsService.GetInAppNotificationsEnabledAsync();
+            _pushNotificationsEnabled = await _settingsService.GetPushNotificationsEnabledAsync();
             
             // Notify property changes
             OnPropertyChanged(nameof(SelectedLanguage));
@@ -261,6 +300,8 @@ public class SettingsViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(AzureEndpoint));
             OnPropertyChanged(nameof(AzureDeployment));
             OnPropertyChanged(nameof(AzureApiKey));
+            OnPropertyChanged(nameof(InAppNotificationsEnabled));
+            OnPropertyChanged(nameof(PushNotificationsEnabled));
         }
         catch
         {
@@ -407,6 +448,36 @@ public class SettingsViewModel : INotifyPropertyChanged
         try
         {
             await _settingsService.SetAzureApiKeyAsync(_azureApiKey);
+        }
+        catch
+        {
+            // Error handling
+        }
+    }
+
+    /// <summary>
+    /// Saves the in-app notifications enabled setting.
+    /// </summary>
+    private async void SaveInAppNotificationsEnabledAsync()
+    {
+        try
+        {
+            await _settingsService.SetInAppNotificationsEnabledAsync(_inAppNotificationsEnabled);
+        }
+        catch
+        {
+            // Error handling
+        }
+    }
+
+    /// <summary>
+    /// Saves the push notifications enabled setting.
+    /// </summary>
+    private async void SavePushNotificationsEnabledAsync()
+    {
+        try
+        {
+            await _settingsService.SetPushNotificationsEnabledAsync(_pushNotificationsEnabled);
         }
         catch
         {

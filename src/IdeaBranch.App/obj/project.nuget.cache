@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "jkWzctQRr10=",
+  "dgSpecHash": "oDNZfYH648Y=",
   "success": true,
   "projectFilePath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.App\\IdeaBranch.App.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\danva\\.nuget\\packages\\azure.core\\1.40.0\\azure.core.1.40.0.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\azure.identity\\1.12.0\\azure.identity.1.12.0.nupkg.sha512",
+    "C:\\Users\\danva\\.nuget\\packages\\communitytoolkit.maui\\9.0.3\\communitytoolkit.maui.9.0.3.nupkg.sha512",
+    "C:\\Users\\danva\\.nuget\\packages\\communitytoolkit.maui.core\\9.0.3\\communitytoolkit.maui.core.9.0.3.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\googlegson\\2.13.0.1\\googlegson.2.13.0.1.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\microsoft.agents.ai\\1.0.0-preview.251028.1\\microsoft.agents.ai.1.0.0-preview.251028.1.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\microsoft.agents.ai.abstractions\\1.0.0-preview.251028.1\\microsoft.agents.ai.abstractions.1.0.0-preview.251028.1.nupkg.sha512",
@@ -103,6 +105,7 @@
     "C:\\Users\\danva\\.nuget\\packages\\system.security.cryptography.primitives\\4.3.0\\system.security.cryptography.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\system.security.cryptography.protecteddata\\4.7.0\\system.security.cryptography.protecteddata.4.7.0.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\system.security.securestring\\4.3.0\\system.security.securestring.4.3.0.nupkg.sha512",
+    "C:\\Users\\danva\\.nuget\\packages\\system.speech\\8.0.0\\system.speech.8.0.0.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\system.text.encoding\\4.3.0\\system.text.encoding.4.3.0.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\system.text.encodings.web\\4.7.2\\system.text.encodings.web.4.7.2.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\system.text.json\\4.7.2\\system.text.json.4.7.2.nupkg.sha512",

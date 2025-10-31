@@ -36,6 +36,9 @@
         <uap:DefaultTile Square71x71Logo="$placeholder$.png" Wide310x150Logo="$placeholder$.png" Square310x310Logo="$placeholder$.png" />
         <uap:SplashScreen Image="$placeholder$.png" />
       </uap:VisualElements>
+      <uap:ApplicationDefinition>
+        <uap:ToastCapable>true</uap:ToastCapable>
+      </uap:ApplicationDefinition>
     </Application>
   </Applications>
 

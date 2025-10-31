@@ -36,6 +36,12 @@
         AutomationId="TimelinePage" />
 
     <ShellContent
+        Title="Notifications"
+        ContentTemplate="{DataTemplate views:NotificationsPage}"
+        Route="NotificationsPage"
+        AutomationId="NotificationsPage" />
+
+    <ShellContent
         Title="Settings"
         ContentTemplate="{DataTemplate views:SettingsPage}"
         Route="SettingsPage"

@@ -93,6 +93,12 @@
             Useful for disabling buttons when IsBusy is true.
             </summary>
         </member>
+        <member name="T:IdeaBranch.App.Converters.InvertedBoolToFontAttributesConverter">
+            <summary>
+            Converts bool to FontAttributes: false becomes Bold, true becomes None.
+            Used to show unread notifications in bold.
+            </summary>
+        </member>
         <member name="T:IdeaBranch.App.Converters.NodePayloadDomainIdConverter">
             <summary>
             Extracts DomainNodeId from TopicNodePayload stored in ITreeNode.PayloadObject.
@@ -106,6 +112,32 @@
         <member name="T:IdeaBranch.App.Converters.NodePayloadTitleConverter">
             <summary>
             Extracts Title from TopicNodePayload stored in ITreeNode.PayloadObject.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Converters.StringEqualityToBoolConverter">
+            <summary>
+            Converts string equality to bool: returns true if the value equals the parameter (case-insensitive).
+            Useful for conditional visibility based on selected category or option.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Platforms.Android.AndroidNotificationService">
+            <summary>
+            Android-specific notification service implementation.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Platforms.Android.AndroidNotificationService.CreateNotificationChannel">
+            <summary>
+            Creates the notification channel for Android 8.0+.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Platforms.Android.AndroidNotificationService.RequestNotificationPermissionAsync">
+            <summary>
+            Requests notification permission for Android 13+.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Platforms.Android.AndroidNotificationService.GetNotificationPermissionStatusAsync">
+            <summary>
+            Gets the notification permission status for Android 13+.
             </summary>
         </member>
         <member name="T:IdeaBranch.App.Services.ExampleApiService">
@@ -248,6 +280,146 @@
             Builds chat messages from prompt and context path.
             </summary>
         </member>
+        <member name="T:IdeaBranch.App.Services.MauiConnectivityService">
+            <summary>
+            MAUI-based implementation of IConnectivityService.
+            Uses Microsoft.Maui.Networking.Connectivity to detect network availability.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.MauiConnectivityService.#ctor">
+            <summary>
+            Initializes a new instance of the MauiConnectivityService class.
+            Subscribes to connectivity changes.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.MauiConnectivityService.IsOnlineAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="E:IdeaBranch.App.Services.MauiConnectivityService.ConnectivityChanged">
+            <inheritdoc/>
+        </member>
+        <member name="M:IdeaBranch.App.Services.MauiConnectivityService.OnConnectivityChanged(System.Object,Microsoft.Maui.Networking.ConnectivityChangedEventArgs)">
+            <summary>
+            Handles connectivity change events from MAUI Connectivity.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Services.Notifications.INotificationService">
+            <summary>
+            Cross-platform notification service interface.
+            Handles both in-app notifications and push notification registration.
+            </summary>
+        </member>
+        <member name="E:IdeaBranch.App.Services.Notifications.INotificationService.NotificationAdded">
+            <summary>
+            Event fired when a new notification is added.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.Notifications.INotificationService.ShowInAppNotificationAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Shows an in-app notification (snackbar/toast).
+            </summary>
+            <param name="title">The notification title.</param>
+            <param name="message">The notification message.</param>
+            <param name="type">The notification type (e.g., "update", "deadline", "task").</param>
+            <param name="cancellationToken">Token to cancel the operation.</param>
+            <returns>A task representing the operation.</returns>
+        </member>
+        <member name="M:IdeaBranch.App.Services.Notifications.INotificationService.RequestPushPermissionAsync">
+            <summary>
+            Requests push notification permission from the OS.
+            </summary>
+            <returns>True if permission was granted, false otherwise.</returns>
+        </member>
+        <member name="M:IdeaBranch.App.Services.Notifications.INotificationService.GetPushPermissionStatusAsync">
+            <summary>
+            Gets the current push notification permission status.
+            </summary>
+            <returns>The permission status.</returns>
+        </member>
+        <member name="M:IdeaBranch.App.Services.Notifications.INotificationService.RegisterForPushNotificationsAsync(System.Threading.CancellationToken)">
+            <summary>
+            Registers the device for push notifications (stores token locally for later backend registration).
+            </summary>
+            <param name="cancellationToken">Token to cancel the operation.</param>
+            <returns>The device token, or null if registration failed.</returns>
+        </member>
+        <member name="M:IdeaBranch.App.Services.Notifications.INotificationService.GetDeviceTokenAsync">
+            <summary>
+            Gets the stored device token for push notifications.
+            </summary>
+            <returns>The device token, or null if not registered.</returns>
+        </member>
+        <member name="M:IdeaBranch.App.Services.Notifications.INotificationService.ClearDeviceTokenAsync">
+            <summary>
+            Clears the stored device token.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Services.Notifications.PushPermissionStatus">
+            <summary>
+            Represents the push notification permission status.
+            </summary>
+        </member>
+        <member name="F:IdeaBranch.App.Services.Notifications.PushPermissionStatus.Unknown">
+            <summary>
+            Permission status is unknown or not yet requested.
+            </summary>
+        </member>
+        <member name="F:IdeaBranch.App.Services.Notifications.PushPermissionStatus.Granted">
+            <summary>
+            Permission has been granted.
+            </summary>
+        </member>
+        <member name="F:IdeaBranch.App.Services.Notifications.PushPermissionStatus.Denied">
+            <summary>
+            Permission has been denied.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Services.Notifications.NotificationService">
+            <summary>
+            Cross-platform notification service implementation.
+            Handles both in-app notifications and push notification registration.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.Notifications.NotificationService.#ctor(IdeaBranch.Domain.INotificationsRepository,IdeaBranch.App.Services.SettingsService)">
+            <summary>
+            Initializes a new instance of the NotificationService class.
+            </summary>
+        </member>
+        <member name="E:IdeaBranch.App.Services.Notifications.NotificationService.NotificationAdded">
+            <summary>
+            Event fired when a new notification is added.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.Notifications.NotificationService.ShowInAppNotificationAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Shows an in-app notification (snackbar/toast).
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.Notifications.NotificationService.RequestPushPermissionAsync">
+            <summary>
+            Requests push notification permission from the OS.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.Notifications.NotificationService.GetPushPermissionStatusAsync">
+            <summary>
+            Gets the current push notification permission status.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.Notifications.NotificationService.RegisterForPushNotificationsAsync(System.Threading.CancellationToken)">
+            <summary>
+            Registers the device for push notifications (stores token locally for later backend registration).
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.Notifications.NotificationService.GetDeviceTokenAsync">
+            <summary>
+            Gets the stored device token for push notifications.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.Notifications.NotificationService.ClearDeviceTokenAsync">
+            <summary>
+            Clears the stored device token.
+            </summary>
+        </member>
         <member name="T:IdeaBranch.App.Services.SettingsService">
             <summary>
             Service for managing application settings, including LLM provider configuration.
@@ -313,6 +485,36 @@
             Sets the Azure OpenAI API key.
             </summary>
         </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.GetLanguageAsync">
+            <summary>
+            Gets the application language preference (values: "system", "en", "es", "fr").
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.SetLanguageAsync(System.String)">
+            <summary>
+            Sets the application language preference.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.GetInAppNotificationsEnabledAsync">
+            <summary>
+            Gets whether in-app notifications are enabled (default: true).
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.SetInAppNotificationsEnabledAsync(System.Boolean)">
+            <summary>
+            Sets whether in-app notifications are enabled.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.GetPushNotificationsEnabledAsync">
+            <summary>
+            Gets whether push notifications are enabled (default: false).
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.SetPushNotificationsEnabledAsync(System.Boolean)">
+            <summary>
+            Sets whether push notifications are enabled.
+            </summary>
+        </member>
         <member name="T:IdeaBranch.App.Services.TelemetryService">
             <summary>
             Service for emitting telemetry events with consent support.
@@ -349,9 +551,199 @@
             ViewModel for MapPage.
             </summary>
         </member>
+        <member name="T:IdeaBranch.App.ViewModels.NotificationsViewModel">
+            <summary>
+            ViewModel for NotificationsPage that manages the notifications feed.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.NotificationsViewModel.#ctor(IdeaBranch.Domain.INotificationsRepository,IdeaBranch.App.Services.Notifications.INotificationService)">
+            <summary>
+            Initializes a new instance with the notifications repository.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.NotificationsViewModel.Notifications">
+            <summary>
+            Gets the list of notifications.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.NotificationsViewModel.IsLoading">
+            <summary>
+            Gets whether notifications are currently being loaded.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.NotificationsViewModel.HasUnreadNotifications">
+            <summary>
+            Gets whether there are unread notifications.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.NotificationsViewModel.LoadNotificationsAsync">
+            <summary>
+            Loads notifications from the repository.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.NotificationsViewModel.ToggleReadStatusAsync(IdeaBranch.Domain.NotificationItem)">
+            <summary>
+            Marks a notification as read or unread.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.NotificationsViewModel.DeleteNotificationAsync(IdeaBranch.Domain.NotificationItem)">
+            <summary>
+            Deletes a notification.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.NotificationsViewModel.ClearAllNotificationsAsync">
+            <summary>
+            Deletes all notifications.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.NotificationsViewModel.Refresh">
+            <summary>
+            Refreshes the notifications list.
+            </summary>
+        </member>
         <member name="T:IdeaBranch.App.ViewModels.ResilienceTestViewModel">
             <summary>
             ViewModel for ResilienceTestPage that demonstrates resilience policies.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.ViewModels.SettingsViewModel">
+            <summary>
+            ViewModel for SettingsPage that manages application settings across multiple categories.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.SettingsViewModel.#ctor(IdeaBranch.App.Services.SettingsService)">
+            <summary>
+            Initializes a new instance with the settings service.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SettingsViewModel.Categories">
+            <summary>
+            Gets the list of available setting categories.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SettingsViewModel.LanguageOptions">
+            <summary>
+            Gets the list of available language options.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SettingsViewModel.ProviderOptions">
+            <summary>
+            Gets the list of available provider options.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SettingsViewModel.SelectedCategory">
+            <summary>
+            Gets or sets the currently selected category.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SettingsViewModel.SelectedLanguage">
+            <summary>
+            Gets or sets the selected language.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SettingsViewModel.Provider">
+            <summary>
+            Gets or sets the LLM provider ("lmstudio" or "azure").
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SettingsViewModel.LmEndpoint">
+            <summary>
+            Gets or sets the LM Studio endpoint.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SettingsViewModel.LmModel">
+            <summary>
+            Gets or sets the LM Studio model name.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SettingsViewModel.AzureEndpoint">
+            <summary>
+            Gets or sets the Azure OpenAI endpoint.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SettingsViewModel.AzureDeployment">
+            <summary>
+            Gets or sets the Azure OpenAI deployment name.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SettingsViewModel.AzureApiKey">
+            <summary>
+            Gets or sets the Azure OpenAI API key.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SettingsViewModel.InAppNotificationsEnabled">
+            <summary>
+            Gets or sets whether in-app notifications are enabled.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SettingsViewModel.PushNotificationsEnabled">
+            <summary>
+            Gets or sets whether push notifications are enabled.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SettingsViewModel.IsLoading">
+            <summary>
+            Gets whether settings are currently being loaded.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.SettingsViewModel.LoadSettingsAsync">
+            <summary>
+            Loads all settings from the service.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.SettingsViewModel.MapLanguageCodeToDisplay(System.String)">
+            <summary>
+            Maps a language code to display name.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.SettingsViewModel.MapDisplayToLanguageCode(System.String)">
+            <summary>
+            Maps a display name to language code.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.SettingsViewModel.SaveLanguageAsync">
+            <summary>
+            Saves the language preference.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.SettingsViewModel.SaveProviderAsync">
+            <summary>
+            Saves the provider setting.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.SettingsViewModel.SaveLmEndpointAsync">
+            <summary>
+            Saves the LM Studio endpoint.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.SettingsViewModel.SaveLmModelAsync">
+            <summary>
+            Saves the LM Studio model.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.SettingsViewModel.SaveAzureEndpointAsync">
+            <summary>
+            Saves the Azure endpoint.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.SettingsViewModel.SaveAzureDeploymentAsync">
+            <summary>
+            Saves the Azure deployment.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.SettingsViewModel.SaveAzureApiKeyAsync">
+            <summary>
+            Saves the Azure API key.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.SettingsViewModel.SaveInAppNotificationsEnabledAsync">
+            <summary>
+            Saves the in-app notifications enabled setting.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.SettingsViewModel.SavePushNotificationsEnabledAsync">
+            <summary>
+            Saves the push notifications enabled setting.
             </summary>
         </member>
         <member name="T:IdeaBranch.App.ViewModels.TimelineViewModel">
@@ -382,6 +774,11 @@
         <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.Response">
             <summary>
             Gets or sets the response text for the topic node.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.NodeId">
+            <summary>
+            Gets the ID of the topic node.
             </summary>
         </member>
         <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.IsBusy">
@@ -519,11 +916,181 @@
             Navigates to the detail page for editing a node.
             </summary>
         </member>
+        <member name="T:IdeaBranch.App.ViewModels.VersionHistoryViewModel">
+            <summary>
+            ViewModel for VersionHistoryPage that displays version history for a topic node.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.VersionHistoryViewModel.#ctor(System.Guid,IdeaBranch.Domain.IVersionHistoryRepository,System.String)">
+            <summary>
+            Initializes a new instance with a node ID to load version history for.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.VersionHistoryViewModel.NodeId">
+            <summary>
+            Gets the node ID this history is for.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.VersionHistoryViewModel.NodeTitle">
+            <summary>
+            Gets the title of the node this history is for.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.VersionHistoryViewModel.Versions">
+            <summary>
+            Gets the collection of version history entries.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.VersionHistoryViewModel.IsLoading">
+            <summary>
+            Gets whether version history is currently being loaded.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.VersionHistoryViewModel.ErrorMessage">
+            <summary>
+            Gets the error message, if any.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.VersionHistoryViewModel.HasVersions">
+            <summary>
+            Gets whether there are any version history entries.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.VersionHistoryViewModel.LoadVersionHistoryAsync">
+            <summary>
+            Loads version history for the node.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.VersionHistoryViewModel.RefreshAsync">
+            <summary>
+            Refreshes the version history.
+            </summary>
+        </member>
         <member name="T:IdeaBranch.App.Resource">
             <summary>
             Android Resource Designer class.
             Exposes the Android Resource designer assembly into the project Namespace.
             </summary>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_Button.TextColorTo(Microsoft.Maui.Controls.Button,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_DatePicker.TextColorTo(Microsoft.Maui.Controls.DatePicker,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_Editor.TextColorTo(Microsoft.Maui.Controls.Editor,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_Entry.TextColorTo(Microsoft.Maui.Controls.Entry,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_InputView.TextColorTo(Microsoft.Maui.Controls.InputView,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_Label.TextColorTo(Microsoft.Maui.Controls.Label,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_Picker.TextColorTo(Microsoft.Maui.Controls.Picker,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_RadioButton.TextColorTo(Microsoft.Maui.Controls.RadioButton,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_SearchBar.TextColorTo(Microsoft.Maui.Controls.SearchBar,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
+        </member>
+        <member name="M:Microsoft.Maui.Controls.ColorAnimationExtensions_TimePicker.TextColorTo(Microsoft.Maui.Controls.TimePicker,Microsoft.Maui.Graphics.Color,System.UInt32,System.UInt32,Microsoft.Maui.Easing,System.Threading.CancellationToken)">
+            <summary>
+            Animates the TextColor of an <see cref = "T:Microsoft.Maui.ITextStyle"/> to the given color
+            </summary>
+            <param name = "element"></param>
+            <param name = "color">The target color to animate the <see cref = "P:Microsoft.Maui.ITextStyle.TextColor"/> to</param>
+            <param name = "rate">The time, in milliseconds, between the frames of the animation</param>
+            <param name = "length">The duration, in milliseconds, of the animation</param>
+            <param name = "easing">The easing function to be used in the animation</param>
+            <param name = "token"><see cref = "T:System.Threading.CancellationToken"/></param>
+            <returns>Value indicating if the animation completed successfully or not</returns>
         </member>
     </members>
 </doc>

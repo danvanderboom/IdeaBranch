@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <!-- MainPage -->
+  <data name="MainPage_Headline" xml:space="preserve">
+    <value>¡Hola, Mundo!</value>
+  </data>
+  <data name="MainPage_WelcomeMessage" xml:space="preserve">
+    <value>Bienvenido a &#10;.NET Multi-plataforma App UI</value>
+  </data>
+  <data name="MainPage_CounterButton" xml:space="preserve">
+    <value>Haz clic</value>
+  </data>
+  <data name="MainPage_CounterClickedOnce" xml:space="preserve">
+    <value>Haz clic {0} vez</value>
+  </data>
+  <data name="MainPage_CounterClickedMultiple" xml:space="preserve">
+    <value>Haz clic {0} veces</value>
+  </data>
+  <!-- AppShell -->
+  <data name="AppShell_Home" xml:space="preserve">
+    <value>Inicio</value>
+  </data>
+  <data name="AppShell_ResilienceTest" xml:space="preserve">
+    <value>Prueba de Resiliencia</value>
+  </data>
+  <data name="AppShell_TopicTree" xml:space="preserve">
+    <value>Árbol de Temas</value>
+  </data>
+  <data name="AppShell_Map" xml:space="preserve">
+    <value>Mapa</value>
+  </data>
+  <data name="AppShell_Timeline" xml:space="preserve">
+    <value>Línea de Tiempo</value>
+  </data>
+  <data name="AppShell_Notifications" xml:space="preserve">
+    <value>Notificaciones</value>
+  </data>
+  <data name="AppShell_Settings" xml:space="preserve">
+    <value>Configuración</value>
+  </data>
+  <!-- ResilienceTestPage -->
+  <data name="ResilienceTestPage_Title" xml:space="preserve">
+    <value>Prueba de Resiliencia</value>
+  </data>
+  <data name="ResilienceTestPage_Headline" xml:space="preserve">
+    <value>Demostración de Política de Resiliencia</value>
+  </data>
+  <data name="ResilienceTestPage_Description" xml:space="preserve">
+    <value>Probar el comportamiento de reintentos y cortacircuitos con llamadas API reales</value>
+  </data>
+  <data name="ResilienceTestPage_GetButton" xml:space="preserve">
+    <value>Probar GET (Reintento Idempotente)</value>
+  </data>
+  <data name="ResilienceTestPage_PostButton" xml:space="preserve">
+    <value>Probar POST (Reintento Limitado)</value>
+  </data>
+  <data name="ResilienceTestPage_RetryButton" xml:space="preserve">
+    <value>Probar Reintento (Error 500)</value>
+  </data>
+  <data name="ResilienceTestPage_CircuitBreakerButton" xml:space="preserve">
+    <value>Probar Cortacircuitos</value>
+  </data>
+  <data name="ResilienceTestPage_DelayButton" xml:space="preserve">
+    <value>Probar Retraso/Timeout</value>
+  </data>
+  <data name="ResilienceTestPage_ResultsLabel" xml:space="preserve">
+    <value>Resultados:</value>
+  </data>
+  <data name="ResilienceTestPage_InstructionsLabel" xml:space="preserve">
+    <value>Instrucciones:</value>
+  </data>
+  <data name="ResilienceTestPage_InstructionsText" xml:space="preserve">
+    <value>1. Abrir Salida de Depuración para ver registros de telemetría&#10;2. Probar GET: Reintento completo en errores transitorios&#10;3. Probar Reintento (500): Observar retroceso exponencial&#10;4. Probar Cortacircuitos: Activar fallos para abrir el circuito&#10;5. Revisar registros para mensajes [Resilience]</value>
+  </data>
+  <!-- SettingsPage -->
+  <data name="SettingsPage_Title" xml:space="preserve">
+    <value>Configuración</value>
+  </data>
+  <data name="SettingsPage_UserSettingsTitle" xml:space="preserve">
+    <value>Configuración de Usuario</value>
+  </data>
+  <data name="SettingsPage_UserSettingsComingSoon" xml:space="preserve">
+    <value>Configuración de usuario próximamente.</value>
+  </data>
+  <data name="SettingsPage_ProjectSettingsTitle" xml:space="preserve">
+    <value>Configuración de Proyecto</value>
+  </data>
+  <data name="SettingsPage_ProjectSettingsComingSoon" xml:space="preserve">
+    <value>Configuración de proyecto próximamente.</value>
+  </data>
+  <data name="SettingsPage_DisplaySettingsTitle" xml:space="preserve">
+    <value>Configuración de Pantalla</value>
+  </data>
+  <data name="SettingsPage_LanguageLabel" xml:space="preserve">
+    <value>Idioma</value>
+  </data>
+  <data name="SettingsPage_LanguageRestartNote" xml:space="preserve">
+    <value>Los cambios se aplican después de reiniciar.</value>
+  </data>
+  <data name="SettingsPage_SearchFilterSettingsTitle" xml:space="preserve">
+    <value>Configuración de Búsqueda y Filtro</value>
+  </data>
+  <data name="SettingsPage_SearchFilterSettingsComingSoon" xml:space="preserve">
+    <value>Configuración de búsqueda y filtro próximamente.</value>
+  </data>
+  <data name="SettingsPage_IntegrationSettingsTitle" xml:space="preserve">
+    <value>Configuración de Integración</value>
+  </data>
+  <data name="SettingsPage_LlmProviderLabel" xml:space="preserve">
+    <value>Proveedor LLM</value>
+  </data>
+  <data name="SettingsPage_LmStudioConfigurationTitle" xml:space="preserve">
+    <value>Configuración de LM Studio</value>
+  </data>
+  <data name="SettingsPage_EndpointLabel" xml:space="preserve">
+    <value>Endpoint</value>
+  </data>
+  <data name="SettingsPage_ModelLabel" xml:space="preserve">
+    <value>Modelo</value>
+  </data>
+  <data name="SettingsPage_AzureOpenAiConfigurationTitle" xml:space="preserve">
+    <value>Configuración de Azure OpenAI</value>
+  </data>
+  <data name="SettingsPage_DeploymentLabel" xml:space="preserve">
+    <value>Implementación</value>
+  </data>
+  <data name="SettingsPage_ApiKeyLabel" xml:space="preserve">
+    <value>Clave de API</value>
+  </data>
+  <data name="SettingsPage_ApiKeyPlaceholder" xml:space="preserve">
+    <value>Ingrese la clave de API</value>
+  </data>
+  <data name="SettingsPage_NotificationSettingsTitle" xml:space="preserve">
+    <value>Configuración de Notificaciones</value>
+  </data>
+  <data name="SettingsPage_InAppNotificationsLabel" xml:space="preserve">
+    <value>Notificaciones en la App</value>
+  </data>
+  <data name="SettingsPage_InAppNotificationsDescription" xml:space="preserve">
+    <value>Mostrar notificaciones dentro de la app (snackbars/toasts).</value>
+  </data>
+  <data name="SettingsPage_PushNotificationsLabel" xml:space="preserve">
+    <value>Notificaciones Push</value>
+  </data>
+  <data name="SettingsPage_PushNotificationsDescription" xml:space="preserve">
+    <value>Recibir notificaciones push del sistema. Requiere permiso del SO.</value>
+  </data>
+  <data name="SettingsPage_AiSafetySettingsTitle" xml:space="preserve">
+    <value>Configuración de Seguridad de IA</value>
+  </data>
+  <data name="SettingsPage_AiSafetySettingsComingSoon" xml:space="preserve">
+    <value>Configuración de seguridad de IA próximamente.</value>
+  </data>
+  <data name="SettingsPage_ImportExportSettingsTitle" xml:space="preserve">
+    <value>Configuración de Importar/Exportar</value>
+  </data>
+  <data name="SettingsPage_ImportExportSettingsComingSoon" xml:space="preserve">
+    <value>Configuración de importar/exportar próximamente.</value>
+  </data>
+  <!-- Settings Categories -->
+  <data name="SettingsCategory_User" xml:space="preserve">
+    <value>Usuario</value>
+  </data>
+  <data name="SettingsCategory_Project" xml:space="preserve">
+    <value>Proyecto</value>
+  </data>
+  <data name="SettingsCategory_Display" xml:space="preserve">
+    <value>Pantalla</value>
+  </data>
+  <data name="SettingsCategory_SearchFilter" xml:space="preserve">
+    <value>Búsqueda/Filtro</value>
+  </data>
+  <data name="SettingsCategory_Integrations" xml:space="preserve">
+    <value>Integraciones</value>
+  </data>
+  <data name="SettingsCategory_Notifications" xml:space="preserve">
+    <value>Notificaciones</value>
+  </data>
+  <data name="SettingsCategory_AiSafety" xml:space="preserve">
+    <value>Seguridad de IA</value>
+  </data>
+  <data name="SettingsCategory_ImportExport" xml:space="preserve">
+    <value>Importar/Exportar</value>
+  </data>
+  <!-- NotificationsPage -->
+  <data name="NotificationsPage_Title" xml:space="preserve">
+    <value>Notificaciones</value>
+  </data>
+  <data name="NotificationsPage_Header" xml:space="preserve">
+    <value>Notificaciones</value>
+  </data>
+  <data name="NotificationsPage_ClearAllButton" xml:space="preserve">
+    <value>Limpiar Todo</value>
+  </data>
+  <data name="NotificationsPage_EmptyView" xml:space="preserve">
+    <value>No hay notificaciones</value>
+  </data>
+  <data name="NotificationsPage_MarkReadButton" xml:space="preserve">
+    <value>Marcar como Leído</value>
+  </data>
+  <data name="NotificationsPage_DeleteButton" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <!-- VersionHistoryPage -->
+  <data name="VersionHistoryPage_Title" xml:space="preserve">
+    <value>Historial de Versiones</value>
+  </data>
+  <data name="VersionHistoryPage_HistoryFor" xml:space="preserve">
+    <value>Historial para: {0}</value>
+  </data>
+  <data name="VersionHistoryPage_ByAuthor" xml:space="preserve">
+    <value>por {0}</value>
+  </data>
+  <data name="VersionHistoryPage_PromptLabel" xml:space="preserve">
+    <value>Prompt:</value>
+  </data>
+  <data name="VersionHistoryPage_ResponseLabel" xml:space="preserve">
+    <value>Respuesta:</value>
+  </data>
+  <data name="VersionHistoryPage_EmptyState" xml:space="preserve">
+    <value>No hay historial de versiones disponible para este nodo.</value>
+  </data>
+  <!-- TopicNodeDetailPage -->
+  <data name="TopicNodeDetailPage_Title" xml:space="preserve">
+    <value>Editar Tema</value>
+  </data>
+  <data name="TopicNodeDetailPage_TitleLabel" xml:space="preserve">
+    <value>Título</value>
+  </data>
+  <data name="TopicNodeDetailPage_TitlePlaceholder" xml:space="preserve">
+    <value>Ingrese el título del tema (opcional)</value>
+  </data>
+  <data name="TopicNodeDetailPage_PromptLabel" xml:space="preserve">
+    <value>Prompt</value>
+  </data>
+  <data name="TopicNodeDetailPage_PromptPlaceholder" xml:space="preserve">
+    <value>Ingrese su prompt</value>
+  </data>
+  <data name="TopicNodeDetailPage_ResponseLabel" xml:space="preserve">
+    <value>Respuesta</value>
+  </data>
+  <data name="TopicNodeDetailPage_ResponsePlaceholder" xml:space="preserve">
+    <value>Ingrese la respuesta</value>
+  </data>
+  <data name="TopicNodeDetailPage_RetryButton" xml:space="preserve">
+    <value>Reintentar</value>
+  </data>
+  <data name="TopicNodeDetailPage_ViewHistoryButton" xml:space="preserve">
+    <value>Ver Historial</value>
+  </data>
+  <data name="TopicNodeDetailPage_GenerateResponseButton" xml:space="preserve">
+    <value>Generar Respuesta</value>
+  </data>
+  <data name="TopicNodeDetailPage_GenerateTitleButton" xml:space="preserve">
+    <value>Generar Título</value>
+  </data>
+  <data name="TopicNodeDetailPage_CancelButton" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="TopicNodeDetailPage_SaveButton" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <!-- TopicTreePage -->
+  <data name="TopicTreePage_Title" xml:space="preserve">
+    <value>Árbol de Temas</value>
+  </data>
+  <!-- MapPage -->
+  <data name="MapPage_Title" xml:space="preserve">
+    <value>Mapa</value>
+  </data>
+  <data name="MapPage_Content" xml:space="preserve">
+    <value>Vista de Mapa</value>
+  </data>
+  <!-- TimelinePage -->
+  <data name="TimelinePage_Title" xml:space="preserve">
+    <value>Línea de Tiempo</value>
+  </data>
+  <data name="TimelinePage_Content" xml:space="preserve">
+    <value>Vista de Línea de Tiempo</value>
+  </data>
+</root>
+
