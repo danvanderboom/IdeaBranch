@@ -28,7 +28,7 @@
                                Text="{Binding PayloadObject, Converter={StaticResource NodePayloadTitle}}"
                                FontSize="16"
                                FontAttributes="Bold"
-                               AutomationId="{Binding NodeId, StringFormat='TopicNode_{0}'}" />
+                               AutomationId="{Binding ., Converter={StaticResource NodePayloadDomainId}, StringFormat='TopicNode_{0}'}" />
                         
                         <Label Grid.Row="1"
                                Text="{Binding PayloadObject, Converter={StaticResource NodePayloadPrompt}}"

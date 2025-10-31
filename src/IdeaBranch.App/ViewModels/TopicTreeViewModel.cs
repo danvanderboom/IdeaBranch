@@ -22,7 +22,7 @@ public class TopicTreeViewModel : INotifyPropertyChanged
         // TODO: Initialize from domain repository once implemented
         // For now, create a placeholder tree for testing
         var placeholderRoot = new { Id = Guid.NewGuid() };
-        _viewProvider.InitializeTreeView(placeholderRoot, defaultExpanded: true);
+        _viewProvider.InitializeTreeView(placeholderRoot, defaultExpanded: false);
     }
 
     /// <summary>

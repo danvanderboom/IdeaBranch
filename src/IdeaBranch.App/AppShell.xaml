@@ -17,4 +17,10 @@
         ContentTemplate="{DataTemplate views:ResilienceTestPage}"
         Route="ResilienceTestPage" />
 
+    <ShellContent
+        Title="Topic Tree"
+        ContentTemplate="{DataTemplate views:TopicTreePage}"
+        Route="TopicTreePage"
+        AutomationId="TopicTreePage" />
+
 </Shell>

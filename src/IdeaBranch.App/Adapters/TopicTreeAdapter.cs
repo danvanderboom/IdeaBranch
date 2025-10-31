@@ -21,11 +21,16 @@ public class TopicTreeAdapter
     public TreeNode<TopicNodePayload> BuildTree(object rootDomainNode)
     {
         // TODO: Replace with actual domain TopicNode once implemented
-        // For now, create a placeholder root node for testing
+        // For now, create a deterministic 3-level tree for testing with stable GUIDs
+        
+        // Fixed GUIDs for deterministic AutomationIds in tests
+        var rootId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+        var childId = Guid.Parse("00000000-0000-0000-0000-000000000002");
+        var grandchildId = Guid.Parse("00000000-0000-0000-0000-000000000003");
         
         var rootPayload = new TopicNodePayload
         {
-            DomainNodeId = Guid.NewGuid(),
+            DomainNodeId = rootId,
             Title = "Root Topic",
             Prompt = "What would you like to explore?",
             Response = "This is a placeholder response.",
@@ -38,8 +43,39 @@ public class TopicTreeAdapter
         _domainNodeIdToTreeNode[rootPayload.DomainNodeId] = rootTreeNode;
         _treeNodeToDomainNodeId[rootTreeNode] = rootPayload.DomainNodeId;
 
-        // TODO: Recursively add children once domain model exists
-        // AddChildNodes(rootDomainNode, rootTreeNode);
+        // Add child node
+        var childPayload = new TopicNodePayload
+        {
+            DomainNodeId = childId,
+            Title = "Child Topic",
+            Prompt = "Explore this child",
+            Response = "Child response content.",
+            Order = 0,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+        
+        var childTreeNode = new TreeNode<TopicNodePayload>(childPayload, rootTreeNode);
+        rootTreeNode.Children.Add(childTreeNode);
+        _domainNodeIdToTreeNode[childPayload.DomainNodeId] = childTreeNode;
+        _treeNodeToDomainNodeId[childTreeNode] = childPayload.DomainNodeId;
+
+        // Add grandchild node
+        var grandchildPayload = new TopicNodePayload
+        {
+            DomainNodeId = grandchildId,
+            Title = "Grandchild Topic",
+            Prompt = "Explore this grandchild",
+            Response = "Grandchild response content.",
+            Order = 0,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+        
+        var grandchildTreeNode = new TreeNode<TopicNodePayload>(grandchildPayload, childTreeNode);
+        childTreeNode.Children.Add(grandchildTreeNode);
+        _domainNodeIdToTreeNode[grandchildPayload.DomainNodeId] = grandchildTreeNode;
+        _treeNodeToDomainNodeId[grandchildTreeNode] = grandchildPayload.DomainNodeId;
 
         return rootTreeNode;
     }
