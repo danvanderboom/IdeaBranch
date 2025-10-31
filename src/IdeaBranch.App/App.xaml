@@ -17,6 +17,7 @@
             <converters:NodePayloadPromptConverter x:Key="NodePayloadPrompt" />
             <converters:CountToBoolConverter x:Key="CountToBool" />
             <converters:NodePayloadDomainIdConverter x:Key="NodePayloadDomainId" />
+            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

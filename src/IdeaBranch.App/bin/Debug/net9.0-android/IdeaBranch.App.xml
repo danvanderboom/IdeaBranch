@@ -82,6 +82,11 @@
             ConverterParameter specifies the indent amount per level (default: 16).
             </summary>
         </member>
+        <member name="T:IdeaBranch.App.Converters.NodePayloadDomainIdConverter">
+            <summary>
+            Extracts DomainNodeId from TopicNodePayload stored in ITreeNode.PayloadObject.
+            </summary>
+        </member>
         <member name="T:IdeaBranch.App.Converters.NodePayloadPromptConverter">
             <summary>
             Extracts Prompt from TopicNodePayload stored in ITreeNode.PayloadObject.

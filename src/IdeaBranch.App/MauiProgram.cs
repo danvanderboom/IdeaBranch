@@ -1,7 +1,11 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using IdeaBranch.App.Services;
+using IdeaBranch.Domain;
 using IdeaBranch.Infrastructure.Resilience;
+using IdeaBranch.Infrastructure.Storage;
 using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Storage;
 
 namespace IdeaBranch.App;
 
@@ -24,6 +28,37 @@ public static class MauiProgram
 
 		// Register telemetry service (consent-aware)
 		builder.Services.AddSingleton<TelemetryService>();
+
+		// Register settings service
+		builder.Services.AddSingleton<Services.SettingsService>();
+
+		// Register LLM factory
+		builder.Services.AddSingleton<Services.LLM.LLMClientFactory>(sp =>
+		{
+			var settings = sp.GetRequiredService<Services.SettingsService>();
+			var loggerFactory = sp.GetService<ILoggerFactory>();
+			return new Services.LLM.LLMClientFactory(settings, loggerFactory);
+		});
+
+		// Register database and repository
+		builder.Services.AddSingleton<TopicDb>(sp =>
+		{
+			var dbPath = Path.Combine(FileSystem.AppDataDirectory, "ideabranch.db");
+			return new TopicDb(dbPath);
+		});
+		builder.Services.AddSingleton<ITopicTreeRepository>(sp =>
+		{
+			var db = sp.GetRequiredService<TopicDb>();
+			return new SqliteTopicTreeRepository(db);
+		});
+
+		// Register ViewModels
+		builder.Services.AddTransient<TopicTreeViewModel>(sp =>
+		{
+			var repository = sp.GetRequiredService<ITopicTreeRepository>();
+			var llmFactory = sp.GetService<Services.LLM.LLMClientFactory>();
+			return new TopicTreeViewModel(repository, llmFactory);
+		});
 
 		// Register resilience policies for HttpClientFactory and outbound I/O
 		builder.Services.AddResiliencePolicies();

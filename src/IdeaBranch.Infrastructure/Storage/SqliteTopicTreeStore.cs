@@ -74,10 +74,11 @@ public class SqliteTopicTreeStore
     /// <summary>
     /// Saves a tree structure starting from the root node.
     /// Uses breadth-first traversal and upserts nodes by NodeId.
+    /// Note: Schema must be initialized externally (e.g., by TopicDb migrations).
     /// </summary>
     public void SaveTree(ITreeNode root)
     {
-        EnsureSchema();
+        // Schema migrations are handled by TopicDb, no need to call EnsureSchema here
 
         // Clear existing data for root subtree (optional - could support updates)
         // For now, we'll upsert by NodeId
