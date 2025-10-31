@@ -31,7 +31,8 @@
                 <Label Text="{x:Static res:AppResources.TopicNodeDetailPage_TitleLabel}" FontAttributes="Bold" />
                 <Entry Text="{Binding Title}"
                        Placeholder="{x:Static res:AppResources.TopicNodeDetailPage_TitlePlaceholder}"
-                       AutomationId="TopicNodeDetailPage_Title" />
+                       AutomationId="TopicNodeDetailPage_Title"
+                       SemanticProperties.Description="Enter or edit the title for this topic node" />
             </VerticalStackLayout>
 
             <!-- Prompt -->
@@ -40,7 +41,8 @@
                 <Editor Text="{Binding Prompt}"
                         Placeholder="{x:Static res:AppResources.TopicNodeDetailPage_PromptPlaceholder}"
                         HeightRequest="100"
-                        AutomationId="TopicNodeDetailPage_Prompt" />
+                        AutomationId="TopicNodeDetailPage_Prompt"
+                        SemanticProperties.Description="Enter or edit the prompt text for this topic node" />
             </VerticalStackLayout>
 
             <!-- Response -->
@@ -49,7 +51,8 @@
                 <Editor Text="{Binding Response}"
                         Placeholder="{x:Static res:AppResources.TopicNodeDetailPage_ResponsePlaceholder}"
                         HeightRequest="200"
-                        AutomationId="TopicNodeDetailPage_Response" />
+                        AutomationId="TopicNodeDetailPage_Response"
+                        SemanticProperties.Description="Enter or edit the response text for this topic node" />
             </VerticalStackLayout>
 
             <!-- Error banner with retry -->
@@ -81,7 +84,8 @@
                             TextColor="White"
                             Padding="12,6"
                             Margin="0,8,0,0"
-                            AutomationId="TopicNodeDetailPage_RetryButton" />
+                            AutomationId="TopicNodeDetailPage_RetryButton"
+                            SemanticProperties.Hint="Retries the last failed operation" />
                     <Label Grid.Row="1"
                            Grid.Column="1"
                            Text="{Binding ErrorType}"
@@ -101,15 +105,18 @@
                         IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
                         BackgroundColor="#E3F2FD"
                         TextColor="#1976D2"
-                        AutomationId="TopicNodeDetailPage_ViewHistory" />
+                        AutomationId="TopicNodeDetailPage_ViewHistory"
+                        SemanticProperties.Hint="Opens the version history page for this topic node" />
                 <Button Text="{x:Static res:AppResources.TopicNodeDetailPage_GenerateResponseButton}"
                         Clicked="OnGenerateResponseClicked"
                         IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-                        AutomationId="TopicNodeDetailPage_GenerateResponse" />
+                        AutomationId="TopicNodeDetailPage_GenerateResponse"
+                        SemanticProperties.Hint="Uses AI to generate a response based on the prompt" />
                 <Button Text="{x:Static res:AppResources.TopicNodeDetailPage_GenerateTitleButton}"
                         Clicked="OnGenerateTitleClicked"
                         IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-                        AutomationId="TopicNodeDetailPage_GenerateTitle" />
+                        AutomationId="TopicNodeDetailPage_GenerateTitle"
+                        SemanticProperties.Hint="Uses AI to generate a title based on the prompt and response" />
             </VerticalStackLayout>
 
             <!-- Save/Cancel buttons -->
@@ -123,13 +130,15 @@
                         Text="{x:Static res:AppResources.TopicNodeDetailPage_CancelButton}"
                         Clicked="OnCancelClicked"
                         IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-                        AutomationId="TopicNodeDetailPage_Cancel" />
+                        AutomationId="TopicNodeDetailPage_Cancel"
+                        SemanticProperties.Hint="Cancels editing and discards changes" />
                 
                 <Button Grid.Column="1"
                         Text="{x:Static res:AppResources.TopicNodeDetailPage_SaveButton}"
                         Clicked="OnSaveClicked"
                         IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-                        AutomationId="TopicNodeDetailPage_Save" />
+                        AutomationId="TopicNodeDetailPage_Save"
+                        SemanticProperties.Hint="Saves changes to this topic node" />
             </Grid>
         </Grid>
     </ScrollView>

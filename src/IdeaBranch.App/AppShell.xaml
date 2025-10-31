@@ -11,12 +11,14 @@
     <ShellContent
         Title="{x:Static res:AppResources.AppShell_Home}"
         ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        Route="MainPage"
+        AutomationId="MainPage" />
     
     <ShellContent
         Title="{x:Static res:AppResources.AppShell_ResilienceTest}"
         ContentTemplate="{DataTemplate views:ResilienceTestPage}"
-        Route="ResilienceTestPage" />
+        Route="ResilienceTestPage"
+        AutomationId="ResilienceTestPage" />
 
     <ShellContent
         Title="{x:Static res:AppResources.AppShell_TopicTree}"

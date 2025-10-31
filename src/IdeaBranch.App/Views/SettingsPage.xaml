@@ -37,7 +37,8 @@
                     <Label Text="{x:Static res:AppResources.SettingsPage_UserSettingsTitle}"
                            FontSize="24"
                            FontAttributes="Bold"
-                           AutomationId="UserSettingsTitle"/>
+                           AutomationId="UserSettingsTitle"
+                           SemanticProperties.HeadingLevel="Level1"/>
                     <Label Text="{x:Static res:AppResources.SettingsPage_UserSettingsComingSoon}"
                            FontSize="14"
                            TextColor="Gray"/>
@@ -49,7 +50,8 @@
                     <Label Text="{x:Static res:AppResources.SettingsPage_ProjectSettingsTitle}"
                            FontSize="24"
                            FontAttributes="Bold"
-                           AutomationId="ProjectSettingsTitle"/>
+                           AutomationId="ProjectSettingsTitle"
+                           SemanticProperties.HeadingLevel="Level1"/>
                     <Label Text="{x:Static res:AppResources.SettingsPage_ProjectSettingsComingSoon}"
                            FontSize="14"
                            TextColor="Gray"/>
@@ -61,7 +63,8 @@
                     <Label Text="{x:Static res:AppResources.SettingsPage_DisplaySettingsTitle}"
                            FontSize="24"
                            FontAttributes="Bold"
-                           AutomationId="DisplaySettingsTitle"/>
+                           AutomationId="DisplaySettingsTitle"
+                           SemanticProperties.HeadingLevel="Level1"/>
                     
                     <StackLayout Spacing="8">
                         <Label Text="{x:Static res:AppResources.SettingsPage_LanguageLabel}"
@@ -69,7 +72,8 @@
                                FontAttributes="Bold"/>
                         <Picker ItemsSource="{Binding LanguageOptions}"
                                 SelectedItem="{Binding SelectedLanguage}"
-                                AutomationId="LanguagePicker">
+                                AutomationId="LanguagePicker"
+                                SemanticProperties.Description="Select the language for the application interface">
                             <Picker.ItemDisplayBinding>
                                 <Binding Path="."/>
                             </Picker.ItemDisplayBinding>
@@ -87,7 +91,8 @@
                     <Label Text="{x:Static res:AppResources.SettingsPage_SearchFilterSettingsTitle}"
                            FontSize="24"
                            FontAttributes="Bold"
-                           AutomationId="SearchFilterSettingsTitle"/>
+                           AutomationId="SearchFilterSettingsTitle"
+                           SemanticProperties.HeadingLevel="Level1"/>
                     <Label Text="{x:Static res:AppResources.SettingsPage_SearchFilterSettingsComingSoon}"
                            FontSize="14"
                            TextColor="Gray"/>
@@ -99,7 +104,8 @@
                     <Label Text="{x:Static res:AppResources.SettingsPage_IntegrationSettingsTitle}"
                            FontSize="24"
                            FontAttributes="Bold"
-                           AutomationId="IntegrationsSettingsTitle"/>
+                           AutomationId="IntegrationsSettingsTitle"
+                           SemanticProperties.HeadingLevel="Level1"/>
                     
                     <StackLayout Spacing="16">
                         <!-- Provider Selection -->
@@ -109,7 +115,8 @@
                                    FontAttributes="Bold"/>
                             <Picker ItemsSource="{Binding ProviderOptions}"
                                     SelectedItem="{Binding Provider}"
-                                    AutomationId="ProviderPicker">
+                                    AutomationId="ProviderPicker"
+                                    SemanticProperties.Description="Select the language model provider for AI features">
                                 <Picker.ItemDisplayBinding>
                                     <Binding Path="."/>
                                 </Picker.ItemDisplayBinding>
@@ -128,14 +135,16 @@
                                        FontSize="14"/>
                                 <Entry Text="{Binding LmEndpoint}"
                                        Placeholder="http://localhost:1234/v1"
-                                       AutomationId="LmEndpointEntry"/>
+                                       AutomationId="LmEndpointEntry"
+                                       SemanticProperties.Hint="Enter the endpoint URL for LM Studio API"/>
                             </StackLayout>
                             <StackLayout Spacing="8">
                                 <Label Text="{x:Static res:AppResources.SettingsPage_ModelLabel}"
                                        FontSize="14"/>
                                 <Entry Text="{Binding LmModel}"
                                        Placeholder="phi-4"
-                                       AutomationId="LmModelEntry"/>
+                                       AutomationId="LmModelEntry"
+                                       SemanticProperties.Hint="Enter the model name to use with LM Studio"/>
                             </StackLayout>
                         </StackLayout>
 
@@ -151,14 +160,16 @@
                                        FontSize="14"/>
                                 <Entry Text="{Binding AzureEndpoint}"
                                        Placeholder="https://your-resource.openai.azure.com"
-                                       AutomationId="AzureEndpointEntry"/>
+                                       AutomationId="AzureEndpointEntry"
+                                       SemanticProperties.Hint="Enter the Azure OpenAI endpoint URL"/>
                             </StackLayout>
                             <StackLayout Spacing="8">
                                 <Label Text="{x:Static res:AppResources.SettingsPage_DeploymentLabel}"
                                        FontSize="14"/>
                                 <Entry Text="{Binding AzureDeployment}"
                                        Placeholder="deployment-name"
-                                       AutomationId="AzureDeploymentEntry"/>
+                                       AutomationId="AzureDeploymentEntry"
+                                       SemanticProperties.Hint="Enter the Azure deployment name"/>
                             </StackLayout>
                             <StackLayout Spacing="8">
                                 <Label Text="{x:Static res:AppResources.SettingsPage_ApiKeyLabel}"
@@ -166,7 +177,8 @@
                                 <Entry Text="{Binding AzureApiKey}"
                                        Placeholder="{x:Static res:AppResources.SettingsPage_ApiKeyPlaceholder}"
                                        IsPassword="True"
-                                       AutomationId="AzureApiKeyEntry"/>
+                                       AutomationId="AzureApiKeyEntry"
+                                       SemanticProperties.Hint="Enter the Azure OpenAI API key"/>
                             </StackLayout>
                         </StackLayout>
                     </StackLayout>
@@ -178,7 +190,8 @@
                     <Label Text="{x:Static res:AppResources.SettingsPage_NotificationSettingsTitle}"
                            FontSize="24"
                            FontAttributes="Bold"
-                           AutomationId="NotificationsSettingsTitle"/>
+                           AutomationId="NotificationsSettingsTitle"
+                           SemanticProperties.HeadingLevel="Level1"/>
                     
                     <StackLayout Spacing="16">
                         <StackLayout Spacing="8">
@@ -189,7 +202,8 @@
                                    FontSize="14"
                                    TextColor="Gray"/>
                             <Switch IsToggled="{Binding InAppNotificationsEnabled}"
-                                    AutomationId="InAppNotificationsSwitch"/>
+                                    AutomationId="InAppNotificationsSwitch"
+                                    SemanticProperties.Hint="Toggle to enable or disable in-app notifications"/>
                         </StackLayout>
 
                         <StackLayout Spacing="8">
@@ -200,7 +214,8 @@
                                    FontSize="14"
                                    TextColor="Gray"/>
                             <Switch IsToggled="{Binding PushNotificationsEnabled}"
-                                    AutomationId="PushNotificationsSwitch"/>
+                                    AutomationId="PushNotificationsSwitch"
+                                    SemanticProperties.Hint="Toggle to enable or disable push notifications"/>
                         </StackLayout>
                     </StackLayout>
                 </StackLayout>
@@ -211,7 +226,8 @@
                     <Label Text="{x:Static res:AppResources.SettingsPage_AiSafetySettingsTitle}"
                            FontSize="24"
                            FontAttributes="Bold"
-                           AutomationId="AISafetySettingsTitle"/>
+                           AutomationId="AISafetySettingsTitle"
+                           SemanticProperties.HeadingLevel="Level1"/>
                     <Label Text="{x:Static res:AppResources.SettingsPage_AiSafetySettingsComingSoon}"
                            FontSize="14"
                            TextColor="Gray"/>
@@ -223,7 +239,8 @@
                     <Label Text="{x:Static res:AppResources.SettingsPage_ImportExportSettingsTitle}"
                            FontSize="24"
                            FontAttributes="Bold"
-                           AutomationId="ImportExportSettingsTitle"/>
+                           AutomationId="ImportExportSettingsTitle"
+                           SemanticProperties.HeadingLevel="Level1"/>
                     <Label Text="{x:Static res:AppResources.SettingsPage_ImportExportSettingsComingSoon}"
                            FontSize="14"
                            TextColor="Gray"/>

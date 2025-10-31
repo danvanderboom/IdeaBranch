@@ -12,6 +12,8 @@
                FontSize="24"
                HorizontalOptions="Center"
                VerticalOptions="Center"
-               AutomationId="MapPage_Content" />
+               AutomationId="MapPage_Content"
+               SemanticProperties.HeadingLevel="Level1"
+               SemanticProperties.Description="Map view showing the visual representation of topic relationships" />
     </Grid>
 </ContentPage>

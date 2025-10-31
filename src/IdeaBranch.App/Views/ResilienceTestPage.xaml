@@ -12,7 +12,8 @@
             <!-- Status Label -->
             <Label Text="{x:Static res:AppResources.ResilienceTestPage_Headline}"
                    Style="{StaticResource Headline}"
-                   HorizontalOptions="Center" />
+                   HorizontalOptions="Center"
+                   SemanticProperties.HeadingLevel="Level1" />
             
             <Label Text="{x:Static res:AppResources.ResilienceTestPage_Description}"
                    Style="{StaticResource Body}"
@@ -26,7 +27,8 @@
                 <Label Text="{Binding StatusMessage}"
                        FontSize="14"
                        TextColor="{Binding StatusColor}"
-                       AutomationId="ResilienceTest_StatusMessage" />
+                       AutomationId="ResilienceTest_StatusMessage"
+                       SemanticProperties.Description="Current status message for resilience test operations" />
             </Border>
 
             <!-- Buttons -->
@@ -34,38 +36,44 @@
                     Command="{Binding TestGetCommand}"
                     IsEnabled="{Binding IsNotBusy}"
                     AutomationId="ResilienceTest_GetButton"
-                    HorizontalOptions="Fill" />
+                    HorizontalOptions="Fill"
+                    SemanticProperties.Hint="Tests HTTP GET request with resilience policies" />
 
             <Button Text="{x:Static res:AppResources.ResilienceTestPage_PostButton}"
                     Command="{Binding TestPostCommand}"
                     IsEnabled="{Binding IsNotBusy}"
                     AutomationId="ResilienceTest_PostButton"
-                    HorizontalOptions="Fill" />
+                    HorizontalOptions="Fill"
+                    SemanticProperties.Hint="Tests HTTP POST request with resilience policies" />
 
             <Button Text="{x:Static res:AppResources.ResilienceTestPage_RetryButton}"
                     Command="{Binding TestRetryCommand}"
                     IsEnabled="{Binding IsNotBusy}"
                     AutomationId="ResilienceTest_RetryButton"
-                    HorizontalOptions="Fill" />
+                    HorizontalOptions="Fill"
+                    SemanticProperties.Hint="Tests retry policy with automatic retry on failures" />
 
             <Button Text="{x:Static res:AppResources.ResilienceTestPage_CircuitBreakerButton}"
                     Command="{Binding TestCircuitBreakerCommand}"
                     IsEnabled="{Binding IsNotBusy}"
                     AutomationId="ResilienceTest_CircuitBreakerButton"
-                    HorizontalOptions="Fill" />
+                    HorizontalOptions="Fill"
+                    SemanticProperties.Hint="Tests circuit breaker policy that opens after repeated failures" />
 
             <Button Text="{x:Static res:AppResources.ResilienceTestPage_DelayButton}"
                     Command="{Binding TestDelayCommand}"
                     IsEnabled="{Binding IsNotBusy}"
                     AutomationId="ResilienceTest_DelayButton"
-                    HorizontalOptions="Fill" />
+                    HorizontalOptions="Fill"
+                    SemanticProperties.Hint="Tests timeout policy with simulated delay" />
 
             <!-- Activity Indicator -->
             <ActivityIndicator IsRunning="{Binding IsBusy}"
                               IsVisible="{Binding IsBusy}"
                               AutomationId="ResilienceTest_ActivityIndicator"
                               HeightRequest="30"
-                              Margin="0,10,0,0" />
+                              Margin="0,10,0,0"
+                              SemanticProperties.Description="Indicates that a test operation is in progress" />
 
             <!-- Results -->
             <Label Text="{x:Static res:AppResources.ResilienceTestPage_ResultsLabel}"

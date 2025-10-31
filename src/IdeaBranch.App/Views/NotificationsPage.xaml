@@ -23,13 +23,15 @@
                        Text="{x:Static res:AppResources.NotificationsPage_Header}"
                        FontSize="20"
                        FontAttributes="Bold"
-                       VerticalOptions="Center" />
+                       VerticalOptions="Center"
+                       SemanticProperties.HeadingLevel="Level1" />
                 <Button Grid.Column="1"
                         Text="{x:Static res:AppResources.NotificationsPage_ClearAllButton}"
                         Clicked="OnClearAllClicked"
-                        AutomationId="ClearAllButton"
+                        AutomationId="NotificationsPage_ClearAllButton"
                         IsEnabled="{Binding Notifications.Count, Converter={StaticResource CountToBoolConverter}}"
-                        Padding="12,6" />
+                        Padding="12,6"
+                        SemanticProperties.Description="Removes all notifications from the list" />
             </Grid>
         </Border>
 
@@ -43,19 +45,23 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="16,12"
-                              ColumnDefinitions="*,Auto,Auto">
+                              ColumnDefinitions="*,Auto,Auto"
+                              AutomationId="{Binding Id, StringFormat='NotificationsPage_Notification_{0}'}">
                             <StackLayout Grid.Column="0"
                                          Spacing="4">
                                 <Label Text="{Binding Title}"
                                        FontSize="16"
-                                       FontAttributes="{Binding IsRead, Converter={StaticResource InvertedBoolToFontAttributesConverter}}" />
+                                       FontAttributes="{Binding IsRead, Converter={StaticResource InvertedBoolToFontAttributesConverter}}"
+                                       AutomationId="{Binding Id, StringFormat='NotificationsPage_Notification_{0}_Title'}" />
                                 <Label Text="{Binding Message}"
                                        FontSize="14"
                                        TextColor="Gray"
-                                       LineBreakMode="WordWrap" />
+                                       LineBreakMode="WordWrap"
+                                       AutomationId="{Binding Id, StringFormat='NotificationsPage_Notification_{0}_Message'}" />
                                 <Label Text="{Binding CreatedAt, StringFormat='{0:g}'}"
                                        FontSize="12"
-                                       TextColor="LightGray" />
+                                       TextColor="LightGray"
+                                       AutomationId="{Binding Id, StringFormat='NotificationsPage_Notification_{0}_CreatedAt'}" />
                             </StackLayout>
                             <Button Grid.Column="1"
                                     Text="{x:Static res:AppResources.NotificationsPage_MarkReadButton}"
@@ -64,7 +70,9 @@
                                     Padding="8,4"
                                     FontSize="12"
                                     Margin="8,0,0,0"
-                                    IsVisible="{Binding IsRead, Converter={StaticResource InvertedBoolConverter}}" />
+                                    IsVisible="{Binding IsRead, Converter={StaticResource InvertedBoolConverter}}"
+                                    AutomationId="{Binding Id, StringFormat='NotificationsPage_Notification_{0}_MarkReadButton'}"
+                                    SemanticProperties.Hint="Marks this notification as read" />
                             <Button Grid.Column="2"
                                     Text="{x:Static res:AppResources.NotificationsPage_DeleteButton}"
                                     CommandParameter="{Binding .}"
@@ -73,7 +81,9 @@
                                     FontSize="12"
                                     Margin="8,0,0,0"
                                     BackgroundColor="Red"
-                                    TextColor="White" />
+                                    TextColor="White"
+                                    AutomationId="{Binding Id, StringFormat='NotificationsPage_Notification_{0}_DeleteButton'}"
+                                    SemanticProperties.Hint="Deletes this notification from the list" />
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

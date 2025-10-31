@@ -12,6 +12,8 @@
                FontSize="24"
                HorizontalOptions="Center"
                VerticalOptions="Center"
-               AutomationId="TimelinePage_Content" />
+               AutomationId="TimelinePage_Content"
+               SemanticProperties.HeadingLevel="Level1"
+               SemanticProperties.Description="Timeline view showing chronological history of topic changes" />
     </Grid>
 </ContentPage>

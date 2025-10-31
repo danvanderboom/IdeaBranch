@@ -9,12 +9,15 @@
              Title="{x:Static res:AppResources.TopicTreePage_Title}">
     <Grid>
         <CollectionView ItemsSource="{Binding ProjectedCollection}"
-                        x:Name="TopicTreeCollectionView">
+                        x:Name="TopicTreeCollectionView"
+                        SemanticProperties.Description="Hierarchical tree view of topic nodes. Tap a node to view details or expand/collapse if it has children.">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="hierarchical:ITreeNode">
                     <Grid Margin="{Binding Depth, Converter={StaticResource DepthToThickness}, ConverterParameter=16}"
                           Padding="8"
-                          BackgroundColor="Transparent">
+                          BackgroundColor="Transparent"
+                          AutomationId="{Binding ., Converter={StaticResource NodePayloadDomainId}, StringFormat='TopicTreePage_Node_{0}'}"
+                          SemanticProperties.Hint="Tap to view topic node details. If this node has children, you can expand or collapse them.">
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnNodeTapped" CommandParameter="{Binding .}" />
                         </Grid.GestureRecognizers>
@@ -35,7 +38,8 @@
                                Text="{Binding PayloadObject, Converter={StaticResource NodePayloadPrompt}}"
                                FontSize="12"
                                TextColor="Gray"
-                               Margin="0,4,0,0" />
+                               Margin="0,4,0,0"
+                               AutomationId="{Binding ., Converter={StaticResource NodePayloadDomainId}, StringFormat='TopicTreePage_Node_{0}_Prompt'}" />
                         
                         <!-- Expand/collapse indicator (if has children) -->
                         <Label Grid.Row="0"
@@ -45,7 +49,8 @@
                                VerticalOptions="Center"
                                FontSize="12"
                                Margin="8,0,0,0"
-                               IsVisible="{Binding Children.Count, Converter={StaticResource CountToBool}}" />
+                               IsVisible="{Binding Children.Count, Converter={StaticResource CountToBool}}"
+                               AutomationId="{Binding ., Converter={StaticResource NodePayloadDomainId}, StringFormat='TopicTreePage_Node_{0}_ExpandIndicator'}" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
