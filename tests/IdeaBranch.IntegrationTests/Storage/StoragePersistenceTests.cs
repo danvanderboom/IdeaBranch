@@ -41,6 +41,7 @@ public class StoragePersistenceTests
         // Arrange
         var rootTree = CreateTestTree();
         var store = new SqliteTopicTreeStore(_connection!, ExtractTopicNodePayload);
+        store.EnsureSchema();
 
         // Act
         store.SaveTree(rootTree);
@@ -75,6 +76,7 @@ public class StoragePersistenceTests
         // Arrange
         var originalTree = CreateTestTree();
         var store = new SqliteTopicTreeStore(_connection!, ExtractTopicNodePayload);
+        store.EnsureSchema();
         store.SaveTree(originalTree);
         var rootNodeId = originalTree.NodeId;
 

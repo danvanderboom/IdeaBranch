@@ -151,3 +151,6 @@ C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.IntegrationTests\bin\Debug
 C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.IntegrationTests\bin\Debug\net9.0\Polly.Extensions.Http.dll
 C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.IntegrationTests\bin\Debug\net9.0\CriticalInsight.Data.dll
 C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.IntegrationTests\bin\Debug\net9.0\CriticalInsight.Data.pdb
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.IntegrationTests\bin\Debug\net9.0\SQLite-net.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.IntegrationTests\bin\Debug\net9.0\IdeaBranch.TestHelpers.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.IntegrationTests\bin\Debug\net9.0\IdeaBranch.TestHelpers.pdb

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OpenAI;
 using OpenAI.Chat;
+using System.ClientModel;
 
 namespace IdeaBranch.App.Services.LLM;
 
@@ -46,8 +47,7 @@ public class LmStudioClient : ILLMClient
         var options = new ChatCompletionOptions
         {
             Temperature = 0.7f,
-            TopP = 0.9f,
-            MaxTokens = 2000
+            TopP = 0.9f
         };
 
         try
@@ -78,8 +78,7 @@ public class LmStudioClient : ILLMClient
         var options = new ChatCompletionOptions
         {
             Temperature = 0.3f,
-            TopP = 0.9f,
-            MaxTokens = 50
+            TopP = 0.9f
         };
 
         try

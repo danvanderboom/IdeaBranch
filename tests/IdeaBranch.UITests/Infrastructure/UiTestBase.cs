@@ -36,7 +36,7 @@ public abstract class UiTestBase : AppiumTestFixture
     /// Sets up the test. Override to add custom setup.
     /// </summary>
     [SetUp]
-    public override void SetUp()
+    protected override void SetUp()
     {
         base.SetUp();
         _artifactsDirectory = null; // Reset for each test
@@ -46,13 +46,13 @@ public abstract class UiTestBase : AppiumTestFixture
     /// Tears down the test with artifact capture and cleanup.
     /// </summary>
     [TearDown]
-    public override void TearDown()
+    protected override void TearDown()
     {
         try
         {
             // Capture artifacts on failure
             var testContext = TestContext.CurrentContext;
-            if (testContext.Result.Outcome.Status == TestStatus.Failed && Driver != null)
+            if (testContext.Result.Outcome.Status.ToString() == "Failed" && Driver != null)
             {
                 CaptureArtifacts();
             }
@@ -86,7 +86,7 @@ public abstract class UiTestBase : AppiumTestFixture
             if (Driver is ITakesScreenshot takesScreenshot)
             {
                 var screenshot = takesScreenshot.GetScreenshot();
-                screenshot.SaveAsFile(screenshotPath, ScreenshotImageFormat.Png);
+                screenshot.SaveAsFile(screenshotPath);
                 TestContext.WriteLine($"Screenshot saved to: {screenshotPath}");
             }
 

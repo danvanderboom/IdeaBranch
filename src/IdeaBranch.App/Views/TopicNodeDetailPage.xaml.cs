@@ -53,5 +53,10 @@ public partial class TopicNodeDetailPage : ContentPage
     {
         await _viewModel.GenerateTitleAsync();
     }
+
+    private async void OnRetryClicked(object? sender, EventArgs e)
+    {
+        await _viewModel.RetryAsync();
+    }
 }
 

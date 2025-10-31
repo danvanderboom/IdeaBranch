@@ -746,11 +746,40 @@
           }
         }
       },
+      "sqlite-net-pcl/1.9.172": {
+        "type": "package",
+        "dependencies": {
+          "SQLitePCLRaw.bundle_green": "2.1.2"
+        },
+        "compile": {
+          "lib/netstandard2.0/SQLite-net.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/SQLite-net.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "SQLitePCLRaw.bundle_e_sqlite3/2.1.10": {
         "type": "package",
         "dependencies": {
           "SQLitePCLRaw.lib.e_sqlite3": "2.1.10",
           "SQLitePCLRaw.provider.e_sqlite3": "2.1.10"
+        },
+        "compile": {
+          "lib/netstandard2.0/SQLitePCLRaw.batteries_v2.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/SQLitePCLRaw.batteries_v2.dll": {}
+        }
+      },
+      "SQLitePCLRaw.bundle_green/2.1.2": {
+        "type": "package",
+        "dependencies": {
+          "SQLitePCLRaw.lib.e_sqlite3": "2.1.2",
+          "SQLitePCLRaw.provider.e_sqlite3": "2.1.2"
         },
         "compile": {
           "lib/netstandard2.0/SQLitePCLRaw.batteries_v2.dll": {}
@@ -948,13 +977,30 @@
           "Microsoft.Data.Sqlite": "9.0.10",
           "Microsoft.Extensions.Http.Polly": "9.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
-          "Polly": "8.4.0"
+          "Polly": "8.4.0",
+          "sqlite-net-pcl": "1.9.172"
         },
         "compile": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.TestHelpers/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "FluentAssertions": "8.8.0",
+          "Microsoft.Data.Sqlite": "9.0.10",
+          "NUnit": "4.2.2"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.TestHelpers.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.TestHelpers.dll": {}
         }
       }
     }
@@ -2018,6 +2064,21 @@
         "polly.extensions.http.nuspec"
       ]
     },
+    "sqlite-net-pcl/1.9.172": {
+      "sha512": "go533+huyvg5bOMmCpX+DyvLrcVRiEBIpqEiDHgXRijWIBBNkWnyMr/w+5ZzrUArKY+4ApucsbBnFtP3QITrJg==",
+      "type": "package",
+      "path": "sqlite-net-pcl/1.9.172",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "Logo-low.png",
+        "lib/netstandard2.0/SQLite-net.dll",
+        "lib/netstandard2.0/SQLite-net.xml",
+        "sqlite-net-pcl.1.9.172.nupkg.sha512",
+        "sqlite-net-pcl.nuspec"
+      ]
+    },
     "SQLitePCLRaw.bundle_e_sqlite3/2.1.10": {
       "sha512": "UxWuisvZ3uVcVOLJQv7urM/JiQH+v3TmaJc1BLKl5Dxfm/nTzTUrqswCqg/INiYLi61AXnHo1M1JPmPqqLnAdg==",
       "type": "package",
@@ -2036,6 +2097,26 @@
         "lib/xamarinios10/SQLitePCLRaw.batteries_v2.dll",
         "sqlitepclraw.bundle_e_sqlite3.2.1.10.nupkg.sha512",
         "sqlitepclraw.bundle_e_sqlite3.nuspec"
+      ]
+    },
+    "SQLitePCLRaw.bundle_green/2.1.2": {
+      "sha512": "e2FRX87YHoSer+tLFX9P/povHLK0uH7UcdimHRPnfTSam+NZChVVXjBxe1MYnyBGlwX5dSs5sTlDg/yZBM7iVw==",
+      "type": "package",
+      "path": "sqlitepclraw.bundle_green/2.1.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/monoandroid90/SQLitePCLRaw.batteries_v2.dll",
+        "lib/net461/SQLitePCLRaw.batteries_v2.dll",
+        "lib/net6.0-android31.0/SQLitePCLRaw.batteries_v2.dll",
+        "lib/net6.0-android31.0/SQLitePCLRaw.batteries_v2.xml",
+        "lib/net6.0-ios14.0/SQLitePCLRaw.batteries_v2.dll",
+        "lib/net6.0-ios14.2/SQLitePCLRaw.batteries_v2.dll",
+        "lib/net6.0-tvos10.0/SQLitePCLRaw.batteries_v2.dll",
+        "lib/netstandard2.0/SQLitePCLRaw.batteries_v2.dll",
+        "lib/xamarinios10/SQLitePCLRaw.batteries_v2.dll",
+        "sqlitepclraw.bundle_green.2.1.2.nupkg.sha512",
+        "sqlitepclraw.bundle_green.nuspec"
       ]
     },
     "SQLitePCLRaw.core/2.1.10": {
@@ -2194,6 +2275,11 @@
       "type": "project",
       "path": "../../src/IdeaBranch.Infrastructure/IdeaBranch.Infrastructure.csproj",
       "msbuildProject": "../../src/IdeaBranch.Infrastructure/IdeaBranch.Infrastructure.csproj"
+    },
+    "IdeaBranch.TestHelpers/1.0.0": {
+      "type": "project",
+      "path": "../IdeaBranch.TestHelpers/IdeaBranch.TestHelpers.csproj",
+      "msbuildProject": "../IdeaBranch.TestHelpers/IdeaBranch.TestHelpers.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -2202,6 +2288,7 @@
       "FluentAssertions >= 8.8.0",
       "IdeaBranch.Domain >= 1.0.0",
       "IdeaBranch.Infrastructure >= 1.0.0",
+      "IdeaBranch.TestHelpers >= 1.0.0",
       "Microsoft.Data.Sqlite >= 9.0.10",
       "Microsoft.Extensions.Logging.Console >= 9.0.0",
       "Microsoft.NET.Test.Sdk >= 17.12.0",
@@ -2253,6 +2340,9 @@
             },
             "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj": {
               "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj"
+            },
+            "C:\\Source\\CriticalInsight\\IdeaBranch\\tests\\IdeaBranch.TestHelpers\\IdeaBranch.TestHelpers.csproj": {
+              "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\tests\\IdeaBranch.TestHelpers\\IdeaBranch.TestHelpers.csproj"
             }
           }
         }

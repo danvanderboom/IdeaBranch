@@ -19,7 +19,7 @@ public class ResilienceTests : AppiumTestFixture
     }
 
     [TearDown]
-    public void TearDown()
+    protected override void TearDown()
     {
         base.TearDown();
     }

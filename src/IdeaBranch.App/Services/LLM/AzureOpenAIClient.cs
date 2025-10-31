@@ -7,6 +7,7 @@ using Azure.Identity;
 using Microsoft.Extensions.Logging;
 using OpenAI;
 using OpenAI.Chat;
+using System.ClientModel;
 
 namespace IdeaBranch.App.Services.LLM;
 
@@ -41,9 +42,10 @@ public class AzureOpenAIClient : ILLMClient
         }
         else
         {
-            // Use DefaultAzureCredential for Azure CLI authentication
-            var credential = new DefaultAzureCredential();
-            _client = new OpenAIClient(credential, clientOptions);
+            // Use AzureKeyCredential from OpenAI SDK for Azure authentication
+            // Note: DefaultAzureCredential is not directly supported by OpenAI SDK
+            // For now, require API key - Azure AD auth can be added later if needed
+            throw new ArgumentException("API key is required for Azure OpenAI. Azure AD authentication not yet implemented.", nameof(apiKey));
         }
         
         _deployment = deployment;
@@ -58,8 +60,7 @@ public class AzureOpenAIClient : ILLMClient
         var options = new ChatCompletionOptions
         {
             Temperature = 0.7f,
-            TopP = 0.9f,
-            MaxTokens = 2000
+            TopP = 0.9f
         };
 
         try
@@ -90,8 +91,7 @@ public class AzureOpenAIClient : ILLMClient
         var options = new ChatCompletionOptions
         {
             Temperature = 0.3f,
-            TopP = 0.9f,
-            MaxTokens = 50
+            TopP = 0.9f
         };
 
         try

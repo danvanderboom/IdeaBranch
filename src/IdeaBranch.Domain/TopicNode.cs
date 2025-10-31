@@ -99,8 +99,8 @@ public class TopicNode
         if (child == this)
             throw new InvalidOperationException("Cannot add node as its own child.");
 
-        // Check for cycles
-        if (IsAncestorOf(child))
+        // Check for cycles - if the child being added is an ancestor of this node, adding it would create a cycle
+        if (child.IsAncestorOf(this))
             throw new InvalidOperationException("Cannot add ancestor as child (would create cycle).");
 
         _children.Add(child);

@@ -42,6 +42,7 @@ public class SyncWorkflowTests
         // Arrange
         var originalTree = CreateTestTree();
         var store = new SqliteTopicTreeStore(_connection!, ExtractTopicNodePayload);
+        store.EnsureSchema();
         store.SaveTree(originalTree);
         var rootNodeId = originalTree.NodeId;
 

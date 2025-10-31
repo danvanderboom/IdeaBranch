@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using IdeaBranch.App.Services;
+using IdeaBranch.App.ViewModels;
 using IdeaBranch.Domain;
 using IdeaBranch.Infrastructure.Resilience;
 using IdeaBranch.Infrastructure.Storage;
@@ -57,7 +58,8 @@ public static class MauiProgram
 		{
 			var repository = sp.GetRequiredService<ITopicTreeRepository>();
 			var llmFactory = sp.GetService<Services.LLM.LLMClientFactory>();
-			return new TopicTreeViewModel(repository, llmFactory);
+			var telemetry = sp.GetService<TelemetryService>();
+			return new TopicTreeViewModel(repository, llmFactory, telemetry);
 		});
 
 		// Register resilience policies for HttpClientFactory and outbound I/O

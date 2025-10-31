@@ -22,15 +22,17 @@ public class TopicTreeViewModel : INotifyPropertyChanged
     private readonly TopicTreeAdapter _adapter;
     private readonly ITopicTreeRepository _repository;
     private readonly LLMClientFactory? _llmFactory;
+    private readonly Services.TelemetryService? _telemetry;
     private TopicNode? _rootDomainNode;
 
     /// <summary>
     /// Initializes a new instance with the topic tree repository.
     /// </summary>
-    public TopicTreeViewModel(ITopicTreeRepository repository, LLMClientFactory? llmFactory = null)
+    public TopicTreeViewModel(ITopicTreeRepository repository, LLMClientFactory? llmFactory = null, Services.TelemetryService? telemetry = null)
     {
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         _llmFactory = llmFactory;
+        _telemetry = telemetry;
         _adapter = new TopicTreeAdapter();
         _viewProvider = new TopicTreeViewProvider(_adapter);
         
@@ -169,6 +171,9 @@ public class TopicTreeViewModel : INotifyPropertyChanged
         parentDomainNode.AddChild(newChild);
 
         await SaveAndRefreshAsync();
+        
+        // Emit telemetry
+        _telemetry?.EmitCrudEvent("create", newChild.Id.ToString());
     }
 
     /// <summary>
@@ -196,6 +201,9 @@ public class TopicTreeViewModel : INotifyPropertyChanged
         parent.AddChild(newSibling);
 
         await SaveAndRefreshAsync();
+        
+        // Emit telemetry
+        _telemetry?.EmitCrudEvent("create", newSibling.Id.ToString());
     }
 
     /// <summary>
@@ -211,9 +219,13 @@ public class TopicTreeViewModel : INotifyPropertyChanged
         if (domainNode == null || domainNode.Parent == null)
             return; // Can't delete root
 
+        var deletedNodeId = domainNode.Id.ToString();
         domainNode.Parent.RemoveChild(domainNode);
 
         await SaveAndRefreshAsync();
+        
+        // Emit telemetry
+        _telemetry?.EmitCrudEvent("delete", deletedNodeId);
     }
 
     /// <summary>
@@ -236,6 +248,9 @@ public class TopicTreeViewModel : INotifyPropertyChanged
         domainNode.Parent.MoveChild(domainNode, newParentDomainNode);
 
         await SaveAndRefreshAsync();
+        
+        // Emit telemetry
+        _telemetry?.EmitCrudEvent("move", domainNode.Id.ToString());
     }
 
     /// <summary>
@@ -267,6 +282,14 @@ public class TopicTreeViewModel : INotifyPropertyChanged
             llmFactory = services?.GetService<LLMClientFactory>();
         }
 
+        // Get telemetry service
+        var telemetry = _telemetry;
+        if (telemetry == null)
+        {
+            var services = Application.Current?.MainPage?.Handler?.MauiContext?.Services;
+            telemetry = services?.GetService<Services.TelemetryService>();
+        }
+
         // Create detail ViewModel with save callback
         var detailViewModel = new TopicNodeDetailViewModel(
             domainNode, 
@@ -280,7 +303,8 @@ public class TopicTreeViewModel : INotifyPropertyChanged
             {
                 // Refresh view when children are added
                 await SaveAndRefreshAsync();
-            });
+            },
+            telemetry);
 
         // Create detail page and navigate
         var detailPage = new Views.TopicNodeDetailPage(detailViewModel);

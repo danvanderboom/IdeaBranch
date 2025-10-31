@@ -16,12 +16,17 @@
             Maintains mapping between DomainNodeId and ITreeNode for bidirectional updates.
             </summary>
         </member>
-        <member name="M:IdeaBranch.App.Adapters.TopicTreeAdapter.BuildTree(System.Object)">
+        <member name="M:IdeaBranch.App.Adapters.TopicTreeAdapter.BuildTree(IdeaBranch.Domain.TopicNode)">
             <summary>
             Builds a TreeNode tree from a domain topic tree structure.
             </summary>
-            <param name="rootDomainNode">The root domain node (placeholder until domain model exists)</param>
+            <param name="rootDomainNode">The root domain TopicNode</param>
             <returns>Root TreeNode&lt;TopicNodePayload&gt; suitable for TreeView</returns>
+        </member>
+        <member name="M:IdeaBranch.App.Adapters.TopicTreeAdapter.BuildTreeNode(IdeaBranch.Domain.TopicNode,CriticalInsight.Data.Hierarchical.TreeNode{IdeaBranch.App.Adapters.TopicNodePayload})">
+            <summary>
+            Recursively builds a TreeNode from a domain TopicNode.
+            </summary>
         </member>
         <member name="M:IdeaBranch.App.Adapters.TopicTreeAdapter.GetTreeNode(System.Guid)">
             <summary>
@@ -39,11 +44,11 @@
             Exposes ProjectedCollection for binding to MAUI CollectionView with Depth-based indentation.
             </summary>
         </member>
-        <member name="M:IdeaBranch.App.Adapters.TopicTreeViewProvider.InitializeTreeView(System.Object,System.Boolean)">
+        <member name="M:IdeaBranch.App.Adapters.TopicTreeViewProvider.InitializeTreeView(IdeaBranch.Domain.TopicNode,System.Boolean)">
             <summary>
             Creates a TreeView from a domain topic tree.
             </summary>
-            <param name="rootDomainNode">The root domain node (placeholder until domain model exists)</param>
+            <param name="rootDomainNode">The root domain TopicNode</param>
             <param name="defaultExpanded">Whether nodes should be expanded by default</param>
         </member>
         <member name="P:IdeaBranch.App.Adapters.TopicTreeViewProvider.ProjectedCollection">
@@ -80,6 +85,12 @@
             <summary>
             Converts Depth (int) to Thickness for left margin indentation in CollectionView items.
             ConverterParameter specifies the indent amount per level (default: 16).
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Converters.InvertedBoolConverter">
+            <summary>
+            Converts bool to inverted bool: true becomes false, false becomes true.
+            Useful for disabling buttons when IsBusy is true.
             </summary>
         </member>
         <member name="T:IdeaBranch.App.Converters.NodePayloadDomainIdConverter">
@@ -138,14 +149,324 @@
             Test response model for httpbin.org endpoints.
             </summary>
         </member>
+        <member name="T:IdeaBranch.App.Services.LLM.AzureOpenAIClient">
+            <summary>
+            LLM client implementation for Azure OpenAI.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LLM.AzureOpenAIClient.#ctor(System.String,System.String,System.String,Microsoft.Extensions.Logging.ILogger{IdeaBranch.App.Services.LLM.AzureOpenAIClient})">
+            <summary>
+            Initializes a new instance with Azure OpenAI endpoint and deployment.
+            </summary>
+            <param name="endpoint">The Azure OpenAI endpoint (e.g., https://your-resource.openai.azure.com/openai/v1).</param>
+            <param name="deployment">The deployment name.</param>
+            <param name="apiKey">Optional API key. If not provided, uses DefaultAzureCredential.</param>
+            <param name="logger">Optional logger.</param>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LLM.AzureOpenAIClient.GenerateResponseAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LLM.AzureOpenAIClient.SuggestTitleAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LLM.AzureOpenAIClient.BuildMessages(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Builds chat messages from prompt and context path.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Services.LLM.ILLMClient">
+            <summary>
+            Interface for LLM client implementations.
+            Supports both local (LM Studio) and cloud (Azure OpenAI) providers.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LLM.ILLMClient.GenerateResponseAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <summary>
+            Generates a response for the given prompt, using context from parent nodes.
+            </summary>
+            <param name="prompt">The user's prompt/question.</param>
+            <param name="contextPath">Context from parent nodes (root to parent), used to build conversation context.</param>
+            <param name="cancellationToken">Token to cancel the operation.</param>
+            <returns>The generated response text.</returns>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LLM.ILLMClient.SuggestTitleAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Suggests a title for the given prompt and response pair.
+            </summary>
+            <param name="prompt">The user's prompt/question.</param>
+            <param name="response">The generated response.</param>
+            <param name="cancellationToken">Token to cancel the operation.</param>
+            <returns>A suggested title, or null if generation fails.</returns>
+        </member>
+        <member name="T:IdeaBranch.App.Services.LLM.LLMClientFactory">
+            <summary>
+            Factory for creating LLM client instances based on settings.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LLM.LLMClientFactory.#ctor(IdeaBranch.App.Services.SettingsService,Microsoft.Extensions.Logging.ILoggerFactory)">
+            <summary>
+            Initializes a new instance with settings service and optional logger factory.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LLM.LLMClientFactory.CreateClientAsync">
+            <summary>
+            Creates an LLM client based on current settings.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LLM.LLMClientFactory.CreateLmStudioClientAsync">
+            <summary>
+            Creates an LM Studio client from settings.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LLM.LLMClientFactory.CreateAzureClientAsync">
+            <summary>
+            Creates an Azure OpenAI client from settings.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Services.LLM.LmStudioClient">
+            <summary>
+            LLM client implementation for LM Studio (OpenAI-compatible local endpoint).
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LLM.LmStudioClient.#ctor(System.String,System.String,System.String,Microsoft.Extensions.Logging.ILogger{IdeaBranch.App.Services.LLM.LmStudioClient})">
+            <summary>
+            Initializes a new instance with LM Studio endpoint and model.
+            </summary>
+            <param name="endpoint">The LM Studio server endpoint (e.g., http://localhost:1234/v1).</param>
+            <param name="model">The model name/ID to use.</param>
+            <param name="apiKey">Optional API key (defaults to "lm-studio" if not provided).</param>
+            <param name="logger">Optional logger.</param>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LLM.LmStudioClient.GenerateResponseAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LLM.LmStudioClient.SuggestTitleAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:IdeaBranch.App.Services.LLM.LmStudioClient.BuildMessages(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Builds chat messages from prompt and context path.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Services.SettingsService">
+            <summary>
+            Service for managing application settings, including LLM provider configuration.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.GetProviderAsync">
+            <summary>
+            Gets or sets the current LLM provider name ("lmstudio" or "azure").
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.SetProviderAsync(System.String)">
+            <summary>
+            Sets the current LLM provider name.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.GetLmStudioEndpointAsync">
+            <summary>
+            Gets the LM Studio endpoint.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.SetLmStudioEndpointAsync(System.String)">
+            <summary>
+            Sets the LM Studio endpoint.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.GetLmStudioModelAsync">
+            <summary>
+            Gets the LM Studio model name.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.SetLmStudioModelAsync(System.String)">
+            <summary>
+            Sets the LM Studio model name.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.GetAzureEndpointAsync">
+            <summary>
+            Gets the Azure OpenAI endpoint.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.SetAzureEndpointAsync(System.String)">
+            <summary>
+            Sets the Azure OpenAI endpoint.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.GetAzureDeploymentAsync">
+            <summary>
+            Gets the Azure OpenAI deployment name.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.SetAzureDeploymentAsync(System.String)">
+            <summary>
+            Sets the Azure OpenAI deployment name.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.GetAzureApiKeyAsync">
+            <summary>
+            Gets the Azure OpenAI API key.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.SetAzureApiKeyAsync(System.String)">
+            <summary>
+            Sets the Azure OpenAI API key.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Services.TelemetryService">
+            <summary>
+            Service for emitting telemetry events with consent support.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.TelemetryService.ConsentGranted">
+            <summary>
+            Gets or sets whether telemetry consent is granted.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.TelemetryService.EmitNavigationEvent(System.String)">
+            <summary>
+            Emits a navigation telemetry event.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.TelemetryService.EmitCrudEvent(System.String,System.String)">
+            <summary>
+            Emits a CRUD operation telemetry event.
+            </summary>
+            <param name="operation">The CRUD operation (e.g., "create", "update", "delete", "move").</param>
+            <param name="nodeId">The ID of the node being operated on.</param>
+        </member>
+        <member name="M:IdeaBranch.App.Services.TelemetryService.EmitLlmEvent(System.String,System.String,System.Boolean,System.String)">
+            <summary>
+            Emits an LLM operation telemetry event.
+            </summary>
+            <param name="operation">The LLM operation (e.g., "generate_response", "suggest_title").</param>
+            <param name="nodeId">The ID of the node being operated on.</param>
+            <param name="success">Whether the operation succeeded.</param>
+            <param name="errorMessage">Optional error message if the operation failed.</param>
+        </member>
+        <member name="T:IdeaBranch.App.ViewModels.MapViewModel">
+            <summary>
+            ViewModel for MapPage.
+            </summary>
+        </member>
         <member name="T:IdeaBranch.App.ViewModels.ResilienceTestViewModel">
             <summary>
             ViewModel for ResilienceTestPage that demonstrates resilience policies.
             </summary>
         </member>
+        <member name="T:IdeaBranch.App.ViewModels.TimelineViewModel">
+            <summary>
+            ViewModel for TimelinePage.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel">
+            <summary>
+            ViewModel for TopicNodeDetailPage that manages editing a single topic node.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.#ctor(IdeaBranch.Domain.TopicNode,System.Func{IdeaBranch.Domain.TopicNode,System.Threading.Tasks.Task},IdeaBranch.App.Services.LLM.LLMClientFactory,System.Func{IdeaBranch.Domain.TopicNode,System.Threading.Tasks.Task},IdeaBranch.App.Services.TelemetryService)">
+            <summary>
+            Initializes a new instance with a topic node to edit.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.Title">
+            <summary>
+            Gets or sets the title of the topic node.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.Prompt">
+            <summary>
+            Gets or sets the prompt text for the topic node.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.Response">
+            <summary>
+            Gets or sets the response text for the topic node.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.IsBusy">
+            <summary>
+            Gets or sets whether an operation is in progress.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.ErrorMessage">
+            <summary>
+            Gets or sets the error message to display.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.HasError">
+            <summary>
+            Gets whether there is an error message.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.ErrorType">
+            <summary>
+            Gets the error type (e.g., "llm" or "repository").
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.HasRetry">
+            <summary>
+            Gets whether a retry action is available.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.SaveAsync">
+            <summary>
+            Saves the changes to the topic node.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.ParentPath">
+            <summary>
+            Gets the parent path breadcrumb for context.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.GenerateResponseAsync">
+            <summary>
+            Generates a response using the LLM client.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.GenerateTitleAsync">
+            <summary>
+            Generates a title suggestion using the LLM client.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.BuildContextPath">
+            <summary>
+            Builds context path from parent nodes (root to parent).
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.RetryAsync">
+            <summary>
+            Retries the last failed operation.
+            </summary>
+        </member>
         <member name="T:IdeaBranch.App.ViewModels.TopicTreeViewModel">
             <summary>
             ViewModel for TopicTreePage that manages the TreeView projection and expansion state.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicTreeViewModel.#ctor(IdeaBranch.Domain.ITopicTreeRepository,IdeaBranch.App.Services.LLM.LLMClientFactory,IdeaBranch.App.Services.TelemetryService)">
+            <summary>
+            Initializes a new instance with the topic tree repository.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicTreeViewModel.#ctor">
+            <summary>
+            Initializes the tree view from the repository (parameterless constructor for XAML).
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicTreeViewModel.SaveAndRefreshAsync">
+            <summary>
+            Saves the current tree state and refreshes the view.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicTreeViewModel.FindDomainNode(System.Guid)">
+            <summary>
+            Finds a domain TopicNode by its ID in the tree.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicTreeViewModel.FindDomainNodeRecursive(IdeaBranch.Domain.TopicNode,System.Guid)">
+            <summary>
+            Recursively searches for a domain node by ID.
             </summary>
         </member>
         <member name="P:IdeaBranch.App.ViewModels.TopicTreeViewModel.ProjectedCollection">
@@ -161,6 +482,41 @@
         <member name="M:IdeaBranch.App.ViewModels.TopicTreeViewModel.GetPayload(CriticalInsight.Data.Hierarchical.ITreeNode)">
             <summary>
             Gets the payload for a node.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicTreeViewModel.GetDomainNodeId(CriticalInsight.Data.Hierarchical.ITreeNode)">
+            <summary>
+            Gets the domain node ID from an ITreeNode.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicTreeViewModel.AddChildAsync(CriticalInsight.Data.Hierarchical.ITreeNode)">
+            <summary>
+            Adds a new child node to the specified parent.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicTreeViewModel.AddSiblingAsync(CriticalInsight.Data.Hierarchical.ITreeNode)">
+            <summary>
+            Adds a new sibling node after the specified node.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicTreeViewModel.DeleteNodeAsync(CriticalInsight.Data.Hierarchical.ITreeNode)">
+            <summary>
+            Deletes a node from the tree.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicTreeViewModel.MoveNodeAsync(CriticalInsight.Data.Hierarchical.ITreeNode,CriticalInsight.Data.Hierarchical.ITreeNode)">
+            <summary>
+            Moves a node to a new parent.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicTreeViewModel.GetDomainNode(CriticalInsight.Data.Hierarchical.ITreeNode)">
+            <summary>
+            Gets the domain TopicNode for an ITreeNode. Used for editing.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicTreeViewModel.EditNodeAsync(CriticalInsight.Data.Hierarchical.ITreeNode)">
+            <summary>
+            Navigates to the detail page for editing a node.
             </summary>
         </member>
         <member name="T:IdeaBranch.App.Resource">
