@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Install .NET MAUI workloads
+      run: dotnet workload install maui --verbosity quiet
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build --no-restore -c Release
+    
+    - name: Run unit tests
+      run: dotnet test tests/IdeaBranch.UnitTests/IdeaBranch.UnitTests.csproj --no-build -c Release --collect:"XPlat Code Coverage" --verbosity normal
+    
+    - name: Run integration tests
+      run: dotnet test tests/IdeaBranch.IntegrationTests/IdeaBranch.IntegrationTests.csproj --no-build -c Release --collect:"XPlat Code Coverage" --verbosity normal
+    
+    - name: Run UI tests
+      run: dotnet test tests/IdeaBranch.UITests/IdeaBranch.UITests.csproj --no-build -c Release --verbosity normal
+      continue-on-error: true  # UI tests may require app to be built/deployed first
+    
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v4
+      if: always()
+      with:
+        files: '**/coverage.cobertura.xml'
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+

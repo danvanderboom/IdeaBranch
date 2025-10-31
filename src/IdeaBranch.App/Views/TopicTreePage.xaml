@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels"
+             xmlns:hierarchical="clr-namespace:CriticalInsight.Data.Hierarchical;assembly=CriticalInsight.Data"
+             x:Class="IdeaBranch.App.Views.TopicTreePage"
+             x:DataType="vm:TopicTreeViewModel"
+             Title="Topic Tree">
+    <Grid>
+        <CollectionView ItemsSource="{Binding ProjectedCollection}"
+                        x:Name="TopicTreeCollectionView">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="hierarchical:ITreeNode">
+                    <Grid Margin="{Binding Depth, Converter={StaticResource DepthToThickness}, ConverterParameter=16}"
+                          Padding="8"
+                          BackgroundColor="Transparent">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnNodeTapped" CommandParameter="{Binding .}" />
+                        </Grid.GestureRecognizers>
+                        
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        
+                        <!-- Node content -->
+                        <Label Grid.Row="0"
+                               Text="{Binding PayloadObject, Converter={StaticResource NodePayloadTitle}}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               AutomationId="{Binding NodeId, StringFormat='TopicNode_{0}'}" />
+                        
+                        <Label Grid.Row="1"
+                               Text="{Binding PayloadObject, Converter={StaticResource NodePayloadPrompt}}"
+                               FontSize="12"
+                               TextColor="Gray"
+                               Margin="0,4,0,0" />
+                        
+                        <!-- Expand/collapse indicator (if has children) -->
+                        <Label Grid.Row="0"
+                               x:Name="ExpandIndicatorLabel"
+                               Text="▶"
+                               HorizontalOptions="End"
+                               VerticalOptions="Center"
+                               FontSize="12"
+                               Margin="8,0,0,0"
+                               IsVisible="{Binding Children.Count, Converter={StaticResource CountToBool}}" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>
+

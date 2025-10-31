@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup Condition="'$(UseMaui)' == 'true'">
+    <!-- Latest C# language version for MAUI projects per update-maui-standards-xaml-and-polly -->
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+</Project>
+

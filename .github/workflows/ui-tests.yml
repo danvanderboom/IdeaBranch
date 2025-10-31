@@ -1,0 +1,149 @@
+name: UI Tests
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'tests/IdeaBranch.UITests/**'
+      - '.github/workflows/ui-tests.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'tests/IdeaBranch.UITests/**'
+      - '.github/workflows/ui-tests.yml'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  ui-tests-windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+    
+    - name: Install .NET MAUI workloads
+      run: dotnet workload install maui --verbosity quiet
+    
+    - name: Enable Developer Mode
+      shell: powershell
+      run: |
+        reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"
+    
+    - name: Install WinAppDriver
+      shell: powershell
+      run: |
+        $winAppDriverUrl = "https://github.com/microsoft/WinAppDriver/releases/download/v1.2.99/WindowsApplicationDriver_1.2.99_x64.msi"
+        $installerPath = "$env:TEMP\WinAppDriver.msi"
+        Write-Host "Downloading WinAppDriver..."
+        Invoke-WebRequest -Uri $winAppDriverUrl -OutFile $installerPath
+        Write-Host "Installing WinAppDriver..."
+        Start-Process msiexec.exe -ArgumentList "/i $installerPath /quiet /norestart" -Wait
+        Write-Host "WinAppDriver installed successfully"
+      continue-on-error: true # Continue if already installed
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build App
+      run: |
+        dotnet build src/IdeaBranch.App/IdeaBranch.App.csproj -c Release -f net9.0-windows10.0.19041.0 --no-restore
+    
+    - name: Verify App Build
+      shell: powershell
+      run: |
+        $appPath = "${{ github.workspace }}\src\IdeaBranch.App\bin\Release\net9.0-windows10.0.19041.0\win10-x64\IdeaBranch.App.exe"
+        if (Test-Path $appPath) {
+          Write-Host "App found at: $appPath"
+        } else {
+          Write-Error "App not found at: $appPath"
+          exit 1
+        }
+    
+    - name: Start WinAppDriver
+      shell: powershell
+      run: |
+        $winAppDriverPath = "C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe"
+        if (Test-Path $winAppDriverPath) {
+          Write-Host "Starting WinAppDriver..."
+          Start-Process -FilePath $winAppDriverPath -WindowStyle Hidden
+          Start-Sleep -Seconds 5
+          
+          # Wait for WinAppDriver to be ready
+          $maxRetries = 10
+          $retryCount = 0
+          $ready = $false
+          
+          while ($retryCount -lt $maxRetries -and -not $ready) {
+            try {
+              $response = Invoke-WebRequest -Uri "http://127.0.0.1:4723/status" -TimeoutSec 2 -ErrorAction Stop
+              if ($response.StatusCode -eq 200) {
+                $ready = $true
+                Write-Host "WinAppDriver is ready!"
+              }
+            } catch {
+              $retryCount++
+              if ($retryCount -lt $maxRetries) {
+                Start-Sleep -Seconds 2
+              }
+            }
+          }
+          
+          if (-not $ready) {
+            Write-Warning "WinAppDriver may not be fully ready, but continuing..."
+          }
+        } else {
+          Write-Error "WinAppDriver not found at: $winAppDriverPath"
+          exit 1
+        }
+    
+    - name: Set Environment Variables
+      shell: powershell
+      run: |
+        $appPath = "${{ github.workspace }}\src\IdeaBranch.App\bin\Release\net9.0-windows10.0.19041.0\win10-x64\IdeaBranch.App.exe"
+        Write-Host "MAUI_APP_PATH=$appPath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        Write-Host "WINAPPDRIVER_PATH=C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+    
+    - name: Run UI Tests
+      run: |
+        dotnet test tests/IdeaBranch.UITests/IdeaBranch.UITests.csproj -c Release --no-build --logger "trx;LogFileName=test-results.trx" --logger "console;verbosity=normal"
+      env:
+        MAUI_APP_PATH: ${{ github.workspace }}\src\IdeaBranch.App\bin\Release\net9.0-windows10.0.19041.0\win10-x64\IdeaBranch.App.exe
+        WINAPPDRIVER_PATH: C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe
+    
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+        files: '**/test-results.trx'
+        check_name: 'UI Test Results'
+        fail_on: 'errors'
+        comment_mode: 'off'
+    
+    - name: Upload Test Results Artifact
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: ui-test-results
+        path: |
+          tests/IdeaBranch.UITests/TestResults/**/*.trx
+          tests/IdeaBranch.UITests/TestResults/**/*.log
+        retention-days: 7
+    
+    - name: Cleanup WinAppDriver
+      if: always()
+      shell: powershell
+      run: |
+        $processes = Get-Process -Name "WinAppDriver" -ErrorAction SilentlyContinue
+        if ($processes) {
+          Write-Host "Stopping WinAppDriver processes..."
+          $processes | Stop-Process -Force -ErrorAction SilentlyContinue
+        }
+

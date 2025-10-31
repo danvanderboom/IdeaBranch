@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels"
+             x:Class="IdeaBranch.App.Views.ResilienceTestPage"
+             x:DataType="vm:ResilienceTestViewModel"
+             Title="Resilience Test">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            
+            <!-- Status Label -->
+            <Label Text="Resilience Policy Demo"
+                   Style="{StaticResource Headline}"
+                   HorizontalOptions="Center" />
+            
+            <Label Text="Test retry and circuit breaker behavior with real API calls"
+                   Style="{StaticResource Body}"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   TextColor="Gray"
+                   Margin="0,0,0,20" />
+
+            <!-- Status -->
+            <Border StrokeThickness="1" Stroke="LightGray" Padding="10" Margin="0,0,0,10">
+                <Label Text="{Binding StatusMessage}"
+                       FontSize="14"
+                       TextColor="{Binding StatusColor}"
+                       AutomationId="ResilienceTest_StatusMessage" />
+            </Border>
+
+            <!-- Buttons -->
+            <Button Text="Test GET (Idempotent Retry)"
+                    Command="{Binding TestGetCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    AutomationId="ResilienceTest_GetButton"
+                    HorizontalOptions="Fill" />
+
+            <Button Text="Test POST (Limited Retry)"
+                    Command="{Binding TestPostCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    AutomationId="ResilienceTest_PostButton"
+                    HorizontalOptions="Fill" />
+
+            <Button Text="Test Retry (500 Error)"
+                    Command="{Binding TestRetryCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    AutomationId="ResilienceTest_RetryButton"
+                    HorizontalOptions="Fill" />
+
+            <Button Text="Test Circuit Breaker"
+                    Command="{Binding TestCircuitBreakerCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    AutomationId="ResilienceTest_CircuitBreakerButton"
+                    HorizontalOptions="Fill" />
+
+            <Button Text="Test Delay/Timeout"
+                    Command="{Binding TestDelayCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    AutomationId="ResilienceTest_DelayButton"
+                    HorizontalOptions="Fill" />
+
+            <!-- Activity Indicator -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                              IsVisible="{Binding IsBusy}"
+                              AutomationId="ResilienceTest_ActivityIndicator"
+                              HeightRequest="30"
+                              Margin="0,10,0,0" />
+
+            <!-- Results -->
+            <Label Text="Results:"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   Margin="0,20,0,10" />
+            
+            <Border StrokeThickness="1" Stroke="LightGray" Padding="10">
+                <ScrollView>
+                    <Label Text="{Binding Results}"
+                           FontSize="12"
+                           FontFamily="Courier New"
+                           AutomationId="ResilienceTest_Results" />
+                </ScrollView>
+            </Border>
+
+            <!-- Instructions -->
+            <Label Text="Instructions:"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   Margin="0,20,0,10" />
+            
+            <Label Text="1. Open Debug Output to see telemetry logs&#x0a;2. Test GET: Full retry on transient errors&#x0a;3. Test Retry (500): Observe exponential backoff&#x0a;4. Test Circuit Breaker: Trigger failures to open circuit&#x0a;5. Check logs for [Resilience] messages"
+                   FontSize="12"
+                   TextColor="Gray"
+                   Margin="0,0,0,10" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
+

@@ -1,0 +1,168 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>IdeaBranch.App</name>
+    </assembly>
+    <members>
+        <member name="T:IdeaBranch.App.Adapters.TopicNodePayload">
+            <summary>
+            Payload class for TreeNode&lt;TopicNodePayload&gt; to bind in MAUI CollectionView.
+            Represents domain TopicNode data without coupling to CriticalInsight.Data in Domain layer.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Adapters.TopicTreeAdapter">
+            <summary>
+            Adapter that builds TreeNode&lt;TopicNodePayload&gt; tree from domain TopicNode aggregate.
+            Maintains mapping between DomainNodeId and ITreeNode for bidirectional updates.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Adapters.TopicTreeAdapter.BuildTree(System.Object)">
+            <summary>
+            Builds a TreeNode tree from a domain topic tree structure.
+            </summary>
+            <param name="rootDomainNode">The root domain node (placeholder until domain model exists)</param>
+            <returns>Root TreeNode&lt;TopicNodePayload&gt; suitable for TreeView</returns>
+        </member>
+        <member name="M:IdeaBranch.App.Adapters.TopicTreeAdapter.GetTreeNode(System.Guid)">
+            <summary>
+            Gets the TreeNode associated with a domain node ID.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Adapters.TopicTreeAdapter.GetDomainNodeId(CriticalInsight.Data.Hierarchical.ITreeNode)">
+            <summary>
+            Gets the domain node ID associated with a TreeNode.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Adapters.TopicTreeViewProvider">
+            <summary>
+            Provider that creates and manages a TreeView over a TreeNode&lt;TopicNodePayload&gt; tree.
+            Exposes ProjectedCollection for binding to MAUI CollectionView with Depth-based indentation.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Adapters.TopicTreeViewProvider.InitializeTreeView(System.Object,System.Boolean)">
+            <summary>
+            Creates a TreeView from a domain topic tree.
+            </summary>
+            <param name="rootDomainNode">The root domain node (placeholder until domain model exists)</param>
+            <param name="defaultExpanded">Whether nodes should be expanded by default</param>
+        </member>
+        <member name="P:IdeaBranch.App.Adapters.TopicTreeViewProvider.ProjectedCollection">
+            <summary>
+            Gets the TreeView's ProjectedCollection for binding to CollectionView.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Adapters.TopicTreeViewProvider.SetIsExpanded(CriticalInsight.Data.Hierarchical.ITreeNode,System.Boolean)">
+            <summary>
+            Gets or sets the expanded state of a node.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Adapters.TopicTreeViewProvider.GetIsExpanded(CriticalInsight.Data.Hierarchical.ITreeNode)">
+            <summary>
+            Gets the expanded state of a node.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Adapters.TopicTreeViewProvider.IsNodeVisible(CriticalInsight.Data.Hierarchical.ITreeNode)">
+            <summary>
+            Checks if a node is visible in the current projection.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Adapters.TopicTreeViewProvider.RootNode">
+            <summary>
+            Gets the root TreeNode.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Converters.CountToBoolConverter">
+            <summary>
+            Converts count (int) to bool: true if count > 0, false otherwise.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Converters.DepthToThicknessConverter">
+            <summary>
+            Converts Depth (int) to Thickness for left margin indentation in CollectionView items.
+            ConverterParameter specifies the indent amount per level (default: 16).
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Converters.NodePayloadPromptConverter">
+            <summary>
+            Extracts Prompt from TopicNodePayload stored in ITreeNode.PayloadObject.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Converters.NodePayloadTitleConverter">
+            <summary>
+            Extracts Title from TopicNodePayload stored in ITreeNode.PayloadObject.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Services.ExampleApiService">
+            <summary>
+            Example API service demonstrating resilience policies with real HTTP calls.
+            Uses httpbin.org for testing retry and circuit breaker behavior.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.ExampleApiService.GetTestDataAsync(System.Threading.CancellationToken)">
+            <summary>
+            Gets a test resource with automatic retry on transient errors.
+            Demonstrates idempotent operation (GET) with full resilience policy.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.ExampleApiService.PostTestDataAsync(System.Object,System.Threading.CancellationToken)">
+            <summary>
+            Simulates a POST operation with limited retry (non-idempotent).
+            Demonstrates that POST requests only retry on connection/timeout errors.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.ExampleApiService.TestRetryBehaviorAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Tests retry behavior with a status code endpoint.
+            httpbin.org/status/{code} returns the specified status code.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.ExampleApiService.TestCircuitBreakerAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Tests circuit breaker behavior by triggering multiple failures.
+            Use /status/500 to trigger circuit breaker.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.ExampleApiService.TestDelayAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Tests delay endpoint to see exponential backoff in action.
+            httpbin.org/delay/{seconds} waits before responding.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Services.TestResponse">
+            <summary>
+            Test response model for httpbin.org endpoints.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.ViewModels.ResilienceTestViewModel">
+            <summary>
+            ViewModel for ResilienceTestPage that demonstrates resilience policies.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.ViewModels.TopicTreeViewModel">
+            <summary>
+            ViewModel for TopicTreePage that manages the TreeView projection and expansion state.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicTreeViewModel.ProjectedCollection">
+            <summary>
+            Gets the projected collection of visible tree nodes for binding to CollectionView.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicTreeViewModel.ToggleExpansion(CriticalInsight.Data.Hierarchical.ITreeNode)">
+            <summary>
+            Toggles the expanded state of a node.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicTreeViewModel.GetPayload(CriticalInsight.Data.Hierarchical.ITreeNode)">
+            <summary>
+            Gets the payload for a node.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Resource">
+            <summary>
+            Android Resource Designer class.
+            Exposes the Android Resource designer assembly into the project Namespace.
+            </summary>
+        </member>
+    </members>
+</doc>

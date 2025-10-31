@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "IdeaBranch.Infrastructure/1.0.0": {
+        "dependencies": {
+          "IdeaBranch.Domain": "1.0.0"
+        },
+        "runtime": {
+          "IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Domain/1.0.0": {
+        "runtime": {
+          "IdeaBranch.Domain.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "IdeaBranch.Infrastructure/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "IdeaBranch.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

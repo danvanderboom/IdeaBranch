@@ -1,0 +1,111 @@
+# .NET Desktop
+# Build and run tests for .NET Desktop or Windows classic desktop solutions.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
+
+trigger:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  CriticalInsightVersion: 1.0.$(Build.BuildId)
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+
+- task: PowerShell@2
+  displayName: 'Set version in environment variable'
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "Add CriticalInsightVersion as an environment variable so NuGet can set a version on the package that matches the assembly within it."
+      Write-Host $(CriticalInsightVersion)
+      Write-Host "##vso[task.setvariable variable=CriticalInsightVersion;]$(CriticalInsightVersion)"
+
+- task: NuGetToolInstaller@1
+  displayName: 'Install NuGet'
+
+- task: NuGetCommand@2
+  displayName: 'Restore NuGet packages' 
+  inputs:
+    command: 'restore'
+    feedsToUse: 'select'
+    vstsFeed: 'CriticalInsightDev/CriticalInsightComponents'
+    includeNuGetOrg: true
+    restoreSolution: '**/*.sln'
+
+- task: Assembly-Info-NetCore@3
+  displayName: 'Set assembly version and other metadata on CriticalInsight.Data'
+  inputs:
+    Path: '$(Build.SourcesDirectory)'
+    FileNames: '**/CriticalInsight.Data.csproj'
+    InsertAttributes: true
+    FileEncoding: 'utf-8'
+    WriteBOM: true
+    Product: 'CriticalInsight.Data'
+    Description: 'Shared data structures and models.'
+    Copyright: 'Copyright © $(date:YYYY) Critical Insight Inc'
+    Company: 'Critical Insight Inc'
+    Configuration: 'Release'
+    VersionNumber: '$(CriticalInsightVersion)'
+    FileVersionNumber: '$(CriticalInsightVersion)'
+    InformationalVersion: '$(CriticalInsightVersion)'
+    PackageVersion: '$(CriticalInsightVersion)'
+    UpdateBuildNumber: '$(Build.DefinitionName)_$(CriticalInsightVersion)'
+    AddBuildTag: 'v$(CriticalInsightVersion)'
+
+- task: VSBuild@1
+  displayName: 'Build solution' 
+  inputs:
+    solution: '$(solution)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run unit tests'
+  inputs:
+    command: test
+    projects: '**/*.UnitTests.csproj'
+    arguments: '--configuration $(buildConfiguration) --collect "XPlat Code coverage" -- RunConfiguration.DisableAppDomain=true'
+    testRunTitle: CriticalInsight.Data Unit Tests
+
+- task: PublishTestResults@2
+  displayName: 'Publish unit test results'
+  inputs:
+    testResultsFormat: 'VSTest'
+    testResultsFiles: '$(Agent.TempDirectory)/**/*.trx'
+
+- script: 'dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.4.4'
+  displayName: 'Install ReportGenerator tool'
+
+- script: 'reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"'
+  displayName: 'Create code coverage reports'
+
+- task: PublishCodeCoverageResults@2
+  displayName: 'Publish code coverage results'
+  inputs:
+    summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Create NuGet package'
+  inputs:
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    command: 'pack'
+    projects: '**/CriticalInsight.Data.csproj'
+    arguments: '--output $(Build.ArtifactStagingDirectory)'
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'CriticalInsightVersion'
+
+- task: NuGetCommand@2
+  displayName: 'Publish NuGet package to Artifacts'
+  inputs:
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    command: 'push'
+    nuGetFeedType: 'internal'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/CriticalInsight.Data.*.nupkg;!$(Build.ArtifactStagingDirectory)/**/CriticalInsight.Data.symbols.nupkg'
+    publishVstsFeed: 'CriticalInsightDev/CriticalInsightComponents'
+    allowPackageConflicts: false

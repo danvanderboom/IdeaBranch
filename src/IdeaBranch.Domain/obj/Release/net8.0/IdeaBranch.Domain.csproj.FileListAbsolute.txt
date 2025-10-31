@@ -1,0 +1,12 @@
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.Domain\bin\Release\net8.0\IdeaBranch.Domain.deps.json
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.Domain\bin\Release\net8.0\IdeaBranch.Domain.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.Domain\bin\Release\net8.0\IdeaBranch.Domain.pdb
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.Domain\obj\Release\net8.0\IdeaBranch.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.Domain\obj\Release\net8.0\IdeaBranch.Domain.AssemblyInfoInputs.cache
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.Domain\obj\Release\net8.0\IdeaBranch.Domain.AssemblyInfo.cs
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.Domain\obj\Release\net8.0\IdeaBranch.Domain.csproj.CoreCompileInputs.cache
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.Domain\obj\Release\net8.0\IdeaBranch.Domain.sourcelink.json
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.Domain\obj\Release\net8.0\IdeaBranch.Domain.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.Domain\obj\Release\net8.0\refint\IdeaBranch.Domain.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.Domain\obj\Release\net8.0\IdeaBranch.Domain.pdb
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.Domain\obj\Release\net8.0\ref\IdeaBranch.Domain.dll
