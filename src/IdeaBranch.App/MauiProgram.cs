@@ -69,6 +69,21 @@ public static class MauiProgram
 			var db = sp.GetRequiredService<TopicDb>();
 			return new SqliteNotificationsRepository(db.Connection);
 		});
+		builder.Services.AddSingleton<IAnnotationsRepository>(sp =>
+		{
+			var db = sp.GetRequiredService<TopicDb>();
+			return new SqliteAnnotationsRepository(db.Connection);
+		});
+		builder.Services.AddSingleton<ITagTaxonomyRepository>(sp =>
+		{
+			var db = sp.GetRequiredService<TopicDb>();
+			return new SqliteTagTaxonomyRepository(db.Connection);
+		});
+		builder.Services.AddSingleton<IPromptTemplateRepository>(sp =>
+		{
+			var db = sp.GetRequiredService<TopicDb>();
+			return new SqlitePromptTemplateRepository(db.Connection);
+		});
 
 		// Register ViewModels
 		builder.Services.AddTransient<TopicTreeViewModel>(sp =>
