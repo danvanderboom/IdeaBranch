@@ -91,6 +91,33 @@
                            VerticalOptions="Center"
                            Margin="8,0,0,0" />
                 </Grid>
+                <!-- Filter by tags -->
+                <Border BackgroundColor="#F5F5F5"
+                        StrokeThickness="1"
+                        Stroke="#E0E0E0"
+                        Padding="8"
+                        Margin="0,4,0,0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="4" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Filter by tags:"
+                               FontSize="12"
+                               TextColor="Gray" />
+                        <Entry x:Name="TagFilterEntry"
+                               Placeholder="Enter tag name to filter..."
+                               TextChanged="OnTagFilterTextChanged"
+                               AutomationId="TopicNodeDetailPage_TagFilter" />
+                        <Button Text="Clear Filters"
+                                Clicked="OnClearFiltersClicked"
+                                IsVisible="{Binding SelectedTagFilters.Count, Converter={StaticResource IsGreaterThanZeroConverter}}"
+                                Padding="8,4"
+                                FontSize="12"
+                                BackgroundColor="#E0E0E0"
+                                TextColor="Black"
+                                AutomationId="TopicNodeDetailPage_ClearFilters" />
+                    </VerticalStackLayout>
+                </Border>
                 <CollectionView ItemsSource="{Binding FilteredAnnotations}"
                                 SelectionMode="Single"
                                 SelectedItem="{Binding SelectedAnnotation}"

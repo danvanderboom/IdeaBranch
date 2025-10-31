@@ -20,6 +20,7 @@ public class TopicNodeDetailViewModel : INotifyPropertyChanged
     private readonly Func<TopicNode, Task>? _onChildrenAdded;
     private readonly TelemetryService? _telemetry;
     private readonly IAnnotationsRepository? _annotationsRepository;
+    private readonly Services.SettingsService? _settingsService;
     
     private string _title;
     private string _prompt;
@@ -30,6 +31,7 @@ public class TopicNodeDetailViewModel : INotifyPropertyChanged
     private Func<Task>? _retryAction;
     private IReadOnlyList<Annotation> _annotations = Array.Empty<Annotation>();
     private IReadOnlyList<Guid> _selectedTagFilters = Array.Empty<Guid>();
+    private Dictionary<Guid, HashSet<Guid>> _annotationTags = new();
 
     /// <summary>
     /// Initializes a new instance with a topic node to edit.
@@ -40,7 +42,8 @@ public class TopicNodeDetailViewModel : INotifyPropertyChanged
         LLMClientFactory llmFactory,
         Func<TopicNode, Task>? onChildrenAdded = null,
         TelemetryService? telemetry = null,
-        IAnnotationsRepository? annotationsRepository = null)
+        IAnnotationsRepository? annotationsRepository = null,
+        Services.SettingsService? settingsService = null)
     {
         _node = node ?? throw new ArgumentNullException(nameof(node));
         _saveCallback = saveCallback ?? throw new ArgumentNullException(nameof(saveCallback));
@@ -48,13 +51,15 @@ public class TopicNodeDetailViewModel : INotifyPropertyChanged
         _onChildrenAdded = onChildrenAdded;
         _telemetry = telemetry;
         _annotationsRepository = annotationsRepository;
+        _settingsService = settingsService;
         
         _title = node.Title ?? string.Empty;
         _prompt = node.Prompt ?? string.Empty;
         _response = node.Response ?? string.Empty;
         
-        // Load annotations asynchronously
+        // Load annotations and settings asynchronously
         _ = LoadAnnotationsAsync();
+        _ = LoadShowCommentsSettingAsync();
     }
 
     /// <summary>
@@ -432,10 +437,34 @@ public class TopicNodeDetailViewModel : INotifyPropertyChanged
             {
                 _showComments = value;
                 OnPropertyChanged(nameof(ShowComments));
+                // Persist setting
+                if (_settingsService != null)
+                {
+                    _ = _settingsService.SetShowCommentsAsync(value);
+                }
             }
         }
     }
     private bool _showComments = true;
+
+    /// <summary>
+    /// Loads the ShowComments setting from storage.
+    /// </summary>
+    private async Task LoadShowCommentsSettingAsync()
+    {
+        if (_settingsService == null)
+            return;
+
+        try
+        {
+            _showComments = await _settingsService.GetShowCommentsAsync();
+            OnPropertyChanged(nameof(ShowComments));
+        }
+        catch
+        {
+            // Silently fail - use default value
+        }
+    }
 
     /// <summary>
     /// Gets or sets whether text is currently selected in the Editor.
@@ -453,6 +482,74 @@ public class TopicNodeDetailViewModel : INotifyPropertyChanged
         }
     }
     private bool _hasTextSelection;
+
+    /// <summary>
+    /// Gets or sets the start offset of the text selection.
+    /// </summary>
+    public int SelectionStart
+    {
+        get => _selectionStart;
+        set
+        {
+            if (_selectionStart != value)
+            {
+                _selectionStart = value;
+                OnPropertyChanged(nameof(SelectionStart));
+                UpdateSelectionState();
+            }
+        }
+    }
+    private int _selectionStart;
+
+    /// <summary>
+    /// Gets or sets the length of the text selection.
+    /// </summary>
+    public int SelectionLength
+    {
+        get => _selectionLength;
+        set
+        {
+            if (_selectionLength != value)
+            {
+                _selectionLength = value;
+                OnPropertyChanged(nameof(SelectionLength));
+                UpdateSelectionState();
+            }
+        }
+    }
+    private int _selectionLength;
+
+    /// <summary>
+    /// Gets the end offset of the text selection.
+    /// </summary>
+    public int SelectionEnd => SelectionStart + SelectionLength;
+
+    /// <summary>
+    /// Gets the selected text based on current selection.
+    /// </summary>
+    public string? SelectedText
+    {
+        get
+        {
+            if (SelectionStart < 0 || SelectionLength <= 0 || SelectionStart >= Response.Length)
+                return null;
+
+            var end = Math.Min(SelectionStart + SelectionLength, Response.Length);
+            if (SelectionStart >= end)
+                return null;
+
+            return Response.Substring(SelectionStart, end - SelectionStart);
+        }
+    }
+
+    /// <summary>
+    /// Updates the selection state based on SelectionStart and SelectionLength.
+    /// </summary>
+    private void UpdateSelectionState()
+    {
+        HasTextSelection = SelectionStart >= 0 && SelectionLength > 0 && SelectionStart < Response.Length;
+        OnPropertyChanged(nameof(SelectedText));
+    }
 
     /// <summary>
     /// Gets or sets the selected annotation.
@@ -483,11 +580,35 @@ public class TopicNodeDetailViewModel : INotifyPropertyChanged
         {
             var annotations = await _annotationsRepository.GetByNodeIdAsync(_node.Id);
             Annotations = annotations;
+            
+            // Load tag IDs for each annotation for filtering
+            await LoadAnnotationTagsAsync();
         }
         catch
         {
             // Silently fail - annotations are optional
             Annotations = Array.Empty<Annotation>();
+        }
+    }
+
+    private async Task LoadAnnotationTagsAsync()
+    {
+        if (_annotationsRepository == null)
+            return;
+
+        _annotationTags.Clear();
+        foreach (var annotation in Annotations)
+        {
+            try
+            {
+                var tagIds = await _annotationsRepository.GetTagIdsAsync(annotation.Id);
+                _annotationTags[annotation.Id] = new HashSet<Guid>(tagIds);
+            }
+            catch
+            {
+                // Silently fail for individual annotations
+                _annotationTags[annotation.Id] = new HashSet<Guid>();
+            }
         }
     }
 
@@ -529,13 +650,14 @@ public class TopicNodeDetailViewModel : INotifyPropertyChanged
     /// </summary>
     private bool HasAllTags(Annotation annotation, IReadOnlyList<Guid> tagIds)
     {
-        if (_annotationsRepository == null || tagIds.Count == 0)
+        if (tagIds.Count == 0)
             return true;
 
-        // This is a synchronous check - we'd need to cache tag IDs per annotation
-        // For now, return true and let the repository filter handle it
-        // In a real implementation, we'd want to cache annotation tags
-        return true;
+        if (!_annotationTags.TryGetValue(annotation.Id, out var annotationTagIds))
+            return false;
+
+        // Check if annotation has all requested tags
+        return tagIds.All(tagId => annotationTagIds.Contains(tagId));
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

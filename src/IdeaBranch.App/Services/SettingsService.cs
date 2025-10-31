@@ -18,6 +18,7 @@ public class SettingsService
     private const string LanguageKey = "app_language";
     private const string InAppNotificationsEnabledKey = "in_app_notifications_enabled";
     private const string PushNotificationsEnabledKey = "push_notifications_enabled";
+    private const string ShowCommentsKey = "annotation_show_comments";
 
     private const string DefaultProvider = "lmstudio";
     private const string DefaultLmStudioEndpoint = "http://localhost:1234/v1";
@@ -209,6 +210,25 @@ public class SettingsService
     public async Task SetPushNotificationsEnabledAsync(bool enabled)
     {
         await SecureStorage.SetAsync(PushNotificationsEnabledKey, enabled.ToString().ToLowerInvariant());
+    }
+
+    /// <summary>
+    /// Gets whether annotation comments should be shown (default: true).
+    /// </summary>
+    public async Task<bool> GetShowCommentsAsync()
+    {
+        var value = await SecureStorage.GetAsync(ShowCommentsKey);
+        if (value == null)
+            return true; // Default to shown
+        return bool.TryParse(value, out var result) && result;
+    }
+
+    /// <summary>
+    /// Sets whether annotation comments should be shown.
+    /// </summary>
+    public async Task SetShowCommentsAsync(bool showComments)
+    {
+        await SecureStorage.SetAsync(ShowCommentsKey, showComments.ToString().ToLowerInvariant());
     }
 }
 

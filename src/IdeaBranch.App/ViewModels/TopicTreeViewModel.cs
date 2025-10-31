@@ -290,9 +290,10 @@ public class TopicTreeViewModel : INotifyPropertyChanged
             telemetry = services?.GetService<Services.TelemetryService>();
         }
 
-        // Get annotations repository
-        var annotationsRepository = Application.Current?.MainPage?.Handler?.MauiContext?.Services?
-            .GetService<Domain.IAnnotationsRepository>();
+        // Get annotations repository and settings service
+        var services = Application.Current?.MainPage?.Handler?.MauiContext?.Services;
+        var annotationsRepository = services?.GetService<Domain.IAnnotationsRepository>();
+        var settingsService = services?.GetService<Services.SettingsService>();
 
         // Create detail ViewModel with save callback
         var detailViewModel = new TopicNodeDetailViewModel(
@@ -309,7 +310,8 @@ public class TopicTreeViewModel : INotifyPropertyChanged
                 await SaveAndRefreshAsync();
             },
             telemetry,
-            annotationsRepository);
+            annotationsRepository,
+            settingsService);
 
         // Create detail page and navigate
         var detailPage = new Views.TopicNodeDetailPage(detailViewModel);

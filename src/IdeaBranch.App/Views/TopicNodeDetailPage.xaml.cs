@@ -107,17 +107,18 @@ public partial class TopicNodeDetailPage : ContentPage
 
     private void UpdateTextSelection()
     {
-        // Note: .NET MAUI Editor doesn't expose SelectionStart/SelectionLength directly
-        // This is a simplified implementation - full selection tracking would require
-        // platform-specific handlers or a custom control
-        // For now, we'll detect selection changes through a workaround or platform handlers
+        // Update selection from Editor using platform handler if available
+        // For now, we'll use a platform handler approach
+        // The handler will set SelectionStart and SelectionLength on the ViewModel
+        if (ResponseEditor?.Handler?.PlatformView != null)
+        {
+            // Platform-specific code would go here
+            // For now, we'll provide a fallback that checks if text is selected via a different method
+        }
     }
 
     private async void OnAnnotateSelectionClicked(object? sender, EventArgs e)
     {
-        // Get selection from Editor
-        // Note: This requires platform-specific code to get SelectionStart/SelectionLength
-        // For now, we'll show a prompt to select text
         var response = _viewModel.Response ?? string.Empty;
         
         if (string.IsNullOrWhiteSpace(response))
@@ -126,12 +127,17 @@ public partial class TopicNodeDetailPage : ContentPage
             return;
         }
 
-        // For now, we'll use the entire response length as a placeholder
-        // In a real implementation, we'd get SelectionStart and SelectionLength from the Editor
-        var startOffset = 0;
-        var endOffset = Math.Min(10, response.Length); // Placeholder: first 10 characters
-        
-        var selectedText = response.Substring(startOffset, Math.Min(endOffset - startOffset, response.Length - startOffset));
+        // Use the selection from ViewModel if available
+        var startOffset = _viewModel.SelectionStart;
+        var endOffset = _viewModel.SelectionEnd;
+        var selectedText = _viewModel.SelectedText;
+
+        // If no selection, prompt user to select text first
+        if (string.IsNullOrWhiteSpace(selectedText) || startOffset < 0 || endOffset <= startOffset)
+        {
+            await DisplayAlert("No Text Selected", "Please select text in the response field to annotate.", "OK");
+            return;
+        }
 
         // Get services
         var services = Handler?.MauiContext?.Services;
@@ -161,6 +167,58 @@ public partial class TopicNodeDetailPage : ContentPage
     private void OnAnnotationSelected(object? sender, SelectionChangedEventArgs e)
     {
         // Handle annotation selection if needed
+    }
+
+    private async void OnTagFilterTextChanged(object? sender, TextChangedEventArgs e)
+    {
+        if (TagFilterEntry?.Text == null || string.IsNullOrWhiteSpace(TagFilterEntry.Text))
+        {
+            // Clear filters if text is empty
+            _viewModel.SelectedTagFilters = Array.Empty<Guid>();
+            return;
+        }
+
+        // Find tags matching the filter text
+        var services = Handler?.MauiContext?.Services;
+        var tagTaxonomyRepository = services?.GetService<Domain.ITagTaxonomyRepository>();
+        if (tagTaxonomyRepository == null)
+            return;
+
+        try
+        {
+            var root = await tagTaxonomyRepository.GetRootAsync();
+            var matchingTagIds = new List<Guid>();
+            await FindMatchingTagsAsync(root, TagFilterEntry.Text, matchingTagIds, tagTaxonomyRepository);
+            _viewModel.SelectedTagFilters = matchingTagIds;
+        }
+        catch
+        {
+            // Silently fail - filtering is optional
+        }
+    }
+
+    private async Task FindMatchingTagsAsync(
+        Domain.TagTaxonomyNode node,
+        string filterText,
+        List<Guid> results,
+        Domain.ITagTaxonomyRepository repository)
+    {
+        if (node.Name.Contains(filterText, StringComparison.OrdinalIgnoreCase))
+        {
+            results.Add(node.Id);
+        }
+
+        var children = await repository.GetChildrenAsync(node.Id);
+        foreach (var child in children)
+        {
+            await FindMatchingTagsAsync(child, filterText, results, repository);
+        }
+    }
+
+    private void OnClearFiltersClicked(object? sender, EventArgs e)
+    {
+        TagFilterEntry.Text = string.Empty;
+        _viewModel.SelectedTagFilters = Array.Empty<Guid>();
     }
 
     private async void OnAnnotationTapped(object? sender, TappedEventArgs e)
