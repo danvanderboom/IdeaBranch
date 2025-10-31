@@ -2,9 +2,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels"
+             xmlns:res="clr-namespace:IdeaBranch.App.Resources"
              x:Class="IdeaBranch.App.Views.TopicNodeDetailPage"
              x:DataType="vm:TopicNodeDetailViewModel"
-             Title="Edit Topic"
+             Title="{x:Static res:AppResources.TopicNodeDetailPage_Title}"
              AutomationId="TopicNodeDetailPage">
     <ScrollView>
         <Grid Padding="16" RowSpacing="16">
@@ -27,26 +28,26 @@
 
             <!-- Title -->
             <VerticalStackLayout Grid.Row="1" Spacing="4">
-                <Label Text="Title" FontAttributes="Bold" />
+                <Label Text="{x:Static res:AppResources.TopicNodeDetailPage_TitleLabel}" FontAttributes="Bold" />
                 <Entry Text="{Binding Title}"
-                       Placeholder="Enter topic title (optional)"
+                       Placeholder="{x:Static res:AppResources.TopicNodeDetailPage_TitlePlaceholder}"
                        AutomationId="TopicNodeDetailPage_Title" />
             </VerticalStackLayout>
 
             <!-- Prompt -->
             <VerticalStackLayout Grid.Row="2" Spacing="4">
-                <Label Text="Prompt" FontAttributes="Bold" />
+                <Label Text="{x:Static res:AppResources.TopicNodeDetailPage_PromptLabel}" FontAttributes="Bold" />
                 <Editor Text="{Binding Prompt}"
-                        Placeholder="Enter your prompt"
+                        Placeholder="{x:Static res:AppResources.TopicNodeDetailPage_PromptPlaceholder}"
                         HeightRequest="100"
                         AutomationId="TopicNodeDetailPage_Prompt" />
             </VerticalStackLayout>
 
             <!-- Response -->
             <VerticalStackLayout Grid.Row="3" Spacing="4">
-                <Label Text="Response" FontAttributes="Bold" />
+                <Label Text="{x:Static res:AppResources.TopicNodeDetailPage_ResponseLabel}" FontAttributes="Bold" />
                 <Editor Text="{Binding Response}"
-                        Placeholder="Enter response"
+                        Placeholder="{x:Static res:AppResources.TopicNodeDetailPage_ResponsePlaceholder}"
                         HeightRequest="200"
                         AutomationId="TopicNodeDetailPage_Response" />
             </VerticalStackLayout>
@@ -73,7 +74,7 @@
                            AutomationId="TopicNodeDetailPage_ErrorMessage" />
                     <Button Grid.Row="1"
                             Grid.Column="0"
-                            Text="Retry"
+                            Text="{x:Static res:AppResources.TopicNodeDetailPage_RetryButton}"
                             Clicked="OnRetryClicked"
                             IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
                             BackgroundColor="#F44336"
@@ -95,17 +96,17 @@
 
             <!-- Action buttons (LLM actions and history) -->
             <VerticalStackLayout Grid.Row="5" Spacing="8" Margin="0,8,0,0">
-                <Button Text="View History"
+                <Button Text="{x:Static res:AppResources.TopicNodeDetailPage_ViewHistoryButton}"
                         Clicked="OnViewHistoryClicked"
                         IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
                         BackgroundColor="#E3F2FD"
                         TextColor="#1976D2"
                         AutomationId="TopicNodeDetailPage_ViewHistory" />
-                <Button Text="Generate Response"
+                <Button Text="{x:Static res:AppResources.TopicNodeDetailPage_GenerateResponseButton}"
                         Clicked="OnGenerateResponseClicked"
                         IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
                         AutomationId="TopicNodeDetailPage_GenerateResponse" />
-                <Button Text="Generate Title"
+                <Button Text="{x:Static res:AppResources.TopicNodeDetailPage_GenerateTitleButton}"
                         Clicked="OnGenerateTitleClicked"
                         IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
                         AutomationId="TopicNodeDetailPage_GenerateTitle" />
@@ -119,13 +120,13 @@
                 </Grid.ColumnDefinitions>
                 
                 <Button Grid.Column="0"
-                        Text="Cancel"
+                        Text="{x:Static res:AppResources.TopicNodeDetailPage_CancelButton}"
                         Clicked="OnCancelClicked"
                         IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
                         AutomationId="TopicNodeDetailPage_Cancel" />
                 
                 <Button Grid.Column="1"
-                        Text="Save"
+                        Text="{x:Static res:AppResources.TopicNodeDetailPage_SaveButton}"
                         Clicked="OnSaveClicked"
                         IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
                         AutomationId="TopicNodeDetailPage_Save" />

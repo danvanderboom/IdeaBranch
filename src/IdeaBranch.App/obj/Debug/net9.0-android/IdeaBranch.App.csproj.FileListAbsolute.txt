@@ -1466,3 +1466,4 @@ C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\IdeaBranch.App.Resources.AppResources.resources
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\IdeaBranch.App.csproj.GenerateResource.cache
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\IdeaBranch.App.Resources.AppResources.es.resources
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-android\IdeaBranch.App.Resources.AppResources.fr.resources

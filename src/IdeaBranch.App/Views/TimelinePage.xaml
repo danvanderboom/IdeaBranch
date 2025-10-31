@@ -2,12 +2,13 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels"
+             xmlns:res="clr-namespace:IdeaBranch.App.Resources"
              x:Class="IdeaBranch.App.Views.TimelinePage"
              x:DataType="vm:TimelineViewModel"
-             Title="Timeline"
+             Title="{x:Static res:AppResources.TimelinePage_Title}"
              AutomationId="TimelinePage">
     <Grid>
-        <Label Text="Timeline View"
+        <Label Text="{x:Static res:AppResources.TimelinePage_Content}"
                FontSize="24"
                HorizontalOptions="Center"
                VerticalOptions="Center"

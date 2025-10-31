@@ -1,4 +1,6 @@
-﻿namespace IdeaBranch.App;
+﻿using IdeaBranch.App.Resources;
+
+namespace IdeaBranch.App;
 
 public partial class MainPage : ContentPage
 {
@@ -14,9 +16,9 @@ public partial class MainPage : ContentPage
 		count++;
 
 		if (count == 1)
-			CounterBtn.Text = $"Clicked {count} time";
+			CounterBtn.Text = string.Format(AppResources.MainPage_CounterClickedOnce, count);
 		else
-			CounterBtn.Text = $"Clicked {count} times";
+			CounterBtn.Text = string.Format(AppResources.MainPage_CounterClickedMultiple, count);
 
 		SemanticScreenReader.Announce(CounterBtn.Text);
 	}

@@ -3,9 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels"
              xmlns:domain="clr-namespace:IdeaBranch.Domain"
+             xmlns:res="clr-namespace:IdeaBranch.App.Resources"
              x:Class="IdeaBranch.App.Views.NotificationsPage"
              x:DataType="vm:NotificationsViewModel"
-             Title="Notifications"
+             Title="{x:Static res:AppResources.NotificationsPage_Title}"
              AutomationId="NotificationsPage">
     <Grid>
         <Grid.RowDefinitions>
@@ -19,12 +20,12 @@
                 Padding="16,12">
             <Grid ColumnDefinitions="*,Auto">
                 <Label Grid.Column="0"
-                       Text="Notifications"
+                       Text="{x:Static res:AppResources.NotificationsPage_Header}"
                        FontSize="20"
                        FontAttributes="Bold"
                        VerticalOptions="Center" />
                 <Button Grid.Column="1"
-                        Text="Clear All"
+                        Text="{x:Static res:AppResources.NotificationsPage_ClearAllButton}"
                         Clicked="OnClearAllClicked"
                         AutomationId="ClearAllButton"
                         IsEnabled="{Binding Notifications.Count, Converter={StaticResource CountToBoolConverter}}"
@@ -38,9 +39,9 @@
                      Refreshing="OnRefresh">
             <CollectionView ItemsSource="{Binding Notifications}"
                             SelectionMode="None"
-                            EmptyView="No notifications">
+                            EmptyView="{x:Static res:AppResources.NotificationsPage_EmptyView}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="domain:NotificationItem">
+                    <DataTemplate>
                         <Grid Padding="16,12"
                               ColumnDefinitions="*,Auto,Auto">
                             <StackLayout Grid.Column="0"
@@ -57,7 +58,7 @@
                                        TextColor="LightGray" />
                             </StackLayout>
                             <Button Grid.Column="1"
-                                    Text="Mark Read"
+                                    Text="{x:Static res:AppResources.NotificationsPage_MarkReadButton}"
                                     CommandParameter="{Binding .}"
                                     Clicked="OnToggleReadClicked"
                                     Padding="8,4"
@@ -65,7 +66,7 @@
                                     Margin="8,0,0,0"
                                     IsVisible="{Binding IsRead, Converter={StaticResource InvertedBoolConverter}}" />
                             <Button Grid.Column="2"
-                                    Text="Delete"
+                                    Text="{x:Static res:AppResources.NotificationsPage_DeleteButton}"
                                     CommandParameter="{Binding .}"
                                     Clicked="OnDeleteClicked"
                                     Padding="8,4"

@@ -3,9 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels"
              xmlns:hierarchical="clr-namespace:CriticalInsight.Data.Hierarchical;assembly=CriticalInsight.Data"
+             xmlns:res="clr-namespace:IdeaBranch.App.Resources"
              x:Class="IdeaBranch.App.Views.TopicTreePage"
              x:DataType="vm:TopicTreeViewModel"
-             Title="Topic Tree">
+             Title="{x:Static res:AppResources.TopicTreePage_Title}">
     <Grid>
         <CollectionView ItemsSource="{Binding ProjectedCollection}"
                         x:Name="TopicTreeCollectionView">

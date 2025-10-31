@@ -349,3 +349,4 @@ C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Debug\net9.0-ios\ios
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-ios\iossimulator-x64\IdeaBranch.App.Resources.AppResources.resources
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-ios\iossimulator-x64\IdeaBranch.App.csproj.GenerateResource.cache
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-ios\iossimulator-x64\IdeaBranch.App.Resources.AppResources.es.resources
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-ios\iossimulator-x64\IdeaBranch.App.Resources.AppResources.fr.resources

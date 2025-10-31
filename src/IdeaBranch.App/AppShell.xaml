@@ -5,44 +5,45 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:IdeaBranch.App"
     xmlns:views="clr-namespace:IdeaBranch.App.Views"
+    xmlns:res="clr-namespace:IdeaBranch.App.Resources"
     Title="IdeaBranch.App">
 
     <ShellContent
-        Title="Home"
+        Title="{x:Static res:AppResources.AppShell_Home}"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
     
     <ShellContent
-        Title="Resilience Test"
+        Title="{x:Static res:AppResources.AppShell_ResilienceTest}"
         ContentTemplate="{DataTemplate views:ResilienceTestPage}"
         Route="ResilienceTestPage" />
 
     <ShellContent
-        Title="Topic Tree"
+        Title="{x:Static res:AppResources.AppShell_TopicTree}"
         ContentTemplate="{DataTemplate views:TopicTreePage}"
         Route="TopicTreePage"
         AutomationId="TopicTreePage" />
 
     <ShellContent
-        Title="Map"
+        Title="{x:Static res:AppResources.AppShell_Map}"
         ContentTemplate="{DataTemplate views:MapPage}"
         Route="MapPage"
         AutomationId="MapPage" />
 
     <ShellContent
-        Title="Timeline"
+        Title="{x:Static res:AppResources.AppShell_Timeline}"
         ContentTemplate="{DataTemplate views:TimelinePage}"
         Route="TimelinePage"
         AutomationId="TimelinePage" />
 
     <ShellContent
-        Title="Notifications"
+        Title="{x:Static res:AppResources.AppShell_Notifications}"
         ContentTemplate="{DataTemplate views:NotificationsPage}"
         Route="NotificationsPage"
         AutomationId="NotificationsPage" />
 
     <ShellContent
-        Title="Settings"
+        Title="{x:Static res:AppResources.AppShell_Settings}"
         ContentTemplate="{DataTemplate views:SettingsPage}"
         Route="SettingsPage"
         AutomationId="SettingsPage" />

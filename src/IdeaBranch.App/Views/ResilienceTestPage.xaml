@@ -2,18 +2,19 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels"
+             xmlns:res="clr-namespace:IdeaBranch.App.Resources"
              x:Class="IdeaBranch.App.Views.ResilienceTestPage"
              x:DataType="vm:ResilienceTestViewModel"
-             Title="Resilience Test">
+             Title="{x:Static res:AppResources.ResilienceTestPage_Title}">
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
             
             <!-- Status Label -->
-            <Label Text="Resilience Policy Demo"
+            <Label Text="{x:Static res:AppResources.ResilienceTestPage_Headline}"
                    Style="{StaticResource Headline}"
                    HorizontalOptions="Center" />
             
-            <Label Text="Test retry and circuit breaker behavior with real API calls"
+            <Label Text="{x:Static res:AppResources.ResilienceTestPage_Description}"
                    Style="{StaticResource Body}"
                    HorizontalOptions="Center"
                    HorizontalTextAlignment="Center"
@@ -29,31 +30,31 @@
             </Border>
 
             <!-- Buttons -->
-            <Button Text="Test GET (Idempotent Retry)"
+            <Button Text="{x:Static res:AppResources.ResilienceTestPage_GetButton}"
                     Command="{Binding TestGetCommand}"
                     IsEnabled="{Binding IsNotBusy}"
                     AutomationId="ResilienceTest_GetButton"
                     HorizontalOptions="Fill" />
 
-            <Button Text="Test POST (Limited Retry)"
+            <Button Text="{x:Static res:AppResources.ResilienceTestPage_PostButton}"
                     Command="{Binding TestPostCommand}"
                     IsEnabled="{Binding IsNotBusy}"
                     AutomationId="ResilienceTest_PostButton"
                     HorizontalOptions="Fill" />
 
-            <Button Text="Test Retry (500 Error)"
+            <Button Text="{x:Static res:AppResources.ResilienceTestPage_RetryButton}"
                     Command="{Binding TestRetryCommand}"
                     IsEnabled="{Binding IsNotBusy}"
                     AutomationId="ResilienceTest_RetryButton"
                     HorizontalOptions="Fill" />
 
-            <Button Text="Test Circuit Breaker"
+            <Button Text="{x:Static res:AppResources.ResilienceTestPage_CircuitBreakerButton}"
                     Command="{Binding TestCircuitBreakerCommand}"
                     IsEnabled="{Binding IsNotBusy}"
                     AutomationId="ResilienceTest_CircuitBreakerButton"
                     HorizontalOptions="Fill" />
 
-            <Button Text="Test Delay/Timeout"
+            <Button Text="{x:Static res:AppResources.ResilienceTestPage_DelayButton}"
                     Command="{Binding TestDelayCommand}"
                     IsEnabled="{Binding IsNotBusy}"
                     AutomationId="ResilienceTest_DelayButton"
@@ -67,7 +68,7 @@
                               Margin="0,10,0,0" />
 
             <!-- Results -->
-            <Label Text="Results:"
+            <Label Text="{x:Static res:AppResources.ResilienceTestPage_ResultsLabel}"
                    FontSize="16"
                    FontAttributes="Bold"
                    Margin="0,20,0,10" />
@@ -82,12 +83,12 @@
             </Border>
 
             <!-- Instructions -->
-            <Label Text="Instructions:"
+            <Label Text="{x:Static res:AppResources.ResilienceTestPage_InstructionsLabel}"
                    FontSize="16"
                    FontAttributes="Bold"
                    Margin="0,20,0,10" />
             
-            <Label Text="1. Open Debug Output to see telemetry logs&#x0a;2. Test GET: Full retry on transient errors&#x0a;3. Test Retry (500): Observe exponential backoff&#x0a;4. Test Circuit Breaker: Trigger failures to open circuit&#x0a;5. Check logs for [Resilience] messages"
+            <Label Text="{x:Static res:AppResources.ResilienceTestPage_InstructionsText}"
                    FontSize="12"
                    TextColor="Gray"
                    Margin="0,0,0,10" />

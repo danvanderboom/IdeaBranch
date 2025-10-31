@@ -52,14 +52,50 @@ build_metadata.AdditionalFiles.ManifestResourceName = IdeaBranch.App.Resources.S
 build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Styles.xaml
 build_metadata.AdditionalFiles.RelativePath = Resources\Styles\Styles.xaml
 
+[C:/Source/CriticalInsight/IdeaBranch/src/IdeaBranch.App/Views/MapPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = IdeaBranch.App.Views.MapPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\MapPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\MapPage.xaml
+
+[C:/Source/CriticalInsight/IdeaBranch/src/IdeaBranch.App/Views/NotificationsPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = IdeaBranch.App.Views.NotificationsPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\NotificationsPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\NotificationsPage.xaml
+
 [C:/Source/CriticalInsight/IdeaBranch/src/IdeaBranch.App/Views/ResilienceTestPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = IdeaBranch.App.Views.ResilienceTestPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\ResilienceTestPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\ResilienceTestPage.xaml
 
+[C:/Source/CriticalInsight/IdeaBranch/src/IdeaBranch.App/Views/SettingsPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = IdeaBranch.App.Views.SettingsPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\SettingsPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\SettingsPage.xaml
+
+[C:/Source/CriticalInsight/IdeaBranch/src/IdeaBranch.App/Views/TimelinePage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = IdeaBranch.App.Views.TimelinePage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\TimelinePage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\TimelinePage.xaml
+
+[C:/Source/CriticalInsight/IdeaBranch/src/IdeaBranch.App/Views/TopicNodeDetailPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = IdeaBranch.App.Views.TopicNodeDetailPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\TopicNodeDetailPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\TopicNodeDetailPage.xaml
+
 [C:/Source/CriticalInsight/IdeaBranch/src/IdeaBranch.App/Views/TopicTreePage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = IdeaBranch.App.Views.TopicTreePage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\TopicTreePage.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\TopicTreePage.xaml
+
+[C:/Source/CriticalInsight/IdeaBranch/src/IdeaBranch.App/Views/VersionHistoryPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = IdeaBranch.App.Views.VersionHistoryPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\VersionHistoryPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\VersionHistoryPage.xaml

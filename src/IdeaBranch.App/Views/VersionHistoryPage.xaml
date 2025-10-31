@@ -2,9 +2,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels"
+             xmlns:res="clr-namespace:IdeaBranch.App.Resources"
              x:Class="IdeaBranch.App.Views.VersionHistoryPage"
              x:DataType="vm:VersionHistoryViewModel"
-             Title="Version History"
+             Title="{x:Static res:AppResources.VersionHistoryPage_Title}"
              AutomationId="VersionHistoryPage">
     <ScrollView>
         <Grid Padding="16" RowSpacing="16">
@@ -16,7 +17,7 @@
 
             <!-- Node title header -->
             <Label Grid.Row="0"
-                   Text="{Binding NodeTitle, StringFormat='History for: {0}'}"
+                   Text="{Binding NodeTitle, StringFormat={x:Static res:AppResources.VersionHistoryPage_HistoryFor}}"
                    FontSize="18"
                    FontAttributes="Bold"
                    IsVisible="{Binding NodeTitle}"
@@ -56,7 +57,7 @@
                                            FontSize="14"
                                            FontAttributes="Bold"
                                            TextColor="Gray" />
-                                    <Label Text="{Binding AuthorName, StringFormat='by {0}'}"
+                                    <Label Text="{Binding AuthorName, StringFormat={x:Static res:AppResources.VersionHistoryPage_ByAuthor}}"
                                            FontSize="12"
                                            TextColor="Gray"
                                            IsVisible="{Binding AuthorName}" />
@@ -70,7 +71,7 @@
 
                                 <!-- Prompt -->
                                 <VerticalStackLayout Spacing="4">
-                                    <Label Text="Prompt:" FontSize="12" FontAttributes="Bold" TextColor="Gray" />
+                                    <Label Text="{x:Static res:AppResources.VersionHistoryPage_PromptLabel}" FontSize="12" FontAttributes="Bold" TextColor="Gray" />
                                     <Label Text="{Binding Prompt}"
                                            FontSize="14"
                                            TextColor="Black" />
@@ -78,7 +79,7 @@
 
                                 <!-- Response -->
                                 <VerticalStackLayout Spacing="4">
-                                    <Label Text="Response:" FontSize="12" FontAttributes="Bold" TextColor="Gray" />
+                                    <Label Text="{x:Static res:AppResources.VersionHistoryPage_ResponseLabel}" FontSize="12" FontAttributes="Bold" TextColor="Gray" />
                                     <Label Text="{Binding Response}"
                                            FontSize="14"
                                            TextColor="Black"
@@ -93,7 +94,7 @@
 
             <!-- Empty state -->
             <Label Grid.Row="2"
-                   Text="No version history available for this node."
+                   Text="{x:Static res:AppResources.VersionHistoryPage_EmptyState}"
                    FontSize="14"
                    TextColor="Gray"
                    HorizontalOptions="Center"

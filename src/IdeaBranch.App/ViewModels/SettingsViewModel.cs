@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using IdeaBranch.App.Resources;
 using IdeaBranch.App.Services;
 
 namespace IdeaBranch.App.ViewModels;
@@ -28,15 +29,32 @@ public class SettingsViewModel : INotifyPropertyChanged
 
     private static readonly IReadOnlyList<string> CategoryList = new[]
     {
-        "User",
-        "Project",
-        "Display",
-        "Search/Filter",
-        "Integrations",
-        "Notifications",
-        "AI Safety",
-        "Import/Export"
+        AppResources.SettingsCategory_User,
+        AppResources.SettingsCategory_Project,
+        AppResources.SettingsCategory_Display,
+        AppResources.SettingsCategory_SearchFilter,
+        AppResources.SettingsCategory_Integrations,
+        AppResources.SettingsCategory_Notifications,
+        AppResources.SettingsCategory_AiSafety,
+        AppResources.SettingsCategory_ImportExport
     };
+    
+    // Internal category keys for converter matching (must match the original keys used in XAML)
+    public static string GetCategoryKey(string localizedCategory)
+    {
+        return localizedCategory switch
+        {
+            var c when c == AppResources.SettingsCategory_User => "User",
+            var c when c == AppResources.SettingsCategory_Project => "Project",
+            var c when c == AppResources.SettingsCategory_Display => "Display",
+            var c when c == AppResources.SettingsCategory_SearchFilter => "Search/Filter",
+            var c when c == AppResources.SettingsCategory_Integrations => "Integrations",
+            var c when c == AppResources.SettingsCategory_Notifications => "Notifications",
+            var c when c == AppResources.SettingsCategory_AiSafety => "AI Safety",
+            var c when c == AppResources.SettingsCategory_ImportExport => "Import/Export",
+            _ => localizedCategory // Fallback to original value
+        };
+    }
 
     private static readonly IReadOnlyList<string> AvailableLanguages = new[]
     {
@@ -86,7 +104,8 @@ public class SettingsViewModel : INotifyPropertyChanged
     public IReadOnlyList<string> ProviderOptions => ProviderList;
 
     /// <summary>
-    /// Gets or sets the currently selected category.
+    /// Gets or sets the currently selected category (localized display name).
+    /// Internally converts to/from internal key for XAML converter matching.
     /// </summary>
     public string SelectedCategory
     {
@@ -97,9 +116,16 @@ public class SettingsViewModel : INotifyPropertyChanged
             {
                 _selectedCategory = value;
                 OnPropertyChanged(nameof(SelectedCategory));
+                // Also notify about the internal key for converter matching
+                OnPropertyChanged(nameof(SelectedCategoryKey));
             }
         }
     }
+    
+    /// <summary>
+    /// Gets the internal key for the selected category (for XAML converter matching).
+    /// </summary>
+    public string SelectedCategoryKey => GetCategoryKey(_selectedCategory);
 
     /// <summary>
     /// Gets or sets the selected language.
