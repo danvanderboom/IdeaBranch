@@ -297,6 +297,147 @@ public class SqliteAnnotationsRepository : IAnnotationsRepository
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
+    public async Task<IReadOnlyList<Annotation>> QueryAsync(
+        Guid nodeId,
+        IReadOnlyList<Guid>? tagIds = null,
+        double? numericMin = null,
+        double? numericMax = null,
+        DateTime? temporalStart = null,
+        DateTime? temporalEnd = null,
+        (double minLat, double minLon, double maxLat, double maxLon)? geoBbox = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await Task.Run(() =>
+        {
+            var hasTagFilter = tagIds != null && tagIds.Count > 0;
+            var hasNumericFilter = numericMin.HasValue || numericMax.HasValue;
+            var hasTemporalFilter = temporalStart.HasValue || temporalEnd.HasValue;
+            var hasGeoFilter = geoBbox.HasValue;
+
+            // Build the base query with necessary joins
+            var queryParts = new List<string>();
+            var joinParts = new List<string>();
+            var whereParts = new List<string> { "a.NodeId = @NodeId" };
+
+            queryParts.Add("SELECT DISTINCT a.Id, a.NodeId, a.StartOffset, a.EndOffset, a.Comment, a.CreatedAt, a.UpdatedAt");
+            queryParts.Add("FROM annotations a");
+
+            // Add tag filter join if needed
+            if (hasTagFilter)
+            {
+                var tagIdStrings = tagIds!.Select(id => id.ToString()).ToList();
+                var placeholders = string.Join(",", tagIdStrings.Select((_, i) => $"@TagId{i}"));
+                joinParts.Add("INNER JOIN annotation_tags at ON a.Id = at.AnnotationId");
+                whereParts.Add($"at.TagId IN ({placeholders})");
+            }
+
+            // Add numeric filter join if needed
+            if (hasNumericFilter)
+            {
+                joinParts.Add("INNER JOIN annotation_values av_numeric ON a.Id = av_numeric.AnnotationId AND av_numeric.ValueType = 'numeric'");
+                if (numericMin.HasValue)
+                {
+                    whereParts.Add("av_numeric.NumericValue >= @NumericMin");
+                }
+                if (numericMax.HasValue)
+                {
+                    whereParts.Add("av_numeric.NumericValue <= @NumericMax");
+                }
+            }
+
+            // Add temporal filter join if needed
+            if (hasTemporalFilter)
+            {
+                joinParts.Add("INNER JOIN annotation_values av_temporal ON a.Id = av_temporal.AnnotationId AND av_temporal.ValueType = 'temporal'");
+                if (temporalStart.HasValue)
+                {
+                    whereParts.Add("av_temporal.TemporalValue >= @TemporalStart");
+                }
+                if (temporalEnd.HasValue)
+                {
+                    whereParts.Add("av_temporal.TemporalValue <= @TemporalEnd");
+                }
+            }
+
+            // Add geospatial filter join if needed
+            if (hasGeoFilter)
+            {
+                joinParts.Add("INNER JOIN annotation_values av_geo ON a.Id = av_geo.AnnotationId AND av_geo.ValueType = 'geospatial'");
+                // Use json_extract if JSON1 extension is available, otherwise skip geo filter
+                // SQLite's json_extract can handle JSON strings
+                whereParts.Add("json_extract(av_geo.GeospatialValue, '$.lat') >= @GeoMinLat");
+                whereParts.Add("json_extract(av_geo.GeospatialValue, '$.lat') <= @GeoMaxLat");
+                whereParts.Add("json_extract(av_geo.GeospatialValue, '$.lon') >= @GeoMinLon");
+                whereParts.Add("json_extract(av_geo.GeospatialValue, '$.lon') <= @GeoMaxLon");
+            }
+
+            // Combine query parts
+            if (joinParts.Count > 0)
+            {
+                queryParts.Add(string.Join(" ", joinParts));
+            }
+
+            queryParts.Add("WHERE " + string.Join(" AND ", whereParts));
+            queryParts.Add("ORDER BY a.StartOffset, a.EndOffset");
+
+            using var command = _connection.CreateCommand();
+            command.CommandText = string.Join("\n", queryParts);
+            command.Parameters.AddWithValue("@NodeId", nodeId.ToString());
+
+            // Add parameters for tag filter
+            if (hasTagFilter)
+            {
+                var tagIdStrings = tagIds!.Select(id => id.ToString()).ToList();
+                for (int i = 0; i < tagIdStrings.Count; i++)
+                {
+                    command.Parameters.AddWithValue($"@TagId{i}", tagIdStrings[i]);
+                }
+            }
+
+            // Add parameters for numeric filter
+            if (numericMin.HasValue)
+            {
+                command.Parameters.AddWithValue("@NumericMin", numericMin.Value);
+            }
+            if (numericMax.HasValue)
+            {
+                command.Parameters.AddWithValue("@NumericMax", numericMax.Value);
+            }
+
+            // Add parameters for temporal filter
+            if (temporalStart.HasValue)
+            {
+                command.Parameters.AddWithValue("@TemporalStart", temporalStart.Value.ToString("O"));
+            }
+            if (temporalEnd.HasValue)
+            {
+                command.Parameters.AddWithValue("@TemporalEnd", temporalEnd.Value.ToString("O"));
+            }
+
+            // Add parameters for geospatial filter
+            if (hasGeoFilter)
+            {
+                var (minLat, minLon, maxLat, maxLon) = geoBbox!.Value;
+                command.Parameters.AddWithValue("@GeoMinLat", minLat);
+                command.Parameters.AddWithValue("@GeoMaxLat", maxLat);
+                command.Parameters.AddWithValue("@GeoMinLon", minLon);
+                command.Parameters.AddWithValue("@GeoMaxLon", maxLon);
+            }
+
+            var annotations = new List<Annotation>();
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var annotation = ReadAnnotation(reader);
+                annotations.Add(annotation);
+            }
+
+            return annotations.AsReadOnly();
+        }, cancellationToken);
+    }
+
     /// <summary>
     /// Reads an Annotation from a data reader.
     /// </summary>

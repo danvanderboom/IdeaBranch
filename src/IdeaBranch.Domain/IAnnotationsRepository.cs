@@ -95,5 +95,27 @@ public interface IAnnotationsRepository
     /// <param name="valueId">The annotation value ID.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     Task<bool> DeleteValueAsync(Guid valueId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Queries annotations for a node with optional filters for tags, numeric ranges, temporal ranges, and geospatial bounding box.
+    /// </summary>
+    /// <param name="nodeId">The topic node ID.</param>
+    /// <param name="tagIds">Optional tag IDs to filter by.</param>
+    /// <param name="numericMin">Optional minimum numeric value filter.</param>
+    /// <param name="numericMax">Optional maximum numeric value filter.</param>
+    /// <param name="temporalStart">Optional start date/time filter (ISO 8601).</param>
+    /// <param name="temporalEnd">Optional end date/time filter (ISO 8601).</param>
+    /// <param name="geoBbox">Optional geospatial bounding box filter (minLat, minLon, maxLat, maxLon).</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A list of annotations matching all specified filters.</returns>
+    Task<IReadOnlyList<Annotation>> QueryAsync(
+        Guid nodeId,
+        IReadOnlyList<Guid>? tagIds = null,
+        double? numericMin = null,
+        double? numericMax = null,
+        DateTime? temporalStart = null,
+        DateTime? temporalEnd = null,
+        (double minLat, double minLon, double maxLat, double maxLon)? geoBbox = null,
+        CancellationToken cancellationToken = default);
 }
 
