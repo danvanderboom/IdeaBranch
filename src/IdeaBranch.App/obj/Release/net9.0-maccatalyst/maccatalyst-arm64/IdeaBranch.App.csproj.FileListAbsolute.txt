@@ -279,3 +279,12 @@ C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Release\net9.0-macca
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Release\net9.0-maccatalyst\maccatalyst-arm64\ref\IdeaBranch.App.dll
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-maccatalyst\maccatalyst-arm64\CriticalInsight.Data.dll
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-maccatalyst\maccatalyst-arm64\CriticalInsight.Data.pdb
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-maccatalyst\maccatalyst-arm64\Microsoft.Extensions.Configuration.Binder.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-maccatalyst\maccatalyst-arm64\Microsoft.Extensions.Diagnostics.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-maccatalyst\maccatalyst-arm64\Microsoft.Extensions.Diagnostics.Abstractions.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-maccatalyst\maccatalyst-arm64\Microsoft.Extensions.Http.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-maccatalyst\maccatalyst-arm64\Microsoft.Extensions.Http.Polly.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-maccatalyst\maccatalyst-arm64\Microsoft.Extensions.Options.ConfigurationExtensions.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-maccatalyst\maccatalyst-arm64\Polly.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-maccatalyst\maccatalyst-arm64\Polly.Core.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-maccatalyst\maccatalyst-arm64\Polly.Extensions.Http.dll

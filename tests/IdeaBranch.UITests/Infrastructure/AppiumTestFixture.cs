@@ -110,37 +110,48 @@ public abstract class AppiumTestFixture : IDisposable
     {
         var options = new AppiumOptions();
 
+        // For WinAppDriver, we need to use the exact capability keys it expects
+        // Use AddAdditionalAppiumOption with keys that will serialize correctly
         foreach (var capability in Configuration.Capabilities)
         {
             var key = capability.Key;
-            var value = capability.Value;
-
             var baseKey = key.Contains(":", StringComparison.Ordinal)
                 ? key.Substring(key.LastIndexOf(":", StringComparison.Ordinal) + 1)
                 : key;
-
-            var normalized = baseKey.Trim();
-            switch (normalized.ToLowerInvariant())
+            
+            try
             {
-                case "devicename":
-                    try { options.DeviceName = value?.ToString(); } catch { /* ignore if not supported */ }
-                    continue;
-                case "platformname":
-                    try { options.PlatformName = value?.ToString(); } catch { /* ignore if not supported */ }
-                    continue;
-                case "automationname":
-                    try { options.AutomationName = value?.ToString(); } catch { /* ignore if not supported */ }
-                    continue;
-                case "app":
-                    try { options.App = value?.ToString(); } catch { /* ignore if not supported */ }
-                    continue;
-                default:
-                    // Fall through to additional option for all others (including vendor-prefixed keys)
-                    break;
+                if (AppiumConfiguration.Platform == Platform.Windows)
+                {
+                    // For WinAppDriver, use lowercase base keys without "appium:" prefix for standard capabilities
+                    // WinAppDriver expects "app", "platformName", "deviceName", etc. (not "appium:app")
+                    if (!key.Contains(":", StringComparison.Ordinal))
+                    {
+                        var normalizedBase = baseKey.Trim().ToLowerInvariant();
+                        // Use the normalized base key (e.g., "app") - AppiumOptions will add the "appium:" prefix internally
+                        options.AddAdditionalAppiumOption(normalizedBase, capability.Value);
+                    }
+                    else
+                    {
+                        // For vendor-prefixed capabilities (like "ms:experimental-webdriver"), use original key
+                        options.AddAdditionalAppiumOption(capability.Key, capability.Value);
+                    }
+                }
+                else
+                {
+                    // For iOS, use original key as-is
+                    options.AddAdditionalAppiumOption(capability.Key, capability.Value);
+                }
             }
-
-            // Add as additional option with original key to preserve prefixes like "ms:" or "appium:"
-            options.AddAdditionalAppiumOption(key, value);
+            catch (ArgumentException ex) when (ex.Message.Contains("already an option") || ex.Message.Contains("Application property"))
+            {
+                // Capability already exists (e.g., if App property was set), skip it
+                // This is fine - the capability is already set correctly
+                if (baseKey.Equals("app", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.WriteLine($"Note: 'app' capability already set, skipping duplicate");
+                }
+            }
         }
 
         Driver = AppiumConfiguration.Platform switch

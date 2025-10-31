@@ -72,6 +72,47 @@ The UI tests use Appium for cross-platform UI automation:
   - Environment variable handling
   - Default path resolution
 
+## Quick Start
+
+### Automated Setup (Recommended)
+
+Use the setup script to automatically install and configure WinAppDriver:
+
+```powershell
+# Run setup script (checks prerequisites, installs WinAppDriver, starts service)
+.\tests\IdeaBranch.UITests\scripts\setup-appium.ps1 -Install -Start -Verify
+```
+
+This will:
+1. ✓ Check/install WinAppDriver
+2. ✓ Verify Developer Mode is enabled
+3. ✓ Build the app if needed
+4. ✓ Start WinAppDriver service
+5. ✓ Verify everything is ready
+
+### Manual Setup
+
+If you prefer to set up manually, see [Prerequisites](#prerequisites) below.
+
+### Enable and Run Tests
+
+After setup is complete:
+
+```powershell
+# Enable UI tests
+$env:ENABLE_UI_TESTS = "1"
+
+# Run tests
+dotnet test tests/IdeaBranch.UITests/IdeaBranch.UITests.csproj -c Debug
+```
+
+Or use the run script:
+
+```powershell
+$env:ENABLE_UI_TESTS = "1"
+.\tests\IdeaBranch.UITests\scripts\run-ui-tests.ps1 -Configuration Debug
+```
+
 ## Prerequisites
 
 ### Windows
@@ -80,7 +121,9 @@ The UI tests use Appium for cross-platform UI automation:
 3. Developer Mode enabled in Windows Settings
 4. Built MAUI app executable
 
-See [Appium Setup Guide](../../docs/testing/appium-setup.md) for detailed setup instructions.
+**Setup Options:**
+- **Automated**: Use `setup-appium.ps1` script (recommended) - see [Quick Start](#quick-start) above
+- **Manual**: See [Appium Setup Guide](../../docs/testing/appium-setup.md) for detailed instructions
 
 ## Running Tests
 
@@ -101,7 +144,27 @@ See [Appium Setup Guide](../../docs/testing/appium-setup.md) for detailed setup 
    dotnet test tests/IdeaBranch.UITests/IdeaBranch.UITests.csproj -c Debug
    ```
 
-### Using PowerShell Script
+### Using PowerShell Scripts
+
+#### Setup Script
+
+The setup script automates WinAppDriver installation and configuration:
+
+```powershell
+# Check setup status
+.\tests\IdeaBranch.UITests\scripts\setup-appium.ps1 -Verify
+
+# Install WinAppDriver (if not installed)
+.\tests\IdeaBranch.UITests\scripts\setup-appium.ps1 -Install
+
+# Start WinAppDriver service
+.\tests\IdeaBranch.UITests\scripts\setup-appium.ps1 -Start
+
+# Do everything: install, start, and verify
+.\tests\IdeaBranch.UITests\scripts\setup-appium.ps1 -Install -Start -Verify
+```
+
+#### Run Tests Script
 
 ```powershell
 .\tests\IdeaBranch.UITests\scripts\run-ui-tests.ps1 -Configuration Debug

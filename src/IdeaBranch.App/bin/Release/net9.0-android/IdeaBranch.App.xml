@@ -92,6 +92,52 @@
             Extracts Title from TopicNodePayload stored in ITreeNode.PayloadObject.
             </summary>
         </member>
+        <member name="T:IdeaBranch.App.Services.ExampleApiService">
+            <summary>
+            Example API service demonstrating resilience policies with real HTTP calls.
+            Uses httpbin.org for testing retry and circuit breaker behavior.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.ExampleApiService.GetTestDataAsync(System.Threading.CancellationToken)">
+            <summary>
+            Gets a test resource with automatic retry on transient errors.
+            Demonstrates idempotent operation (GET) with full resilience policy.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.ExampleApiService.PostTestDataAsync(System.Object,System.Threading.CancellationToken)">
+            <summary>
+            Simulates a POST operation with limited retry (non-idempotent).
+            Demonstrates that POST requests only retry on connection/timeout errors.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.ExampleApiService.TestRetryBehaviorAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Tests retry behavior with a status code endpoint.
+            httpbin.org/status/{code} returns the specified status code.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.ExampleApiService.TestCircuitBreakerAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Tests circuit breaker behavior by triggering multiple failures.
+            Use /status/500 to trigger circuit breaker.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.ExampleApiService.TestDelayAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Tests delay endpoint to see exponential backoff in action.
+            httpbin.org/delay/{seconds} waits before responding.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Services.TestResponse">
+            <summary>
+            Test response model for httpbin.org endpoints.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.ViewModels.ResilienceTestViewModel">
+            <summary>
+            ViewModel for ResilienceTestPage that demonstrates resilience policies.
+            </summary>
+        </member>
         <member name="T:IdeaBranch.App.ViewModels.TopicTreeViewModel">
             <summary>
             ViewModel for TopicTreePage that manages the TreeView projection and expansion state.

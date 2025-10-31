@@ -101,3 +101,12 @@ C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UITests\obj\Release\net9.0
 C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UITests\obj\Release\net9.0\IdeaBranch.UITests.pdb
 C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UITests\obj\Release\net9.0\IdeaBranch.UITests.genruntimeconfig.cache
 C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UITests\obj\Release\net9.0\ref\IdeaBranch.UITests.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UITests\bin\Release\net9.0\selenium-manager\linux\selenium-manager
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UITests\bin\Release\net9.0\selenium-manager\macos\selenium-manager
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UITests\bin\Release\net9.0\selenium-manager\windows\selenium-manager.exe
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UITests\bin\Release\net9.0\Appium.Net.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UITests\bin\Release\net9.0\SeleniumExtras.WaitHelpers.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UITests\bin\Release\net9.0\Microsoft.Win32.SystemEvents.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UITests\bin\Release\net9.0\WebDriver.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UITests\bin\Release\net9.0\System.Drawing.Common.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UITests\bin\Release\net9.0\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll

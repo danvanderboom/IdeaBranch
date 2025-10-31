@@ -520,3 +520,12 @@ C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Release\net9.0-windo
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Release\net9.0-windows10.0.19041.0\win10-x64\MultipleQualifiersPerDimensionFound.txt
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-windows10.0.19041.0\win10-x64\CriticalInsight.Data.dll
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-windows10.0.19041.0\win10-x64\CriticalInsight.Data.pdb
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-windows10.0.19041.0\win10-x64\Microsoft.Extensions.Configuration.Binder.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-windows10.0.19041.0\win10-x64\Microsoft.Extensions.Diagnostics.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-windows10.0.19041.0\win10-x64\Microsoft.Extensions.Diagnostics.Abstractions.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-windows10.0.19041.0\win10-x64\Microsoft.Extensions.Http.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-windows10.0.19041.0\win10-x64\Microsoft.Extensions.Http.Polly.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-windows10.0.19041.0\win10-x64\Microsoft.Extensions.Options.ConfigurationExtensions.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-windows10.0.19041.0\win10-x64\Polly.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-windows10.0.19041.0\win10-x64\Polly.Core.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-windows10.0.19041.0\win10-x64\Polly.Extensions.Http.dll

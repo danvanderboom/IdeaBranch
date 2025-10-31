@@ -460,3 +460,5 @@ C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Release\net9.0-andro
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Release\net9.0-android\stamp\_GenerateJavaStubs.stamp
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Release\net9.0-android\stamp\_GeneratePackageManagerJava.stamp
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Release\net9.0-android\stamp\_ResolveLibraryProjectImports.stamp
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-android\CriticalInsight.Data.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Release\net9.0-android\CriticalInsight.Data.pdb

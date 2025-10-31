@@ -1,4 +1,5 @@
 obj\Release\net9.0-android\android-arm64\aot\_Microsoft.Android.Resource.Designer.dll.so
+obj\Release\net9.0-android\android-arm64\aot\CriticalInsight.Data.dll.so
 obj\Release\net9.0-android\android-arm64\aot\IdeaBranch.Domain.dll.so
 obj\Release\net9.0-android\android-arm64\aot\IdeaBranch.Infrastructure.dll.so
 obj\Release\net9.0-android\android-arm64\aot\IdeaBranch.App.dll.so
@@ -6,6 +7,10 @@ obj\Release\net9.0-android\android-arm64\aot\Microsoft.Extensions.Configuration.
 obj\Release\net9.0-android\android-arm64\aot\Microsoft.Extensions.Configuration.Abstractions.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Microsoft.Extensions.DependencyInjection.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Microsoft.Extensions.DependencyInjection.Abstractions.dll.so
+obj\Release\net9.0-android\android-arm64\aot\Microsoft.Extensions.Diagnostics.dll.so
+obj\Release\net9.0-android\android-arm64\aot\Microsoft.Extensions.Diagnostics.Abstractions.dll.so
+obj\Release\net9.0-android\android-arm64\aot\Microsoft.Extensions.Http.dll.so
+obj\Release\net9.0-android\android-arm64\aot\Microsoft.Extensions.Http.Polly.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Microsoft.Extensions.Logging.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Microsoft.Extensions.Logging.Abstractions.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Microsoft.Extensions.Options.dll.so
@@ -15,6 +20,9 @@ obj\Release\net9.0-android\android-arm64\aot\Microsoft.Maui.Controls.Xaml.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Microsoft.Maui.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Microsoft.Maui.Essentials.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Microsoft.Maui.Graphics.dll.so
+obj\Release\net9.0-android\android-arm64\aot\Polly.dll.so
+obj\Release\net9.0-android\android-arm64\aot\Polly.Core.dll.so
+obj\Release\net9.0-android\android-arm64\aot\Polly.Extensions.Http.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Xamarin.AndroidX.Activity.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Xamarin.AndroidX.AppCompat.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Xamarin.AndroidX.AppCompat.AppCompatResources.dll.so
@@ -60,9 +68,14 @@ obj\Release\net9.0-android\android-arm64\aot\System.IO.Pipelines.dll.so
 obj\Release\net9.0-android\android-arm64\aot\System.Linq.Expressions.dll.so
 obj\Release\net9.0-android\android-arm64\aot\System.Linq.dll.so
 obj\Release\net9.0-android\android-arm64\aot\System.Memory.dll.so
+obj\Release\net9.0-android\android-arm64\aot\System.Net.Http.Json.dll.so
 obj\Release\net9.0-android\android-arm64\aot\System.Net.Http.dll.so
+obj\Release\net9.0-android\android-arm64\aot\System.Net.NameResolution.dll.so
+obj\Release\net9.0-android\android-arm64\aot\System.Net.NetworkInformation.dll.so
 obj\Release\net9.0-android\android-arm64\aot\System.Net.Primitives.dll.so
 obj\Release\net9.0-android\android-arm64\aot\System.Net.Requests.dll.so
+obj\Release\net9.0-android\android-arm64\aot\System.Net.Security.dll.so
+obj\Release\net9.0-android\android-arm64\aot\System.Net.Sockets.dll.so
 obj\Release\net9.0-android\android-arm64\aot\System.Numerics.Vectors.dll.so
 obj\Release\net9.0-android\android-arm64\aot\System.ObjectModel.dll.so
 obj\Release\net9.0-android\android-arm64\aot\System.Private.Uri.dll.so
@@ -75,11 +88,13 @@ obj\Release\net9.0-android\android-arm64\aot\System.Security.Cryptography.dll.so
 obj\Release\net9.0-android\android-arm64\aot\System.Text.Encodings.Web.dll.so
 obj\Release\net9.0-android\android-arm64\aot\System.Text.Json.dll.so
 obj\Release\net9.0-android\android-arm64\aot\System.Text.RegularExpressions.dll.so
+obj\Release\net9.0-android\android-arm64\aot\System.Threading.Channels.dll.so
 obj\Release\net9.0-android\android-arm64\aot\System.Threading.Thread.dll.so
 obj\Release\net9.0-android\android-arm64\aot\System.Threading.dll.so
 obj\Release\net9.0-android\android-arm64\aot\System.Web.HttpUtility.dll.so
 obj\Release\net9.0-android\android-arm64\aot\System.Xml.ReaderWriter.dll.so
 obj\Release\net9.0-android\android-arm64\aot\System.dll.so
+obj\Release\net9.0-android\android-arm64\aot\netstandard.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Java.Interop.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Mono.Android.Runtime.dll.so
 obj\Release\net9.0-android\android-arm64\aot\Mono.Android.dll.so
