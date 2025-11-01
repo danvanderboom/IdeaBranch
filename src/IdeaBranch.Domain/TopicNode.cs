@@ -164,14 +164,56 @@ public class TopicNode
 
         if (parseListItems && !string.IsNullOrWhiteSpace(response))
         {
-            var listItems = ParseListItems(response);
-            foreach (var item in listItems)
+            var listBlocks = ParseListBlocks(response);
+            
+            // If there's only one list block, use existing behavior (direct children)
+            if (listBlocks.Count == 1)
             {
-                // Only add if we don't already have a child with this prompt
-                if (!_children.Any(c => c.Prompt.Equals(item, StringComparison.OrdinalIgnoreCase)))
+                var block = listBlocks[0];
+                foreach (var item in block.Items)
                 {
-                    var childNode = new TopicNode(item.Trim());
-                    AddChild(childNode);
+                    // Only add if we don't already have a child with this prompt
+                    if (!_children.Any(c => c.Prompt.Equals(item, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        var childNode = new TopicNode(item.Trim());
+                        AddChild(childNode);
+                    }
+                }
+            }
+            else if (listBlocks.Count > 1)
+            {
+                // Multiple lists: create intermediate nodes
+                foreach (var block in listBlocks)
+                {
+                    var title = block.Title ?? $"List {block.Index}";
+                    var titleTrimmed = title.TrimEnd(':', '.', ' ').Trim();
+                    
+                    // Only create intermediate node if we don't already have a child with this title
+                    var existingIntermediate = _children.FirstOrDefault(c => 
+                        (c.Title?.Equals(titleTrimmed, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                        (c.Prompt?.Equals(titleTrimmed, StringComparison.OrdinalIgnoreCase) ?? false));
+                    
+                    TopicNode intermediateNode;
+                    if (existingIntermediate != null)
+                    {
+                        intermediateNode = existingIntermediate;
+                    }
+                    else
+                    {
+                        intermediateNode = new TopicNode(titleTrimmed, titleTrimmed);
+                        AddChild(intermediateNode);
+                    }
+                    
+                    // Add list items as children of the intermediate node
+                    foreach (var item in block.Items)
+                    {
+                        // Only add if we don't already have a child with this prompt
+                        if (!intermediateNode.Children.Any(c => c.Prompt.Equals(item, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            var childNode = new TopicNode(item.Trim());
+                            intermediateNode.AddChild(childNode);
+                        }
+                    }
                 }
             }
         }
@@ -190,6 +232,154 @@ public class TopicNode
             current = current.Parent;
         }
         return false;
+    }
+
+    /// <summary>
+    /// Represents a block of contiguous list items with an optional title.
+    /// </summary>
+    private class ListBlock
+    {
+        public string? Title { get; set; }
+        public List<string> Items { get; set; } = new();
+        public int Index { get; set; }
+    }
+
+    /// <summary>
+    /// Parses response text into blocks of list items, detecting intermediate titles.
+    /// Supports numbered lists (1., 2., etc.), bullet points (-, *, •), and line-separated items.
+    /// </summary>
+    private static List<ListBlock> ParseListBlocks(string response)
+    {
+        var blocks = new List<ListBlock>();
+        // Normalize line endings first, then split to avoid double empty strings from \r\n
+        var normalized = response.Replace("\r\n", "\n").Replace("\r", "\n");
+        var lines = normalized.Split('\n', StringSplitOptions.None);
+        
+        ListBlock? currentBlock = null;
+        string? pendingTitle = null;
+
+        for (int i = 0; i < lines.Length; i++)
+        {
+            var line = lines[i];
+            var trimmed = line.Trim();
+
+            // Empty lines close the current block (but preserve pending title for next block)
+            if (string.IsNullOrWhiteSpace(trimmed))
+            {
+                if (currentBlock != null && currentBlock.Items.Count > 0)
+                {
+                    // Current block is complete
+                    currentBlock = null;
+                }
+                // Don't clear pendingTitle here - it should be available for the next list block
+                continue;
+            }
+
+            // Check if this line is a list item
+            bool isListItem = false;
+            string? itemText = null;
+
+            // Match numbered lists: "1. Item", "2) Item", etc.
+            var numberedMatch = Regex.Match(trimmed, @"^\d+[.)]\s*(.+)$");
+            if (numberedMatch.Success)
+            {
+                isListItem = true;
+                itemText = numberedMatch.Groups[1].Value.Trim();
+            }
+
+            // Match bullet points: "- Item", "* Item", "• Item", etc.
+            if (!isListItem)
+            {
+                var bulletMatch = Regex.Match(trimmed, @"^[-*•]\s*(.+)$");
+                if (bulletMatch.Success)
+                {
+                    isListItem = true;
+                    itemText = bulletMatch.Groups[1].Value.Trim();
+                }
+            }
+
+            // If no list marker, treat as a standalone item if it's not too long
+            // (to avoid treating paragraphs as list items)
+            // Don't treat title-like lines (ending with colons or very short) as list items
+            if (!isListItem && trimmed.Length < 200 && !trimmed.EndsWith(':') && trimmed.Length > 10)
+            {
+                isListItem = true;
+                itemText = trimmed;
+            }
+
+            if (isListItem && !string.IsNullOrWhiteSpace(itemText))
+            {
+                // Start a new block if we don't have one (transition from non-list to list)
+                if (currentBlock == null)
+                {
+                    currentBlock = new ListBlock
+                    {
+                        Title = pendingTitle,
+                        Index = blocks.Count + 1
+                    };
+                    blocks.Add(currentBlock);
+                    pendingTitle = null;
+                }
+
+                // Only add if we don't already have this item
+                if (!currentBlock.Items.Any(item => item.Equals(itemText, StringComparison.OrdinalIgnoreCase)))
+                {
+                    currentBlock.Items.Add(itemText);
+                }
+            }
+            else
+            {
+                // Non-list line: this ends the current block and becomes a potential title for the next list block
+                if (currentBlock != null && currentBlock.Items.Count > 0)
+                {
+                    // Current block is complete
+                    currentBlock = null;
+                }
+
+                // This line becomes a potential title for the next list block
+                // Lines ending with colons are strong candidates for titles (headings)
+                if (trimmed.EndsWith(':'))
+                {
+                    // Remove the colon for the title
+                    pendingTitle = trimmed.Substring(0, trimmed.Length - 1).Trim();
+                }
+                else if (trimmed.Length <= 100 && !trimmed.EndsWith('.') && !trimmed.EndsWith('!') && !trimmed.EndsWith('?'))
+                {
+                    // Use it if it's not too long and doesn't look like a paragraph
+                    pendingTitle = trimmed;
+                }
+                else if (trimmed.Length <= 80)
+                {
+                    // Allow slightly longer titles even with punctuation
+                    pendingTitle = trimmed;
+                }
+                else
+                {
+                    // Clear pending title if it looks like a paragraph
+                    pendingTitle = null;
+                }
+            }
+        }
+
+        // Filter out empty blocks (blocks with no items)
+        blocks = blocks.Where(b => b.Items.Count > 0).ToList();
+        
+        // Ensure all blocks have titles (fallback to "List N")
+        for (int i = 0; i < blocks.Count; i++)
+        {
+            if (string.IsNullOrWhiteSpace(blocks[i].Title))
+            {
+                blocks[i].Title = $"List {i + 1}";
+            }
+            else
+            {
+                // Trim any trailing colons from titles (shouldn't be needed but just in case)
+                // Title is guaranteed to be non-null here because IsNullOrWhiteSpace would have caught null
+                blocks[i].Title = blocks[i].Title!.TrimEnd(':', ' ', '\t');
+            }
+        }
+
+        return blocks;
     }
 
     /// <summary>

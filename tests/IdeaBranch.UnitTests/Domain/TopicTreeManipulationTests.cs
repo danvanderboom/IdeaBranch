@@ -156,5 +156,108 @@ public class TopicTreeManipulationTests
         act.Should().Throw<InvalidOperationException>()
             .WithMessage("*already has a parent*");
     }
+
+    [Test]
+    public void ParseMultiListResponse_WithHeadings_ShouldCreateIntermediateNodesWithTitles()
+    {
+        // Arrange
+        var node = new TopicNode("Parent prompt", "Parent");
+        var response = @"First Category:
+- First item
+- Second item
+
+Second Category:
+1. Third item
+2. Fourth item";
+
+        // Act
+        node.SetResponse(response, parseListItems: true);
+
+        // Assert
+        node.Children.Count.Should().Be(2);
+        
+        // First intermediate node with title from heading
+        var firstIntermediate = node.Children[0];
+        firstIntermediate.Prompt.Should().Be("First Category");
+        firstIntermediate.Title.Should().Be("First Category");
+        firstIntermediate.Children.Count.Should().Be(2);
+        firstIntermediate.Children[0].Prompt.Should().Be("First item");
+        firstIntermediate.Children[1].Prompt.Should().Be("Second item");
+        
+        // Second intermediate node with title from heading
+        var secondIntermediate = node.Children[1];
+        secondIntermediate.Prompt.Should().Be("Second Category");
+        secondIntermediate.Title.Should().Be("Second Category");
+        secondIntermediate.Children.Count.Should().Be(2);
+        secondIntermediate.Children[0].Prompt.Should().Be("Third item");
+        secondIntermediate.Children[1].Prompt.Should().Be("Fourth item");
+    }
+
+    [Test]
+    public void ParseMultiListResponse_WithoutHeadings_ShouldUseListNAsTitles()
+    {
+        // Arrange
+        var node = new TopicNode("Parent prompt", "Parent");
+        var response = @"- First item
+- Second item
+
+1. Third item
+2. Fourth item
+
+* Fifth item
+* Sixth item";
+
+        // Act
+        node.SetResponse(response, parseListItems: true);
+
+        // Assert
+        node.Children.Count.Should().Be(3);
+        
+        // First intermediate node with default title
+        var firstIntermediate = node.Children[0];
+        firstIntermediate.Prompt.Should().Be("List 1");
+        firstIntermediate.Title.Should().Be("List 1");
+        firstIntermediate.Children.Count.Should().Be(2);
+        firstIntermediate.Children[0].Prompt.Should().Be("First item");
+        firstIntermediate.Children[1].Prompt.Should().Be("Second item");
+        
+        // Second intermediate node with default title
+        var secondIntermediate = node.Children[1];
+        secondIntermediate.Prompt.Should().Be("List 2");
+        secondIntermediate.Title.Should().Be("List 2");
+        secondIntermediate.Children.Count.Should().Be(2);
+        secondIntermediate.Children[0].Prompt.Should().Be("Third item");
+        secondIntermediate.Children[1].Prompt.Should().Be("Fourth item");
+        
+        // Third intermediate node with default title
+        var thirdIntermediate = node.Children[2];
+        thirdIntermediate.Prompt.Should().Be("List 3");
+        thirdIntermediate.Title.Should().Be("List 3");
+        thirdIntermediate.Children.Count.Should().Be(2);
+        thirdIntermediate.Children[0].Prompt.Should().Be("Fifth item");
+        thirdIntermediate.Children[1].Prompt.Should().Be("Sixth item");
+    }
+
+    [Test]
+    public void ParseSingleListResponse_ShouldCreateDirectChildren()
+    {
+        // Arrange
+        var node = new TopicNode("Parent prompt", "Parent");
+        var response = @"- First item
+- Second item
+- Third item";
+
+        // Act
+        node.SetResponse(response, parseListItems: true);
+
+        // Assert - single list should create direct children (backward compatibility)
+        node.Children.Count.Should().Be(3);
+        node.Children[0].Prompt.Should().Be("First item");
+        node.Children[1].Prompt.Should().Be("Second item");
+        node.Children[2].Prompt.Should().Be("Third item");
+        
+        // No intermediate nodes should be created
+        node.Children.Should().NotContain(c => c.Title == "List 1");
+    }
 }
 
