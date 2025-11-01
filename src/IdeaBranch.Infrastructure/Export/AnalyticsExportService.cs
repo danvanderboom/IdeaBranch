@@ -376,6 +376,7 @@ public class AnalyticsExportService
         ExportOptions? options = null,
         VisualizationTheme? theme = null,
         IReadOnlyList<(Guid fromEventId, Guid toEventId)>? connections = null,
+        bool includeStatisticsPanel = false,
         CancellationToken cancellationToken = default)
     {
         return await Task.Run(() =>
@@ -486,6 +487,12 @@ public class AnalyticsExportService
                 }
             }
 
+            // Draw statistics panel if requested
+            if (includeStatisticsPanel)
+            {
+                DrawTimelineStatsPanelSkia(canvas, data, width, height);
+            }
+
             return EncodeSurfaceToPng(surface);
         }, cancellationToken);
     }
@@ -500,6 +507,7 @@ public class AnalyticsExportService
         ExportOptions? options = null,
         VisualizationTheme? theme = null,
         IReadOnlyList<(Guid fromEventId, Guid toEventId)>? connections = null,
+        bool includeStatisticsPanel = false,
         CancellationToken cancellationToken = default)
     {
         var exportOpts = options ?? new ExportOptions { Width = width, Height = height };
@@ -576,9 +584,74 @@ public class AnalyticsExportService
                 }
             }
 
+            if (includeStatisticsPanel)
+            {
+                DrawTimelineStatsPanelSvg(writer, data, exportOpts.ScaledWidth, exportOpts.ScaledHeight, exportOpts.DpiScale);
+            }
+
             writer.EndSvg();
             return writer.GetContent();
         }, cancellationToken);
+    }
+
+    private void DrawTimelineStatsPanelSkia(SKCanvas canvas, TimelineData data, int width, int height)
+    {
+        var padding = 10f;
+        var panelWidth = Math.Min(220f, width * 0.25f);
+        var panelHeight = 12f + 5 * 18f; // header + ~5 lines
+        var x = width - panelWidth - padding;
+        var y = padding;
+
+        using (var bg = new SKPaint { Color = new SKColor(255, 255, 255, 230), IsAntialias = true, Style = SKPaintStyle.Fill })
+        {
+            canvas.DrawRect(x, y, panelWidth, panelHeight, bg);
+        }
+
+        using var text = new SKPaint { Color = SKColors.Black, IsAntialias = true, TextSize = 12f };
+        canvas.DrawText("Statistics", x + 8, y + 18, text);
+
+        var events = data.Bands.SelectMany(b => b.Events);
+        var counts = events.GroupBy(e => e.EventType)
+            .Select(g => (Type: g.Key, Count: g.Count()))
+            .OrderByDescending(t => t.Count)
+            .ToList();
+
+        float lineY = y + 36;
+        foreach (var (type, count) in counts)
+        {
+            canvas.DrawText($"{type}: {count}", x + 8, lineY, text);
+            lineY += 18f;
+        }
+    }
+
+    private void DrawTimelineStatsPanelSvg(SvgWriter writer, TimelineData data, float width, float height, int dpiScale)
+    {
+        var padding = 10f * dpiScale;
+        var panelWidth = Math.Min(220f * dpiScale, width * 0.25f);
+        var panelHeight = 12f * dpiScale + 5 * 18f * dpiScale;
+        var x = width - panelWidth - padding;
+        var y = padding;
+
+        using (var bg = new SKPaint { Color = new SKColor(255, 255, 255, 230), IsAntialias = true, Style = SKPaintStyle.Fill })
+        {
+            writer.DrawRect(x, y, panelWidth, panelHeight, bg);
+        }
+
+        using var text = new SKPaint { Color = SKColors.Black, IsAntialias = true, TextSize = 12f * dpiScale };
+        writer.DrawText("Statistics", x + 8 * dpiScale, y + 18 * dpiScale, text);
+
+        var events = data.Bands.SelectMany(b => b.Events);
+        var counts = events.GroupBy(e => e.EventType)
+            .Select(g => (Type: g.Key, Count: g.Count()))
+            .OrderByDescending(t => t.Count)
+            .ToList();
+
+        float lineY = y + 36 * dpiScale;
+        foreach (var (type, count) in counts)
+        {
+            writer.DrawText($"{type}: {count}", x + 8 * dpiScale, lineY, text);
+            lineY += 18f * dpiScale;
+        }
     }
 
     /// <summary>
