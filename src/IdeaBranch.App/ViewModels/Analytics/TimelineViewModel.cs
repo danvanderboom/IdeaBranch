@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CriticalInsight.Data.Hierarchical;
 using IdeaBranch.Domain;
 using IdeaBranch.Domain.Timeline;
 using IdeaBranch.Infrastructure.Export;
@@ -41,6 +42,8 @@ public class TimelineViewModel : INotifyPropertyChanged
     private bool _groupByType = false;
     private Dictionary<string, int>? _eventTypeCounts;
     private Dictionary<string, List<(DateTime Date, int Count)>>? _eventTypeTrends;
+    private string? _highlightedEventType;
+    private bool _isExporting = false;
 
     /// <summary>
     /// Initializes a new instance with required services.
@@ -64,8 +67,10 @@ public class TimelineViewModel : INotifyPropertyChanged
         ApplyThisMonthCommand = new Command(() => ApplyThisMonth());
         ApplyThisYearCommand = new Command(() => ApplyThisYear());
         NavigateToNodeCommand = new Command<Guid?>(async (nodeId) => await NavigateToNodeAsync(nodeId));
+        NavigateToAnnotationCommand = new Command<Guid?>(async (nodeId) => await NavigateToAnnotationAsync(nodeId));
         CloseEventDetailsCommand = new Command(() => SelectedEvent = null);
         ToggleGroupByTypeCommand = new Command(() => GroupByType = !GroupByType);
+        HighlightEventTypeCommand = new Command<string?>(type => HighlightedEventType = type == HighlightedEventType ? null : type);
     }
 
     /// <summary>
@@ -461,6 +466,7 @@ public class TimelineViewModel : INotifyPropertyChanged
                 _eventTypeCounts = value;
                 OnPropertyChanged(nameof(EventTypeCounts));
                 OnPropertyChanged(nameof(EventTypeCountsString));
+                OnPropertyChanged(nameof(EventTypeTrendsString));
             }
         }
     }
@@ -480,6 +486,51 @@ public class TimelineViewModel : INotifyPropertyChanged
     }
 
     /// <summary>
+    /// Gets the event type trends as a formatted string.
+    /// </summary>
+    public string EventTypeTrendsString
+    {
+        get
+        {
+            if (EventTypeTrends == null || EventTypeTrends.Count == 0)
+                return "No trends available";
+
+            var trendLines = new List<string>();
+            foreach (var kvp in EventTypeTrends.OrderBy(k => k.Key))
+            {
+                var trendData = kvp.Value.OrderBy(t => t.Date).Take(10); // Show last 10 data points
+                var trendValues = trendData.Select(t => t.Count).ToArray();
+                var maxValue = trendValues.Any() ? trendValues.Max() : 0;
+                var sparkline = maxValue > 0
+                    ? string.Join(" ", trendValues.Select(v => GetSparklineChar(v, maxValue)))
+                    : "─";
+                
+                trendLines.Add($"{kvp.Key}: {sparkline} (max: {maxValue})");
+            }
+
+            return string.Join(Environment.NewLine, trendLines);
+        }
+    }
+
+    /// <summary>
+    /// Gets a sparkline character for a value.
+    /// </summary>
+    private static string GetSparklineChar(int value, int maxValue)
+    {
+        if (maxValue == 0) return "─";
+        
+        var normalized = (double)value / maxValue;
+        if (normalized < 0.125) return "▁";
+        if (normalized < 0.25) return "▂";
+        if (normalized < 0.375) return "▃";
+        if (normalized < 0.5) return "▄";
+        if (normalized < 0.625) return "▅";
+        if (normalized < 0.75) return "▆";
+        if (normalized < 0.875) return "▇";
+        return "█";
+    }
+
+    /// <summary>
     /// Gets the event type trends for statistics.
     /// </summary>
     public Dictionary<string, List<(DateTime Date, int Count)>>? EventTypeTrends
@@ -491,6 +542,7 @@ public class TimelineViewModel : INotifyPropertyChanged
             {
                 _eventTypeTrends = value;
                 OnPropertyChanged(nameof(EventTypeTrends));
+                OnPropertyChanged(nameof(EventTypeTrendsString));
             }
         }
     }
@@ -501,6 +553,11 @@ public class TimelineViewModel : INotifyPropertyChanged
     public Command<Guid?> NavigateToNodeCommand { get; }
 
     /// <summary>
+    /// Gets the command to navigate to an annotation.
+    /// </summary>
+    public Command<Guid?> NavigateToAnnotationCommand { get; }
+
+    /// <summary>
     /// Gets the command to close event details.
     /// </summary>
     public Command CloseEventDetailsCommand { get; }
@@ -509,6 +566,44 @@ public class TimelineViewModel : INotifyPropertyChanged
     /// Gets the command to toggle grouping by type.
     /// </summary>
     public Command ToggleGroupByTypeCommand { get; }
+
+    /// <summary>
+    /// Gets or sets the highlighted event type.
+    /// </summary>
+    public string? HighlightedEventType
+    {
+        get => _highlightedEventType;
+        set
+        {
+            if (_highlightedEventType != value)
+            {
+                _highlightedEventType = value;
+                OnPropertyChanged(nameof(HighlightedEventType));
+                OnPropertyChanged(nameof(TimelineEventViews));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the command to highlight an event type.
+    /// </summary>
+    public Command<string?> HighlightEventTypeCommand { get; }
+
+    /// <summary>
+    /// Gets or sets whether an export is in progress.
+    /// </summary>
+    public bool IsExporting
+    {
+        get => _isExporting;
+        private set
+        {
+            if (_isExporting != value)
+            {
+                _isExporting = value;
+                OnPropertyChanged(nameof(IsExporting));
+            }
+        }
+    }
 
     /// <summary>
     /// Generates the timeline.
@@ -606,29 +701,56 @@ public class TimelineViewModel : INotifyPropertyChanged
         var counts = new Dictionary<string, int>();
         var trends = new Dictionary<string, List<(DateTime Date, int Count)>>();
 
+        // Determine auto-binning based on visible date range
+        var visibleStart = StartDate ?? TimelineData.Events.Min(e => e.Timestamp);
+        var visibleEnd = EndDate ?? TimelineData.Events.Max(e => e.Timestamp);
+        var timeSpan = visibleEnd - visibleStart;
+        
+        // Auto-select binning: day for < 3 months, week for < 2 years, month otherwise
+        bool binByWeek = timeSpan.TotalDays >= 90 && timeSpan.TotalDays < 730;
+        bool binByMonth = timeSpan.TotalDays >= 730;
+
         foreach (var evt in TimelineData.Events)
         {
             var typeName = evt.EventType.ToString();
             counts.TryGetValue(typeName, out var count);
             counts[typeName] = count + 1;
 
-            // Group by date for trends (day precision)
-            var eventDate = evt.Timestamp.Date;
+            // Group by date for trends (auto-binned by day/week/month)
+            DateTime binDate;
+            if (binByMonth)
+            {
+                // Bin by month (first day of month)
+                binDate = new DateTime(evt.Timestamp.Year, evt.Timestamp.Month, 1);
+            }
+            else if (binByWeek)
+            {
+                // Bin by week (Monday of the week)
+                var dayOfWeek = (int)evt.Timestamp.DayOfWeek;
+                var monday = evt.Timestamp.AddDays(-(dayOfWeek == 0 ? 6 : dayOfWeek - 1));
+                binDate = monday.Date;
+            }
+            else
+            {
+                // Bin by day
+                binDate = evt.Timestamp.Date;
+            }
+
             if (!trends.ContainsKey(typeName))
             {
                 trends[typeName] = new List<(DateTime Date, int Count)>();
             }
 
             var trendList = trends[typeName];
-            var existingEntry = trendList.FirstOrDefault(e => e.Date == eventDate);
+            var existingEntry = trendList.FirstOrDefault(e => e.Date == binDate);
             if (existingEntry.Date == default)
             {
-                trendList.Add((eventDate, 1));
+                trendList.Add((binDate, 1));
             }
             else
             {
                 var index = trendList.IndexOf(existingEntry);
-                trendList[index] = (eventDate, existingEntry.Count + 1);
+                trendList[index] = (binDate, existingEntry.Count + 1);
             }
         }
 
@@ -662,11 +784,21 @@ public class TimelineViewModel : INotifyPropertyChanged
                 return;
             }
 
-            // Find and navigate to the node
-            var domainNode = topicTreeViewModel.FindDomainNode(nodeId.Value);
-            if (domainNode != null)
+            // Find ITreeNode by domain node ID in the projected collection
+            ITreeNode? treeNode = null;
+            foreach (var node in topicTreeViewModel.ProjectedCollection)
             {
-                await topicTreeViewModel.EditNodeAsync(domainNode);
+                var payload = IdeaBranch.App.ViewModels.TopicTreeViewModel.GetPayload(node);
+                if (payload?.DomainNodeId == nodeId.Value)
+                {
+                    treeNode = node;
+                    break;
+                }
+            }
+
+            if (treeNode != null)
+            {
+                await topicTreeViewModel.EditNodeAsync(treeNode);
             }
             else
             {
@@ -681,6 +813,123 @@ public class TimelineViewModel : INotifyPropertyChanged
     }
 
     /// <summary>
+    /// Navigates to an annotation for annotation events.
+    /// </summary>
+    private async Task NavigateToAnnotationAsync(Guid? nodeId)
+    {
+        if (!nodeId.HasValue || SelectedEvent == null || !SelectedEvent.IsAnnotationEvent)
+            return;
+
+        try
+        {
+            var services = Application.Current?.Handler?.MauiContext?.Services;
+            var annotationsRepository = services?.GetService<IAnnotationsRepository>();
+            var tagTaxonomyRepository = services?.GetService<ITagTaxonomyRepository>();
+            
+            if (annotationsRepository == null)
+            {
+                ErrorMessage = "Annotations repository not available.";
+                return;
+            }
+
+            // Get annotations for this node
+            var annotations = await annotationsRepository.GetByNodeIdAsync(nodeId.Value);
+            
+            if (annotations.Count == 0)
+            {
+                // No annotations found, navigate to node instead
+                await NavigateToNodeAsync(nodeId);
+                return;
+            }
+
+            // Try to find annotation that matches the event timestamp/details
+            Annotation? matchingAnnotation = null;
+            var eventTimestamp = SelectedEvent.When.Start.Date; // TemporalInstant.Date is DateTime
+            var eventDetails = SelectedEvent.Details;
+
+            // First try to match by timestamp (within 1 second)
+            matchingAnnotation = annotations.FirstOrDefault(a => 
+                Math.Abs((a.CreatedAt - eventTimestamp).TotalSeconds) < 1 ||
+                Math.Abs((a.UpdatedAt - eventTimestamp).TotalSeconds) < 1);
+
+            // If no timestamp match, try to match by comment/details
+            if (matchingAnnotation == null && !string.IsNullOrEmpty(eventDetails))
+            {
+                matchingAnnotation = annotations.FirstOrDefault(a => 
+                    !string.IsNullOrEmpty(a.Comment) && 
+                    a.Comment.Contains(eventDetails, StringComparison.OrdinalIgnoreCase));
+            }
+
+            // If still no match, use the first annotation
+            matchingAnnotation ??= annotations[0];
+
+            // Get topic node to access response text
+            var topicTreeViewModel = services?.GetService<IdeaBranch.App.ViewModels.TopicTreeViewModel>();
+            if (topicTreeViewModel == null)
+            {
+                ErrorMessage = "Topic tree view model not available.";
+                return;
+            }
+
+            // Find ITreeNode by domain node ID in the projected collection
+            ITreeNode? treeNode = null;
+            foreach (var node in topicTreeViewModel.ProjectedCollection)
+            {
+                var payload = IdeaBranch.App.ViewModels.TopicTreeViewModel.GetPayload(node);
+                if (payload?.DomainNodeId == nodeId.Value)
+                {
+                    treeNode = node;
+                    break;
+                }
+            }
+
+            if (treeNode == null)
+            {
+                ErrorMessage = $"Node with ID {nodeId} not found.";
+                return;
+            }
+
+            // Get domain node from ITreeNode
+            var domainNode = topicTreeViewModel.GetDomainNode(treeNode);
+            if (domainNode == null)
+            {
+                ErrorMessage = $"Node with ID {nodeId} not found.";
+                return;
+            }
+
+            // Get selected text from node response
+            var response = domainNode.Response ?? string.Empty;
+            var startOffset = Math.Min(matchingAnnotation.StartOffset, response.Length);
+            var endOffset = Math.Min(matchingAnnotation.EndOffset, response.Length);
+            var selectedText = startOffset < endOffset && endOffset <= response.Length
+                ? response.Substring(startOffset, endOffset - startOffset)
+                : string.Empty;
+
+            // Create annotation edit view model and navigate
+            var annotationViewModel = new ViewModels.AnnotationEditViewModel(
+                matchingAnnotation,
+                selectedText,
+                annotationsRepository,
+                tagTaxonomyRepository);
+
+            var annotationPage = new Views.AnnotationEditPage(annotationViewModel);
+            
+            // Get current page to navigate from
+            var window = Application.Current?.Windows.FirstOrDefault();
+            var currentPage = window?.Page;
+            if (currentPage != null)
+            {
+                await currentPage.Navigation.PushAsync(annotationPage);
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Navigation to annotation failed: {ex.Message}";
+            System.Diagnostics.Debug.WriteLine($"Annotation navigation error: {ex.Message}");
+        }
+    }
+
+    /// <summary>
     /// Exports timeline data to JSON with all required fields.
     /// </summary>
     public async Task ExportJsonAsync()
@@ -690,6 +939,9 @@ public class TimelineViewModel : INotifyPropertyChanged
 
         try
         {
+            IsExporting = true;
+            ErrorMessage = null;
+
             var json = await _exportService.ExportTimelineToJsonAsync(TimelineData, includeAllFields: true);
             
             var fileName = $"timeline_{DateTime.UtcNow:yyyyMMddHHmmss}.json";
@@ -707,6 +959,10 @@ public class TimelineViewModel : INotifyPropertyChanged
             ErrorMessage = $"Export failed: {ex.Message}";
             System.Diagnostics.Debug.WriteLine($"Export error: {ex.Message}");
         }
+        finally
+        {
+            IsExporting = false;
+        }
     }
 
     /// <summary>
@@ -719,6 +975,9 @@ public class TimelineViewModel : INotifyPropertyChanged
 
         try
         {
+            IsExporting = true;
+            ErrorMessage = null;
+
             var csv = await _exportService.ExportTimelineToCsvAsync(TimelineData, includeAllFields: true);
             
             var fileName = $"timeline_{DateTime.UtcNow:yyyyMMddHHmmss}.csv";
@@ -735,6 +994,10 @@ public class TimelineViewModel : INotifyPropertyChanged
         {
             ErrorMessage = $"Export failed: {ex.Message}";
             System.Diagnostics.Debug.WriteLine($"Export error: {ex.Message}");
+        }
+        finally
+        {
+            IsExporting = false;
         }
     }
 

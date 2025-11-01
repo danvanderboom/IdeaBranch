@@ -128,8 +128,8 @@
                         <!-- Interactive SkiaSharp Timeline -->
                         <controls:SkiaTimelineView x:Name="TimelineView"
                                                   Events="{Binding TimelineEventViews}"
-                                                  SelectedEvent="{Binding SelectedEvent}"
                                                   GroupByType="{Binding GroupByType}"
+                                                  HighlightedType="{Binding HighlightedEventType}"
                                                   HeightRequest="400" />
 
                         <!-- Statistics Module -->
@@ -144,7 +144,24 @@
                                 <!-- Event Type Counts -->
                                 <VerticalStackLayout IsVisible="{Binding EventTypeCounts, Converter={StaticResource IsNotNullConverter}}">
                                     <Label Text="Counts by Type:" FontSize="14" FontAttributes="Bold" />
-                                    <Label Text="{Binding EventTypeCountsString}" FontSize="12" />
+                                    <VerticalStackLayout Spacing="3">
+                                        <Frame Padding="5" HasShadow="False" BorderColor="{StaticResource Gray500}" Margin="0,2">
+                                            <VerticalStackLayout Spacing="3">
+                                                <Label Text="{Binding EventTypeCountsString}" FontSize="12" FontFamily="Courier New">
+                                                    <Label.GestureRecognizers>
+                                                        <TapGestureRecognizer Tapped="OnStatItemTapped" />
+                                                    </Label.GestureRecognizers>
+                                                </Label>
+                                                <Label Text="(Click a type to highlight on timeline)" FontSize="10" TextColor="Gray" FontAttributes="Italic" />
+                                            </VerticalStackLayout>
+                                        </Frame>
+                                    </VerticalStackLayout>
+                                </VerticalStackLayout>
+                                
+                                <!-- Trend Visualization -->
+                                <VerticalStackLayout IsVisible="{Binding EventTypeTrends, Converter={StaticResource IsNotNullConverter}}">
+                                    <Label Text="Trends:" FontSize="14" FontAttributes="Bold" />
+                                    <Label Text="{Binding EventTypeTrendsString}" FontSize="12" />
                                 </VerticalStackLayout>
                             </VerticalStackLayout>
                         </Border>
@@ -191,14 +208,35 @@
                                        IsVisible="{Binding SelectedEvent.NodeId, Converter={StaticResource IsNotNullConverter}}"
                                        BackgroundColor="Blue"
                                        TextColor="White" />
+                                
+                                <!-- Annotation Link (for annotation events, open the annotation) -->
+                                <Button Text="View Annotation"
+                                       Command="{Binding NavigateToAnnotationCommand}"
+                                       CommandParameter="{Binding SelectedEvent.NodeId}"
+                                       IsVisible="{Binding SelectedEvent.IsAnnotationEvent}"
+                                       BackgroundColor="Green"
+                                       TextColor="White" />
                             </VerticalStackLayout>
                         </Border>
 
                         <!-- Export Buttons -->
                         <HorizontalStackLayout Spacing="10">
-                            <Button Text="Export JSON" Command="{Binding ExportJsonCommand}" />
-                            <Button Text="Export CSV" Command="{Binding ExportCsvCommand}" />
-                            <Button Text="Export PNG" Command="{Binding ExportPngCommand}" />
+                            <Button Text="Export JSON" 
+                                   Command="{Binding ExportJsonCommand}" 
+                                   IsEnabled="{Binding IsExporting, Converter={StaticResource InvertedBoolConverter}}" />
+                            <Button Text="Export CSV" 
+                                   Command="{Binding ExportCsvCommand}" 
+                                   IsEnabled="{Binding IsExporting, Converter={StaticResource InvertedBoolConverter}}" />
+                            <Button Text="Export PNG" 
+                                   Command="{Binding ExportPngCommand}" 
+                                   IsEnabled="{Binding IsExporting, Converter={StaticResource InvertedBoolConverter}}" />
+                            <ActivityIndicator IsRunning="{Binding IsExporting}" 
+                                              IsVisible="{Binding IsExporting}" 
+                                              HeightRequest="20" 
+                                              WidthRequest="20" />
+                            <Label Text="Exporting..." 
+                                  IsVisible="{Binding IsExporting}" 
+                                  VerticalOptions="Center" />
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
                 </Border>
