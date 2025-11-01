@@ -80,7 +80,8 @@ Our testing strategy uses multiple layers:
 - **TemporalRangeTests** (18 tests): Point/Duration factory methods, DateTime overloads, validation (end before start), edge cases
 - **TimelineEventViewTests** (12 tests): Domain event conversion, null handling, tags, constructors, record equality
 - **TimelineRendererTests** (11 tests): Clustering algorithms, visible event filtering, boundary conditions, pixel density scenarios
-- **Total**: 52 timeline tests (all passing)
+- **TimelineServiceTests** (17 tests): Basic timeline generation, grouping, date filtering, metadata; advanced filtering (event types, tag filtering with descendants, search queries, faceted boolean logic)
+- **Total**: 69 timeline tests (all passing)
 
 **Focus areas**:
 - Domain models and business logic

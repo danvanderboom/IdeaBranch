@@ -170,9 +170,10 @@ Timeline Analytics supports powerful faceted filtering with boolean logic:
   - Event type filtering (Created/Updated)
   - Tag filtering with hierarchical support (per-tag descendant inclusion)
   - Date range filtering (presets or custom)
-  - Free-text search across event metadata
+  - Free-text search across event metadata (including tag names/paths)
   - All filters combined with AND logic across facets, OR logic within facets
 - **Metadata**: Includes total event count, earliest and latest event timestamps, and applied filters
+- **Performance**: Query execution time and event reduction percentage are logged for performance monitoring
 
 ### Map Visualization
 
