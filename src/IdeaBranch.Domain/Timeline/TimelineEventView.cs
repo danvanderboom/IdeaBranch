@@ -55,6 +55,11 @@ public sealed record TimelineEventView
     }
 
     /// <summary>
+    /// Gets whether this is an annotation-related event.
+    /// </summary>
+    public bool IsAnnotationEvent => Type == "AnnotationCreated" || Type == "AnnotationUpdated";
+
+    /// <summary>
     /// Initializes a new instance with the specified values.
     /// </summary>
     public TimelineEventView(

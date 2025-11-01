@@ -185,6 +185,63 @@ View geospatial overlays and export current viewport:
    - **PNG**: Visual image (respects DPI, legend)
    - **SVG**: Vector output (labels, points, grid)
 
+## How to Export Visualizations
+
+### Exporting Word Cloud
+
+1. Generate a word cloud using the filters and options described above
+2. Once the word cloud is generated, locate the **Export** buttons at the bottom of the word cloud display
+3. Choose your export format:
+   - **Export JSON**: Exports word frequency data in JSON format for programmatic use
+   - **Export CSV**: Exports word frequency data in CSV format for spreadsheet applications
+   - **Export PNG**: Exports the word cloud as a high-quality PNG image (configurable DPI, theme, background)
+   - **Export SVG**: Exports the word cloud as a scalable vector graphic (preserves fonts and styling)
+4. For PNG/SVG exports, the following settings from **Settings > Export** are applied:
+   - **DPI Scale**: 1x–4x for PNG resolution (1x = 72 DPI, 4x = 288 DPI)
+   - **Background Color**: Solid color or transparent background
+   - **Font Family**: Custom font family name (if set)
+   - **Color Palette**: Predefined palette (vibrant, pastel, etc.)
+   - **Word Cloud Layout**: Random, Spiral, or Force-Directed (configured in settings)
+5. The exported file is saved to the app data directory and opened via the system share dialog
+
+### Exporting Timeline
+
+1. Generate a timeline using the filters and options described above
+2. Once the timeline is generated, locate the **Export** buttons at the bottom of the timeline display
+3. Choose your export format:
+   - **Export JSON**: Exports timeline event data in JSON format with all required fields
+   - **Export CSV**: Exports timeline event data in CSV format with all required fields
+   - **Export PNG**: Exports the timeline as a high-quality PNG image (configurable DPI, theme, connections, statistics)
+   - **Export SVG**: Exports the timeline as a scalable vector graphic (preserves bands, connections, fonts)
+4. For PNG/SVG exports, the following settings are applied:
+   - **DPI Scale**: 1x–4x for PNG resolution
+   - **Background Color**: Solid color or transparent background
+   - **Font Family**: Custom font family name (if set)
+   - **Color Palette**: Predefined palette
+   - **Include Connections**: Whether to show event-to-event connection lines (configured in settings)
+   - **Include Statistics**: Whether to include the statistics panel in the export (configured in settings)
+5. Event connections are automatically generated for events with the same NodeId
+6. The exported file is saved to the app data directory and opened via the system share dialog
+7. Export progress is indicated by a loading spinner and "Exporting..." label
+
+### Exporting Map
+
+1. Navigate to the **Map** page from the app shell
+2. The map view displays topic relationships visually
+3. Locate the **Export** buttons at the top of the map page
+4. Choose your export format:
+   - **Export PNG**: Exports the map as a high-quality PNG image (configurable DPI, theme, tiles, legend)
+   - **Export SVG**: Exports the map as a scalable vector graphic (preserves overlays, grid, labels)
+5. For PNG/SVG exports, the following settings are applied:
+   - **DPI Scale**: 1x–4x for PNG resolution
+   - **Background Color**: Solid color or transparent background
+   - **Font Family**: Custom font family name (if set)
+   - **Color Palette**: Predefined palette
+   - **Include Map Tiles**: Whether to include base map tiles (configured in settings)
+   - **Include Map Legend**: Whether to include a legend (configured in settings)
+6. The exported file is saved to the app data directory and opened via the system share dialog
+7. Export progress is indicated by a loading spinner and "Exporting..." label
+
 ## Export Formats
 
 ### JSON
@@ -214,6 +271,7 @@ PNG/SVG exports include:
 - Map: Overlays, optional grid/legend
 - DPI scaling: 1x–4x (applies to PNG); SVG is resolution-independent
 - Progress indication during export operations
+- All export settings are configurable in **Settings > Export**
 
 ## Architecture
 

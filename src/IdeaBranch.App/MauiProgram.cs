@@ -176,7 +176,8 @@ public static class MauiProgram
 			var analyticsService = sp.GetRequiredService<IAnalyticsService>();
 			var exportService = sp.GetRequiredService<AnalyticsExportService>();
 			var tagTaxonomyRepository = sp.GetRequiredService<ITagTaxonomyRepository>();
-			return new WordCloudViewModel(analyticsService, exportService, tagTaxonomyRepository);
+			var settingsService = sp.GetRequiredService<Services.SettingsService>();
+			return new WordCloudViewModel(analyticsService, exportService, tagTaxonomyRepository, settingsService);
 		});
 
 		builder.Services.AddTransient<ViewModels.Analytics.TimelineViewModel>(sp =>
@@ -184,7 +185,15 @@ public static class MauiProgram
 			var analyticsService = sp.GetRequiredService<IAnalyticsService>();
 			var exportService = sp.GetRequiredService<AnalyticsExportService>();
 			var tagTaxonomyRepository = sp.GetRequiredService<ITagTaxonomyRepository>();
-			return new ViewModels.Analytics.TimelineViewModel(analyticsService, exportService, tagTaxonomyRepository);
+			var settingsService = sp.GetRequiredService<Services.SettingsService>();
+			return new ViewModels.Analytics.TimelineViewModel(analyticsService, exportService, tagTaxonomyRepository, settingsService);
+		});
+
+		builder.Services.AddTransient<MapViewModel>(sp =>
+		{
+			var exportService = sp.GetRequiredService<AnalyticsExportService>();
+			var settingsService = sp.GetRequiredService<Services.SettingsService>();
+			return new MapViewModel(exportService, settingsService);
 		});
 
 		// Register resilience policies for HttpClientFactory and outbound I/O

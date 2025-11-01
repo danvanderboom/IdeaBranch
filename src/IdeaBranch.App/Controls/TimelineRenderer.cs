@@ -46,7 +46,8 @@ internal class TimelineRenderer
         double fps = 0,
         double drawTimeMs = 0,
         bool groupByType = false,
-        TimelineEventView? selectedEvent = null)
+        TimelineEventView? selectedEvent = null,
+        string? highlightedType = null)
     {
         var timeRange = (viewEnd - viewStart).TotalDays;
         if (timeRange <= 0) return;
@@ -65,7 +66,7 @@ internal class TimelineRenderer
         if (groupByType)
         {
             // Group by type into bands
-            DrawBandedTimeline(canvas, info, visibleEvents, viewStart, viewEnd, pixelsPerDay, selectedEvent);
+            DrawBandedTimeline(canvas, info, visibleEvents, viewStart, viewEnd, pixelsPerDay, selectedEvent, highlightedType);
         }
         else
         {
@@ -81,7 +82,7 @@ internal class TimelineRenderer
                 }
                 else if (cluster.Events.Count == 1)
                 {
-                    DrawEvent(canvas, cluster.Events[0], pixelsPerDay, viewStart, selectedEvent);
+                    DrawEvent(canvas, cluster.Events[0], pixelsPerDay, viewStart, selectedEvent, highlightedType);
                 }
             }
         }
@@ -297,7 +298,7 @@ internal class TimelineRenderer
         return clusters;
     }
 
-    private void DrawEvent(SKCanvas canvas, TimelineEventView evt, double pixelsPerDay, DateTime viewStart, TimelineEventView? selectedEvent = null)
+    private void DrawEvent(SKCanvas canvas, TimelineEventView evt, double pixelsPerDay, DateTime viewStart, TimelineEventView? selectedEvent = null, string? highlightedType = null)
     {
         var x = (float)((evt.When.Start.Date - viewStart).TotalDays * pixelsPerDay);
         var y = 50.0f; // Base Y position for events
@@ -307,12 +308,14 @@ internal class TimelineRenderer
 
         // Highlight selected event
         var isSelected = selectedEvent != null && selectedEvent.Id == evt.Id;
-        if (isSelected)
+        var isHighlighted = highlightedType != null && evt.Type == highlightedType;
+        
+        if (isSelected || isHighlighted)
         {
             // Draw highlight circle
             using var highlightPaint = new SKPaint
             {
-                Color = SKColors.Yellow.WithAlpha(128),
+                Color = isSelected ? SKColors.Yellow.WithAlpha(128) : SKColors.Cyan.WithAlpha(100),
                 IsAntialias = true,
                 Style = SKPaintStyle.Fill
             };
@@ -329,7 +332,7 @@ internal class TimelineRenderer
         canvas.DrawCircle(x, y, size, paint);
     }
 
-    private void DrawBandedTimeline(SKCanvas canvas, SKImageInfo info, List<TimelineEventView> events, DateTime viewStart, DateTime viewEnd, double pixelsPerDay, TimelineEventView? selectedEvent)
+    private void DrawBandedTimeline(SKCanvas canvas, SKImageInfo info, List<TimelineEventView> events, DateTime viewStart, DateTime viewEnd, double pixelsPerDay, TimelineEventView? selectedEvent, string? highlightedType = null)
     {
         // Group events by type
         var eventsByType = events.GroupBy(e => e.Type).OrderBy(g => g.Key).ToList();
@@ -367,13 +370,15 @@ internal class TimelineRenderer
                 var color = EventTypeColors.GetValueOrDefault(evt.Type, SKColors.Gray);
                 var size = EventTypeSizes.GetValueOrDefault(evt.Type, 8.0f);
 
-                // Highlight selected event
+                // Highlight selected or highlighted event
                 var isSelected = selectedEvent != null && selectedEvent.Id == evt.Id;
-                if (isSelected)
+                var isHighlighted = highlightedType != null && evt.Type == highlightedType;
+                
+                if (isSelected || isHighlighted)
                 {
                     using var highlightPaint = new SKPaint
                     {
-                        Color = SKColors.Yellow.WithAlpha(128),
+                        Color = isSelected ? SKColors.Yellow.WithAlpha(128) : SKColors.Cyan.WithAlpha(100),
                         IsAntialias = true,
                         Style = SKPaintStyle.Fill
                     };

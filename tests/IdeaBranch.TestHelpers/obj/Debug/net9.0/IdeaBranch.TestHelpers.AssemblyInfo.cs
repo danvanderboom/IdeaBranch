@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IdeaBranch.TestHelpers")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9007c7ba86d89985e440db654b26875f5944a45b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d14caf938dbed2fe205993120e5de72b97af5c85")]
 [assembly: System.Reflection.AssemblyProductAttribute("IdeaBranch.TestHelpers")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IdeaBranch.TestHelpers")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

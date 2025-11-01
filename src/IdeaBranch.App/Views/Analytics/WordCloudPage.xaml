@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels.Analytics"
+             xmlns:domain="clr-namespace:IdeaBranch.Domain;assembly=IdeaBranch.Domain"
              x:Class="IdeaBranch.App.Views.Analytics.WordCloudPage"
              x:DataType="vm:WordCloudViewModel"
              Title="Word Cloud Analytics"
@@ -86,7 +87,7 @@
                         <ScrollView>
                             <CollectionView ItemsSource="{Binding WordCloudData.WordFrequencies}">
                                 <CollectionView.ItemTemplate>
-                                    <DataTemplate>
+                                    <DataTemplate x:DataType="domain:WordFrequency">
                                         <Grid Padding="5" ColumnDefinitions="*,Auto">
                                             <Label Grid.Column="0" 
                                                    Text="{Binding Word}" 
@@ -106,6 +107,7 @@
                             <Button Text="Export JSON" Command="{Binding ExportJsonCommand}" />
                             <Button Text="Export CSV" Command="{Binding ExportCsvCommand}" />
                             <Button Text="Export PNG" Command="{Binding ExportPngCommand}" />
+                            <Button Text="Export SVG" Command="{Binding ExportSvgCommand}" />
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
                 </Border>

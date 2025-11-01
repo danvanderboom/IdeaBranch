@@ -367,4 +367,3 @@ C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Debug\net9.0-ios\ios
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Debug\net9.0-ios\iossimulator-x64\SkiaSharp.Views.iOS.dll
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Debug\net9.0-ios\iossimulator-x64\SkiaSharp.Views.Maui.Controls.dll
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Debug\net9.0-ios\iossimulator-x64\SkiaSharp.Views.Maui.Core.dll
-C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-ios\iossimulator-x64\build-signature\signature

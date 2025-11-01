@@ -116,6 +116,26 @@
             Gets or sets the selected event.
             </summary>
         </member>
+        <member name="F:IdeaBranch.App.Controls.SkiaTimelineView.GroupByTypeProperty">
+            <summary>
+            Identifies the GroupByType bindable property.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Controls.SkiaTimelineView.GroupByType">
+            <summary>
+            Gets or sets whether to group events by type into bands.
+            </summary>
+        </member>
+        <member name="F:IdeaBranch.App.Controls.SkiaTimelineView.HighlightedTypeProperty">
+            <summary>
+            Identifies the HighlightedType bindable property.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Controls.SkiaTimelineView.HighlightedType">
+            <summary>
+            Gets or sets the highlighted event type.
+            </summary>
+        </member>
         <member name="E:IdeaBranch.App.Controls.SkiaTimelineView.SelectedTimeRangeChanged">
             <summary>
             Occurs when the selected time range changes.
@@ -1116,6 +1136,31 @@
             Gets the selected tags for filtering.
             </summary>
         </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.SelectedTagSelections">
+            <summary>
+            Gets the selected tag selections with per-tag descendant control.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ShowCreated">
+            <summary>
+            Gets or sets whether to show Created event types.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ShowUpdated">
+            <summary>
+            Gets or sets whether to show Updated event types.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.SearchQuery">
+            <summary>
+            Gets or sets the search query for free-text filtering.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ActiveDatePreset">
+            <summary>
+            Gets or sets the active date preset label (Last 7 days, This month, This year).
+            </summary>
+        </member>
         <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.GenerateCommand">
             <summary>
             Gets the command to generate the timeline.
@@ -1136,24 +1181,144 @@
             Gets the command to export as PNG.
             </summary>
         </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ApplyLast7DaysCommand">
+            <summary>
+            Gets the command to apply "Last 7 days" date preset.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ApplyThisMonthCommand">
+            <summary>
+            Gets the command to apply "This month" date preset.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ApplyThisYearCommand">
+            <summary>
+            Gets the command to apply "This year" date preset.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.SelectedEvent">
+            <summary>
+            Gets or sets the selected event.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.HasSelectedEvent">
+            <summary>
+            Gets whether an event is selected.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.GroupByType">
+            <summary>
+            Gets or sets whether to group events by type.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.EventTypeCounts">
+            <summary>
+            Gets the event type counts for statistics.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.EventTypeCountsString">
+            <summary>
+            Gets the event type counts as a formatted string.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.EventTypeTrendsString">
+            <summary>
+            Gets the event type trends as a formatted string.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.GetSparklineChar(System.Int32,System.Int32)">
+            <summary>
+            Gets a sparkline character for a value.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.EventTypeTrends">
+            <summary>
+            Gets the event type trends for statistics.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.NavigateToNodeCommand">
+            <summary>
+            Gets the command to navigate to a node.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.NavigateToAnnotationCommand">
+            <summary>
+            Gets the command to navigate to an annotation.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.CloseEventDetailsCommand">
+            <summary>
+            Gets the command to close event details.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ToggleGroupByTypeCommand">
+            <summary>
+            Gets the command to toggle grouping by type.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.HighlightedEventType">
+            <summary>
+            Gets or sets the highlighted event type.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.HighlightEventTypeCommand">
+            <summary>
+            Gets the command to highlight an event type.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.IsExporting">
+            <summary>
+            Gets or sets whether an export is in progress.
+            </summary>
+        </member>
         <member name="M:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.GenerateTimelineAsync(System.Threading.CancellationToken)">
             <summary>
             Generates the timeline.
             </summary>
         </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.UpdateStatistics">
+            <summary>
+            Updates statistics from current timeline data.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.NavigateToNodeAsync(System.Nullable{System.Guid})">
+            <summary>
+            Navigates to a topic node.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.NavigateToAnnotationAsync(System.Nullable{System.Guid})">
+            <summary>
+            Navigates to an annotation for annotation events.
+            </summary>
+        </member>
         <member name="M:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ExportJsonAsync">
             <summary>
-            Exports timeline data to JSON.
+            Exports timeline data to JSON with all required fields.
             </summary>
         </member>
         <member name="M:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ExportCsvAsync">
             <summary>
-            Exports timeline data to CSV.
+            Exports timeline data to CSV with all required fields.
             </summary>
         </member>
         <member name="M:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ExportPngAsync">
             <summary>
             Exports timeline visualization to PNG.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ApplyLast7Days">
+            <summary>
+            Applies "Last 7 days" date preset.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ApplyThisMonth">
+            <summary>
+            Applies "This month" date preset.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ApplyThisYear">
+            <summary>
+            Applies "This year" date preset.
             </summary>
         </member>
         <member name="T:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel">

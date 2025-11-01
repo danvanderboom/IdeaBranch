@@ -33,6 +33,31 @@ public class ExportOptions
     public bool IncludeLegend { get; set; } = true;
 
     /// <summary>
+    /// Gets or sets the word cloud layout algorithm.
+    /// </summary>
+    public WordCloudLayout WordCloudLayout { get; set; } = WordCloudLayout.Random;
+
+    /// <summary>
+    /// Gets or sets whether to include map tiles in map exports.
+    /// </summary>
+    public bool IncludeMapTiles { get; set; } = false;
+
+    /// <summary>
+    /// Gets or sets whether to include map legend in map exports.
+    /// </summary>
+    public bool IncludeMapLegend { get; set; } = false;
+
+    /// <summary>
+    /// Gets or sets whether to include timeline statistics panel in timeline exports.
+    /// </summary>
+    public bool IncludeTimelineStatistics { get; set; } = false;
+
+    /// <summary>
+    /// Gets or sets whether to include timeline event connections in timeline exports.
+    /// </summary>
+    public bool IncludeTimelineConnections { get; set; } = false;
+
+    /// <summary>
     /// Gets the scaled width based on DPI scale.
     /// </summary>
     public int ScaledWidth => Width * DpiScale;

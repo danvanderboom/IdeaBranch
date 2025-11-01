@@ -6,11 +6,13 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using IdeaBranch.App.Services;
 using IdeaBranch.Domain;
 using IdeaBranch.Infrastructure.Export;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
+using SkiaSharp;
 
 namespace IdeaBranch.App.ViewModels.Analytics;
 
@@ -22,6 +24,7 @@ public class WordCloudViewModel : INotifyPropertyChanged
     private readonly IAnalyticsService _analyticsService;
     private readonly AnalyticsExportService _exportService;
     private readonly ITagTaxonomyRepository _tagTaxonomyRepository;
+    private readonly SettingsService _settingsService;
     private WordCloudData? _wordCloudData;
     private bool _isLoading;
     private string? _errorMessage;
@@ -41,17 +44,20 @@ public class WordCloudViewModel : INotifyPropertyChanged
     public WordCloudViewModel(
         IAnalyticsService analyticsService,
         AnalyticsExportService exportService,
-        ITagTaxonomyRepository tagTaxonomyRepository)
+        ITagTaxonomyRepository tagTaxonomyRepository,
+        SettingsService settingsService)
     {
         _analyticsService = analyticsService ?? throw new ArgumentNullException(nameof(analyticsService));
         _exportService = exportService ?? throw new ArgumentNullException(nameof(exportService));
         _tagTaxonomyRepository = tagTaxonomyRepository ?? throw new ArgumentNullException(nameof(tagTaxonomyRepository));
+        _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
 
         SelectedTags = new ObservableCollection<TagTaxonomyNode>();
         GenerateCommand = new Command(async () => await GenerateWordCloudAsync(), () => !IsLoading);
         ExportJsonCommand = new Command(async () => await ExportJsonAsync(), () => WordCloudData != null);
         ExportCsvCommand = new Command(async () => await ExportCsvAsync(), () => WordCloudData != null);
         ExportPngCommand = new Command(async () => await ExportPngAsync(), () => WordCloudData != null);
+        ExportSvgCommand = new Command(async () => await ExportSvgAsync(), () => WordCloudData != null);
     }
 
     /// <summary>
@@ -60,7 +66,8 @@ public class WordCloudViewModel : INotifyPropertyChanged
     public WordCloudViewModel() : this(
         GetService<IAnalyticsService>(),
         GetService<AnalyticsExportService>(),
-        GetService<ITagTaxonomyRepository>())
+        GetService<ITagTaxonomyRepository>(),
+        GetService<SettingsService>())
     {
     }
 
@@ -89,6 +96,7 @@ public class WordCloudViewModel : INotifyPropertyChanged
                 ExportJsonCommand.ChangeCanExecute();
                 ExportCsvCommand.ChangeCanExecute();
                 ExportPngCommand.ChangeCanExecute();
+                ExportSvgCommand.ChangeCanExecute();
             }
         }
     }
@@ -312,6 +320,11 @@ public class WordCloudViewModel : INotifyPropertyChanged
     public Command ExportPngCommand { get; }
 
     /// <summary>
+    /// Gets the command to export as SVG.
+    /// </summary>
+    public Command ExportSvgCommand { get; }
+
+    /// <summary>
     /// Generates the word cloud.
     /// </summary>
     public async Task GenerateWordCloudAsync(CancellationToken cancellationToken = default)
@@ -436,7 +449,14 @@ public class WordCloudViewModel : INotifyPropertyChanged
 
         try
         {
-            var pngBytes = await _exportService.ExportWordCloudToPngAsync(WordCloudData);
+            var (exportOptions, theme, layout) = await BuildExportOptionsAsync();
+            var pngBytes = await _exportService.ExportWordCloudToPngAsync(
+                WordCloudData,
+                exportOptions.Width,
+                exportOptions.Height,
+                exportOptions,
+                theme,
+                layout);
             
             var fileName = $"wordcloud_{DateTime.UtcNow:yyyyMMddHHmmss}.png";
             var filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
@@ -453,6 +473,96 @@ public class WordCloudViewModel : INotifyPropertyChanged
             ErrorMessage = $"Export failed: {ex.Message}";
             System.Diagnostics.Debug.WriteLine($"Export error: {ex.Message}");
         }
+    }
+
+    /// <summary>
+    /// Exports word cloud visualization to SVG.
+    /// </summary>
+    public async Task ExportSvgAsync()
+    {
+        if (WordCloudData == null)
+            return;
+
+        try
+        {
+            var (exportOptions, theme, layout) = await BuildExportOptionsAsync();
+            var svg = await _exportService.ExportWordCloudToSvgAsync(
+                WordCloudData,
+                exportOptions.Width,
+                exportOptions.Height,
+                exportOptions,
+                theme,
+                layout);
+            
+            var fileName = $"wordcloud_{DateTime.UtcNow:yyyyMMddHHmmss}.svg";
+            var filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
+            await File.WriteAllTextAsync(filePath, svg);
+
+            await Share.Default.RequestAsync(new ShareFileRequest
+            {
+                Title = "Export Word Cloud",
+                File = new ShareFile(filePath)
+            });
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Export failed: {ex.Message}";
+            System.Diagnostics.Debug.WriteLine($"Export error: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Builds export options and theme from settings.
+    /// </summary>
+    private async Task<(ExportOptions options, VisualizationTheme theme, WordCloudLayout layout)> BuildExportOptionsAsync()
+    {
+        var dpiScale = await _settingsService.GetExportDpiScaleAsync();
+        var backgroundColorHex = await _settingsService.GetExportBackgroundColorAsync();
+        var transparentBackground = await _settingsService.GetExportTransparentBackgroundAsync();
+        var fontFamily = await _settingsService.GetExportFontFamilyAsync();
+        var palette = await _settingsService.GetExportPaletteAsync();
+
+        var exportOptions = new ExportOptions
+        {
+            DpiScale = dpiScale,
+            Width = 800,
+            Height = 600,
+            IncludeLegend = false // Word cloud doesn't use legends
+        };
+
+        if (!transparentBackground && !string.IsNullOrEmpty(backgroundColorHex))
+        {
+            if (SKColor.TryParse(backgroundColorHex, out var bgColor))
+            {
+                exportOptions.BackgroundColor = bgColor;
+            }
+        }
+
+        var theme = new VisualizationTheme
+        {
+            ColorPalette = palette,
+            FontFamily = fontFamily,
+            BackgroundType = transparentBackground ? BackgroundType.Transparent : BackgroundType.Solid
+        };
+
+        if (!transparentBackground && !string.IsNullOrEmpty(backgroundColorHex))
+        {
+            if (SKColor.TryParse(backgroundColorHex, out var bgColor))
+            {
+                theme.BackgroundColor = bgColor;
+            }
+        }
+
+        // Get layout from settings (default to Random if not set)
+        var layoutSetting = await SecureStorage.GetAsync("wordcloud_layout");
+        var layout = layoutSetting switch
+        {
+            "spiral" => WordCloudLayout.Spiral,
+            "forcedirected" => WordCloudLayout.ForceDirected,
+            _ => WordCloudLayout.Random
+        };
+
+        return (exportOptions, theme, layout);
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

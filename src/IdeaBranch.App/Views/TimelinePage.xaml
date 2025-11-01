@@ -230,6 +230,9 @@
                             <Button Text="Export PNG" 
                                    Command="{Binding ExportPngCommand}" 
                                    IsEnabled="{Binding IsExporting, Converter={StaticResource InvertedBoolConverter}}" />
+                            <Button Text="Export SVG" 
+                                   Command="{Binding ExportSvgCommand}" 
+                                   IsEnabled="{Binding IsExporting, Converter={StaticResource InvertedBoolConverter}}" />
                             <ActivityIndicator IsRunning="{Binding IsExporting}" 
                                               IsVisible="{Binding IsExporting}" 
                                               HeightRequest="20" 

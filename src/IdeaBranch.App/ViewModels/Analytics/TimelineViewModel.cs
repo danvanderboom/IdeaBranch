@@ -7,12 +7,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CriticalInsight.Data.Hierarchical;
+using IdeaBranch.App.Services;
 using IdeaBranch.Domain;
 using IdeaBranch.Domain.Timeline;
 using IdeaBranch.Infrastructure.Export;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
+using SkiaSharp;
 
 namespace IdeaBranch.App.ViewModels.Analytics;
 
@@ -24,6 +26,7 @@ public class TimelineViewModel : INotifyPropertyChanged
     private readonly IAnalyticsService _analyticsService;
     private readonly AnalyticsExportService _exportService;
     private readonly ITagTaxonomyRepository _tagTaxonomyRepository;
+    private readonly SettingsService _settingsService;
     private TimelineData? _timelineData;
     private bool _isLoading;
     private string? _errorMessage;
@@ -51,11 +54,13 @@ public class TimelineViewModel : INotifyPropertyChanged
     public TimelineViewModel(
         IAnalyticsService analyticsService,
         AnalyticsExportService exportService,
-        ITagTaxonomyRepository tagTaxonomyRepository)
+        ITagTaxonomyRepository tagTaxonomyRepository,
+        SettingsService settingsService)
     {
         _analyticsService = analyticsService ?? throw new ArgumentNullException(nameof(analyticsService));
         _exportService = exportService ?? throw new ArgumentNullException(nameof(exportService));
         _tagTaxonomyRepository = tagTaxonomyRepository ?? throw new ArgumentNullException(nameof(tagTaxonomyRepository));
+        _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
 
         SelectedTags = new ObservableCollection<TagTaxonomyNode>();
         SelectedTagSelections = new ObservableCollection<TagSelection>();
@@ -63,6 +68,7 @@ public class TimelineViewModel : INotifyPropertyChanged
         ExportJsonCommand = new Command(async () => await ExportJsonAsync(), () => TimelineData != null);
         ExportCsvCommand = new Command(async () => await ExportCsvAsync(), () => TimelineData != null);
         ExportPngCommand = new Command(async () => await ExportPngAsync(), () => TimelineData != null);
+        ExportSvgCommand = new Command(async () => await ExportSvgAsync(), () => TimelineData != null);
         ApplyLast7DaysCommand = new Command(() => ApplyLast7Days());
         ApplyThisMonthCommand = new Command(() => ApplyThisMonth());
         ApplyThisYearCommand = new Command(() => ApplyThisYear());
@@ -79,7 +85,8 @@ public class TimelineViewModel : INotifyPropertyChanged
     public TimelineViewModel() : this(
         GetService<IAnalyticsService>(),
         GetService<AnalyticsExportService>(),
-        GetService<ITagTaxonomyRepository>())
+        GetService<ITagTaxonomyRepository>(),
+        GetService<SettingsService>())
     {
     }
 
@@ -109,6 +116,7 @@ public class TimelineViewModel : INotifyPropertyChanged
                 ExportJsonCommand.ChangeCanExecute();
                 ExportCsvCommand.ChangeCanExecute();
                 ExportPngCommand.ChangeCanExecute();
+                ExportSvgCommand.ChangeCanExecute();
                 UpdateStatistics();
             }
         }
@@ -398,6 +406,11 @@ public class TimelineViewModel : INotifyPropertyChanged
     /// Gets the command to export as PNG.
     /// </summary>
     public Command ExportPngCommand { get; }
+
+    /// <summary>
+    /// Gets the command to export as SVG.
+    /// </summary>
+    public Command ExportSvgCommand { get; }
 
     /// <summary>
     /// Gets the command to apply "Last 7 days" date preset.
@@ -1011,7 +1024,18 @@ public class TimelineViewModel : INotifyPropertyChanged
 
         try
         {
-            var pngBytes = await _exportService.ExportTimelineToPngAsync(TimelineData);
+            IsExporting = true;
+            ErrorMessage = null;
+
+            var (exportOptions, theme, connections, includeStatistics) = await BuildExportOptionsAsync();
+            var pngBytes = await _exportService.ExportTimelineToPngAsync(
+                TimelineData,
+                exportOptions.Width,
+                exportOptions.Height,
+                exportOptions,
+                theme,
+                connections,
+                includeStatistics);
             
             var fileName = $"timeline_{DateTime.UtcNow:yyyyMMddHHmmss}.png";
             var filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
@@ -1028,6 +1052,131 @@ public class TimelineViewModel : INotifyPropertyChanged
             ErrorMessage = $"Export failed: {ex.Message}";
             System.Diagnostics.Debug.WriteLine($"Export error: {ex.Message}");
         }
+        finally
+        {
+            IsExporting = false;
+        }
+    }
+
+    /// <summary>
+    /// Exports timeline visualization to SVG.
+    /// </summary>
+    public async Task ExportSvgAsync()
+    {
+        if (TimelineData == null)
+            return;
+
+        try
+        {
+            IsExporting = true;
+            ErrorMessage = null;
+
+            var (exportOptions, theme, connections, includeStatistics) = await BuildExportOptionsAsync();
+            var svg = await _exportService.ExportTimelineToSvgAsync(
+                TimelineData,
+                exportOptions.Width,
+                exportOptions.Height,
+                exportOptions,
+                theme,
+                connections,
+                includeStatistics);
+            
+            var fileName = $"timeline_{DateTime.UtcNow:yyyyMMddHHmmss}.svg";
+            var filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
+            await File.WriteAllTextAsync(filePath, svg);
+
+            await Share.Default.RequestAsync(new ShareFileRequest
+            {
+                Title = "Export Timeline",
+                File = new ShareFile(filePath)
+            });
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Export failed: {ex.Message}";
+            System.Diagnostics.Debug.WriteLine($"Export error: {ex.Message}");
+        }
+        finally
+        {
+            IsExporting = false;
+        }
+    }
+
+    /// <summary>
+    /// Builds export options and theme from settings.
+    /// </summary>
+    private async Task<(ExportOptions options, VisualizationTheme theme, IReadOnlyList<(Guid fromEventId, Guid toEventId)>? connections, bool includeStatistics)> BuildExportOptionsAsync()
+    {
+        var dpiScale = await _settingsService.GetExportDpiScaleAsync();
+        var backgroundColorHex = await _settingsService.GetExportBackgroundColorAsync();
+        var transparentBackground = await _settingsService.GetExportTransparentBackgroundAsync();
+        var fontFamily = await _settingsService.GetExportFontFamilyAsync();
+        var palette = await _settingsService.GetExportPaletteAsync();
+        var includeLegend = await _settingsService.GetExportIncludeLegendAsync();
+
+        // Get timeline-specific settings
+        var includeStatisticsValue = await SecureStorage.GetAsync("timeline_include_statistics");
+        var includeStatistics = bool.TryParse(includeStatisticsValue, out var stats) && stats;
+
+        var includeConnectionsValue = await SecureStorage.GetAsync("timeline_include_connections");
+        var includeConnections = bool.TryParse(includeConnectionsValue, out var conn) && conn;
+
+        var exportOptions = new ExportOptions
+        {
+            DpiScale = dpiScale,
+            Width = 1200,
+            Height = 600,
+            IncludeLegend = includeLegend,
+            IncludeTimelineConnections = includeConnections,
+            IncludeTimelineStatistics = includeStatistics
+        };
+
+        if (!transparentBackground && !string.IsNullOrEmpty(backgroundColorHex))
+        {
+            if (SKColor.TryParse(backgroundColorHex, out var bgColor))
+            {
+                exportOptions.BackgroundColor = bgColor;
+            }
+        }
+
+        var theme = new VisualizationTheme
+        {
+            ColorPalette = palette,
+            FontFamily = fontFamily,
+            BackgroundType = transparentBackground ? BackgroundType.Transparent : BackgroundType.Solid
+        };
+
+        if (!transparentBackground && !string.IsNullOrEmpty(backgroundColorHex))
+        {
+            if (SKColor.TryParse(backgroundColorHex, out var bgColor))
+            {
+                theme.BackgroundColor = bgColor;
+            }
+        }
+
+        // Build connections list from TimelineData if enabled
+        IReadOnlyList<(Guid fromEventId, Guid toEventId)>? connections = null;
+        if (includeConnections && TimelineData != null)
+        {
+            // Simple heuristic: connect events with same NodeId
+            var connectionsList = new List<(Guid, Guid)>();
+            var eventsByNode = TimelineData.Events.Where(e => e.NodeId.HasValue)
+                .GroupBy(e => e.NodeId!.Value)
+                .ToList();
+
+            foreach (var nodeGroup in eventsByNode)
+            {
+                var nodeEvents = nodeGroup.OrderBy(e => e.Timestamp).ToList();
+                for (int i = 0; i < nodeEvents.Count - 1; i++)
+                {
+                    connectionsList.Add((nodeEvents[i].Id, nodeEvents[i + 1].Id));
+                }
+            }
+
+            connections = connectionsList.Count > 0 ? connectionsList : null;
+        }
+
+        return (exportOptions, theme, connections, includeStatistics);
     }
 
     /// <summary>

@@ -141,6 +141,33 @@ public partial class SkiaTimelineView : ContentView
     }
 
     /// <summary>
+    /// Identifies the HighlightedType bindable property.
+    /// </summary>
+    public static readonly BindableProperty HighlightedTypeProperty = BindableProperty.Create(
+        nameof(HighlightedType),
+        typeof(string),
+        typeof(SkiaTimelineView),
+        default(string),
+        propertyChanged: OnHighlightedTypeChanged);
+
+    private static void OnHighlightedTypeChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        if (bindable is SkiaTimelineView view)
+        {
+            view.InvalidateCanvas();
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the highlighted event type.
+    /// </summary>
+    public string? HighlightedType
+    {
+        get => (string?)GetValue(HighlightedTypeProperty);
+        set => SetValue(HighlightedTypeProperty, value);
+    }
+
+    /// <summary>
     /// Occurs when the selected time range changes.
     /// </summary>
     public event EventHandler<(DateTime Start, DateTime End)?>? SelectedTimeRangeChanged;
@@ -219,7 +246,7 @@ public partial class SkiaTimelineView : ContentView
             return;
         }
 
-        _renderer.DrawTimeline(canvas, info, events, _viewStartTime, _viewEndTime, _zoomLevel, _showDiagnostics, CurrentFps, AverageDrawTimeMs, GroupByType, SelectedEvent);
+        _renderer.DrawTimeline(canvas, info, events, _viewStartTime, _viewEndTime, _zoomLevel, _showDiagnostics, CurrentFps, AverageDrawTimeMs, GroupByType, SelectedEvent, HighlightedType);
 
         RecordFrameTime();
         EmitTelemetryIfNeeded(events.Count);
