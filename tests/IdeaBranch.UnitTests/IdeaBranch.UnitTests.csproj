@@ -1,11 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net9.0-windows10.0.19041</TargetFramework>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableMauiAssets>false</EnableMauiAssets>
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <SkipResizetizeImages>true</SkipResizetizeImages>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,12 +18,13 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="FluentAssertions" Version="8.8.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.10" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="NUnit" Version="4.2.2" />
     <PackageReference Include="NUnit.Analyzers" Version="4.4.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+    <PackageReference Include="Polly" Version="8.4.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +35,15 @@
     <ProjectReference Include="..\..\src\IdeaBranch.Domain\IdeaBranch.Domain.csproj" />
     <ProjectReference Include="..\..\src\IdeaBranch.Infrastructure\IdeaBranch.Infrastructure.csproj" />
     <ProjectReference Include="..\IdeaBranch.TestHelpers\IdeaBranch.TestHelpers.csproj" />
+    <Reference Include="IdeaBranch.App">
+      <HintPath>..\..\src\IdeaBranch.App\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\IdeaBranch.App.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
   </ItemGroup>
+
+  <Target Name="ResizetizeImages" />
+  <Target Name="ProcessMauiSplashScreens" />
+  <Target Name="ProcessMauiFonts" />
+  <Target Name="ProcessMauiImages" />
 
 </Project>
