@@ -57,9 +57,17 @@ Generate timeline visualizations to see chronological events:
      - Custom date range: Optional start and end date filters
    - **Grouping**: Choose how to group events (Day, Week, Month)
 4. Click **Generate Timeline** to create the visualization
-5. Export results as:
-   - **JSON**: Structured data format
-   - **CSV**: Comma-separated values for spreadsheet applications
+5. **Interact with events**:
+   - Click on an event marker to view full details in an expandable card
+   - Navigate to related topic nodes or annotations directly from event details
+   - Toggle "Group by Type" to organize events into horizontal bands by event type
+6. **View statistics**:
+   - Per-type event counts automatically update with filters
+   - Time-series trend sparklines show event frequency over time (auto-binned by day/week/month based on date range)
+   - Click on stat items to highlight corresponding events on the timeline
+7. Export results as:
+   - **JSON**: Structured data format with all event fields (respects all active filters)
+   - **CSV**: Comma-separated values with all event fields (respects all active filters)
    - **PNG**: Visual image of the timeline
 
 #### Event Types
@@ -71,6 +79,37 @@ Generate timeline visualizations to see chronological events:
 - **Updated Events**:
   - Topic Updated: When a topic node was modified
   - Annotation Updated: When an annotation was modified
+
+#### Event Details
+
+When you click on an event marker, an expandable details card appears showing:
+
+- **Event Information**: Title, description/body, event type, actor, source/service
+- **Timestamps**: Start/end timestamps with precision information
+- **Tags**: All tags associated with the event (displayed as formatted paths)
+- **Related Content**: Navigation links to:
+  - **Related Topic Nodes**: Navigate to the topic node while preserving current filters
+  - **Related Annotations**: Open the annotation in its editor/viewer with return-to-context navigation
+
+#### Grouping by Type
+
+- **Group by Type Toggle**: Organize events into horizontal bands labeled by event type
+- **Type Bands**: Each event type gets its own labeled band with consistent styling
+- **Persistent Bands**: Bands remain organized correctly through zoom and clustering operations
+- **Visual Organization**: Improves readability when multiple event types are present
+
+#### Statistics Module
+
+The statistics module provides real-time insights into the filtered event data:
+
+- **Per-Type Counts**: Shows the number of events for each event type in the current filtered subset
+- **Time-Series Trends**: Sparkline visualizations showing event frequency over time
+  - **Auto-Binning**: Automatically selects binning granularity based on visible date range:
+    - **Day binning**: For ranges less than 3 months
+    - **Week binning**: For ranges 3 months to 2 years
+    - **Month binning**: For ranges 2 years or more
+- **Interactive Highlighting**: Click on any stat item to highlight the corresponding event type on the timeline
+- **Auto-Update**: Statistics automatically update when filters or date ranges change
 
 #### Advanced Filtering
 
@@ -131,15 +170,19 @@ Timeline Analytics supports powerful faceted filtering with boolean logic:
 
 JSON export includes:
 - Full word frequency data or timeline event data
+- Timeline JSON includes all required fields: `eventId`, `type`, `title`, `body`, `start`, `end`, `precision`, `nodeId`, `nodePath`, `tags`, `annotationIds`, `source`, `actor`, `createdAt`, `updatedAt`
 - Applied filters and options
 - Metadata (generation timestamp, counts, etc.)
+- **Respects all active filters**: Only exports events matching current filter criteria
 
 ### CSV
 
 CSV export includes:
 - Tabular data format
-- Column headers
+- Column headers with all required fields for timeline exports
 - One row per word/event
+- **Respects all active filters**: Only exports events matching current filter criteria
+- Special characters (commas, quotes, newlines) are properly escaped
 
 ### PNG
 
@@ -147,6 +190,7 @@ PNG export includes:
 - Visual representation of the data
 - Word cloud: Words sized by frequency
 - Timeline: Chronological bands with event markers
+- Progress indication during export operations
 
 ## Architecture
 
@@ -167,7 +211,13 @@ PNG export includes:
 ### ViewModels
 
 - **WordCloudViewModel**: Manages word cloud page state and interactions
-- **TimelineViewModel**: Manages timeline page state and interactions
+- **TimelineViewModel**: Manages timeline page state and interactions including:
+  - Event selection and details display
+  - Group-by-type toggle and state
+  - Statistics calculation (per-type counts and trends)
+  - Auto-binning logic for trend visualization
+  - Navigation to related nodes and annotations
+  - Export operations with progress indication
 
 ## Performance Considerations
 
@@ -182,6 +232,10 @@ PNG export includes:
 - Interactive word cloud (click words to filter/analyze)
 - Timeline zoom controls (✅ Implemented)
 - Custom date range presets (✅ Implemented)
-- Enhanced tag picker UI with hierarchical selection and per-tag descendant toggles
+- Enhanced tag picker UI with hierarchical selection and per-tag descendant toggles (✅ Implemented)
+- Expandable event details cards (✅ Implemented)
+- Navigation links to related nodes and annotations (✅ Implemented)
+- Group by type bands (✅ Implemented)
+- Statistics module with auto-binning trends (✅ Implemented)
 - Export to additional formats (Excel, PDF)
 
