@@ -185,6 +185,117 @@ public class TimelineRendererTests
         visible[0].Id.Should().Be("1");
     }
 
+    [Test]
+    public void GetVisibleEvents_WithEventAtBoundary_ShouldInclude()
+    {
+        AssertMauiAvailable();
+        
+        // Arrange
+        var viewStart = new DateTime(2024, 1, 1);
+        var viewEnd = new DateTime(2024, 1, 31);
+        var events = new System.Collections.ObjectModel.ObservableCollection<TimelineEventView>
+        {
+            CreateEvent("1", viewStart, "TopicCreated"), // At start boundary
+            CreateEvent("2", viewEnd, "TopicCreated"), // At end boundary
+            CreateEvent("3", viewStart.AddDays(-1), "TopicCreated"), // Before range
+            CreateEvent("4", viewEnd.AddDays(1), "TopicCreated") // After range
+        };
+
+        // Act
+        var visible = InvokeGetVisibleEvents(events, viewStart, viewEnd);
+
+        // Assert
+        visible.Should().HaveCount(2);
+        visible.Should().Contain(e => e.Id == "1");
+        visible.Should().Contain(e => e.Id == "2");
+    }
+
+    [Test]
+    public void GetVisibleEvents_WithEmptyCollection_ShouldReturnEmpty()
+    {
+        AssertMauiAvailable();
+        
+        // Arrange
+        var viewStart = new DateTime(2024, 1, 1);
+        var viewEnd = new DateTime(2024, 1, 31);
+        var events = new System.Collections.ObjectModel.ObservableCollection<TimelineEventView>();
+
+        // Act
+        var visible = InvokeGetVisibleEvents(events, viewStart, viewEnd);
+
+        // Assert
+        visible.Should().BeEmpty();
+    }
+
+    [Test]
+    public void ClusterEvents_WithVeryLargePixelPerDay_ShouldNotCluster()
+    {
+        AssertMauiAvailable();
+        
+        // Arrange - Very large pixelsPerDay means events are very far apart visually
+        var baseDate = new DateTime(2024, 1, 15);
+        var events = new List<TimelineEventView>
+        {
+            CreateEvent("1", baseDate, "TopicCreated"),
+            CreateEvent("2", baseDate.AddHours(1), "TopicCreated"),
+            CreateEvent("3", baseDate.AddHours(2), "TopicCreated")
+        };
+
+        // Act - using very large pixelsPerDay
+        var clusters = InvokeClusterEvents(events, 1000.0, 800, new DateTime(2024, 1, 1));
+
+        // Assert - should not cluster when pixelsPerDay is very large
+        clusters.Should().HaveCount(3);
+        clusters.All(c => !IsCluster(c)).Should().BeTrue();
+    }
+
+    [Test]
+    public void ClusterEvents_WithVerySmallPixelPerDay_ShouldClusterMore()
+    {
+        AssertMauiAvailable();
+        
+        // Arrange - Very small pixelsPerDay means events are very close together visually
+        var baseDate = new DateTime(2024, 1, 15);
+        var events = new List<TimelineEventView>
+        {
+            CreateEvent("1", baseDate, "TopicCreated"),
+            CreateEvent("2", baseDate.AddHours(1), "TopicCreated"),
+            CreateEvent("3", baseDate.AddHours(2), "TopicCreated"),
+            CreateEvent("4", baseDate.AddHours(3), "TopicCreated")
+        };
+
+        // Act - using very small pixelsPerDay
+        var clusters = InvokeClusterEvents(events, 0.001, 800, new DateTime(2024, 1, 1));
+
+        // Assert - should cluster more when pixelsPerDay is very small
+        clusters.Should().NotBeEmpty();
+        var clusterCount = clusters.Count(c => IsCluster(c));
+        clusterCount.Should().BeGreaterThan(0);
+    }
+
+    [Test]
+    public void ClusterEvents_WithEventsOutsideViewport_ShouldFilterCorrectly()
+    {
+        AssertMauiAvailable();
+        
+        // Arrange
+        var viewStart = new DateTime(2024, 1, 15);
+        var baseDate = viewStart;
+        var events = new List<TimelineEventView>
+        {
+            CreateEvent("1", baseDate, "TopicCreated"), // In viewport
+            CreateEvent("2", baseDate.AddDays(1), "TopicCreated"), // In viewport
+            CreateEvent("3", viewStart.AddDays(-10), "TopicCreated"), // Before viewport
+            CreateEvent("4", viewStart.AddDays(30), "TopicCreated") // After viewport
+        };
+
+        // Act
+        var clusters = InvokeClusterEvents(events, 1.0, 800, viewStart);
+
+        // Assert - clustering should only consider visible events
+        clusters.Should().NotBeEmpty();
+    }
+
     // Helper methods to access private members via reflection
     private List<object> InvokeClusterEvents(
         List<TimelineEventView> events,

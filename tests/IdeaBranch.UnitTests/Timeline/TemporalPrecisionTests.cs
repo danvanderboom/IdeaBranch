@@ -88,3 +88,7 @@ public class TemporalPrecisionTests
     }
 }
 
+// Note: TemporalInstant and TemporalRange tests have been moved to their own files:
+// - TemporalInstantTests.cs
+// - TemporalRangeTests.cs
+
