@@ -179,15 +179,20 @@ public class AnalyticsExportService
         WordCloudData data,
         int width = 800,
         int height = 600,
+        ExportOptions? options = null,
         CancellationToken cancellationToken = default)
     {
+        var exportOpts = options ?? new ExportOptions { Width = width, Height = height };
+        var scaledWidth = exportOpts.ScaledWidth;
+        var scaledHeight = exportOpts.ScaledHeight;
+
         return await Task.Run(() =>
         {
-            using var surface = SKSurface.Create(new SKImageInfo(width, height));
+            using var surface = SKSurface.Create(new SKImageInfo(scaledWidth, scaledHeight));
             var canvas = surface.Canvas;
 
             // Clear background
-            canvas.Clear(SKColors.White);
+            canvas.Clear(exportOpts.BackgroundColor ?? SKColors.White);
 
             // Calculate layout for words
             var words = data.WordFrequencies.Take(50).ToList(); // Limit to top 50 for readability
@@ -197,16 +202,16 @@ public class AnalyticsExportService
                 using var paint = new SKPaint
                 {
                     Color = SKColors.Gray,
-                    TextSize = 24,
+                    TextSize = 24 * exportOpts.DpiScale,
                     IsAntialias = true,
                     TextAlign = SKTextAlign.Center
                 };
-                canvas.DrawText("No words to display", width / 2, height / 2, paint);
+                canvas.DrawText("No words to display", scaledWidth / 2, scaledHeight / 2, paint);
                 return EncodeSurfaceToPng(surface);
             }
 
-            var minSize = 12.0f;
-            var maxSize = 72.0f;
+            var minSize = 12.0f * exportOpts.DpiScale;
+            var maxSize = 72.0f * exportOpts.DpiScale;
             var minWeight = words.Min(w => w.Weight);
             var maxWeight = words.Max(w => w.Weight);
             var weightRange = maxWeight - minWeight;
@@ -237,8 +242,8 @@ public class AnalyticsExportService
 
                 while (attempts < 50 && !placed)
                 {
-                    x = random.Next((int)(textWidth / 2), (int)(width - textWidth / 2));
-                    y = random.Next((int)(textHeight), (int)(height - textHeight));
+                    x = random.Next((int)(textWidth / 2), (int)(scaledWidth - textWidth / 2));
+                    y = random.Next((int)(textHeight), (int)(scaledHeight - textHeight));
 
                     // Check collision with existing positions
                     bool collision = false;
@@ -278,12 +283,132 @@ public class AnalyticsExportService
     }
 
     /// <summary>
+    /// Exports word cloud visualization to SVG format.
+    /// </summary>
+    public async Task<string> ExportWordCloudToSvgAsync(
+        WordCloudData data,
+        int width = 800,
+        int height = 600,
+        ExportOptions? options = null,
+        VisualizationTheme? theme = null,
+        CancellationToken cancellationToken = default)
+    {
+        var exportOpts = options ?? new ExportOptions { Width = width, Height = height };
+        var writer = new SvgWriter(exportOpts.ScaledWidth, exportOpts.ScaledHeight);
+
+        return await Task.Run(() =>
+        {
+            writer.StartSvg();
+            
+            // Draw background
+            if (((theme == null) || theme.BackgroundType != BackgroundType.Transparent) && (exportOpts.BackgroundColor.HasValue || (theme?.BackgroundColor.HasValue ?? false)))
+            {
+                var bgColor = theme?.BackgroundColor ?? exportOpts.BackgroundColor ?? SKColors.White;
+                using var bgPaint = new SKPaint { Color = bgColor, Style = SKPaintStyle.Fill };
+                writer.DrawRect(0, 0, exportOpts.ScaledWidth, exportOpts.ScaledHeight, bgPaint);
+            }
+
+            // Calculate layout for words
+            var words = data.WordFrequencies.Take(50).ToList();
+            if (words.Count == 0)
+            {
+                using var paint = new SKPaint
+                {
+                    Color = SKColors.Gray,
+                    TextSize = 24 * exportOpts.DpiScale,
+                    IsAntialias = true,
+                    TextAlign = SKTextAlign.Center
+                };
+                writer.DrawText("No words to display", exportOpts.ScaledWidth / 2, exportOpts.ScaledHeight / 2, paint);
+                writer.EndSvg();
+                return writer.GetContent();
+            }
+
+            var minSize = 12.0f * exportOpts.DpiScale;
+            var maxSize = 72.0f * exportOpts.DpiScale;
+            var minWeight = words.Min(w => w.Weight);
+            var maxWeight = words.Max(w => w.Weight);
+            var weightRange = maxWeight - minWeight;
+
+            var positions = new List<(float x, float y)>();
+            var random = new Random();
+
+            // Simple layout algorithm: place words randomly, avoiding overlaps
+            foreach (var wordFreq in words)
+            {
+                var fontSize = weightRange > 0
+                    ? (float)(minSize + (wordFreq.Weight - minWeight) / weightRange * (maxSize - minSize))
+                    : minSize;
+
+                using var tempPaint = new SKPaint
+                {
+                    TextSize = fontSize,
+                    IsAntialias = true
+                };
+
+                var textWidth = tempPaint.MeasureText(wordFreq.Word);
+                var textHeight = fontSize;
+
+                int attempts = 0;
+                float x = 0, y = 0;
+                bool placed = false;
+
+                while (attempts < 50 && !placed)
+                {
+                    x = random.Next((int)(textWidth / 2), (int)(exportOpts.ScaledWidth - textWidth / 2));
+                    y = random.Next((int)(textHeight), (int)(exportOpts.ScaledHeight - textHeight));
+
+                    bool collision = false;
+                    foreach (var (px, py) in positions)
+                    {
+                        var distance = Math.Sqrt(Math.Pow(x - px, 2) + Math.Pow(y - py, 2));
+                        if (distance < textWidth + 20)
+                        {
+                            collision = true;
+                            break;
+                        }
+                    }
+
+                    if (!collision)
+                    {
+                        placed = true;
+                        positions.Add((x, y));
+                    }
+
+                    attempts++;
+                }
+
+                // Draw word to SVG
+                var color = GetColorForWeight(wordFreq.Weight, minWeight, maxWeight);
+                using var paint = new SKPaint
+                {
+                    Color = color,
+                    TextSize = fontSize,
+                    IsAntialias = true,
+                    TextAlign = SKTextAlign.Center
+                };
+
+                if (theme?.FontFamily != null)
+                {
+                    paint.Typeface = SKTypeface.FromFamilyName(theme.FontFamily);
+                }
+
+                writer.DrawText(wordFreq.Word, x, y, paint);
+            }
+
+            writer.EndSvg();
+            return writer.GetContent();
+        }, cancellationToken);
+    }
+
+    /// <summary>
     /// Exports timeline visualization to PNG image.
     /// </summary>
     public async Task<byte[]> ExportTimelineToPngAsync(
         TimelineData data,
         int width = 1200,
         int height = 600,
+        ExportOptions? options = null,
         CancellationToken cancellationToken = default)
     {
         return await Task.Run(() =>
