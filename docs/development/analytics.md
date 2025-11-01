@@ -46,12 +46,16 @@ Generate timeline visualizations to see chronological events:
 
 #### Usage
 
-1. Navigate to the **Timeline** page (replaces the previous placeholder)
-2. Select the source types you want to visualize
+1. Navigate to the **Timeline** page from the app shell
+2. Select the source types you want to visualize (Topics, Annotations, Conversations)
 3. Configure filters:
+   - **Event Types**: Filter by Created events, Updated events, or both (default: both)
+   - **Search**: Free-text search within event titles, bodies, tag names, source/service names, and actor display names (minimum 2 characters)
+   - **Tags**: Hierarchical tag picker with per-tag "Include descendants" toggle (default: OFF for each tag)
+   - **Date Range**: 
+     - Quick presets: "Last 7 days", "This month", "This year"
+     - Custom date range: Optional start and end date filters
    - **Grouping**: Choose how to group events (Day, Week, Month)
-   - **Date Range**: Optional start and end date filters
-   - **Tag Filters**: Select tags to filter content
 4. Click **Generate Timeline** to create the visualization
 5. Export results as:
    - **JSON**: Structured data format
@@ -60,10 +64,44 @@ Generate timeline visualizations to see chronological events:
 
 #### Event Types
 
-- **Topic Created**: When a topic node was created
-- **Topic Updated**: When a topic node was modified
-- **Annotation Created**: When an annotation was created
-- **Conversation Message**: When a prompt or response was added
+- **Created Events**: 
+  - Topic Created: When a topic node was created
+  - Annotation Created: When an annotation was created
+  - Conversation Message: When a prompt or response was added
+- **Updated Events**:
+  - Topic Updated: When a topic node was modified
+  - Annotation Updated: When an annotation was modified
+
+#### Advanced Filtering
+
+Timeline Analytics supports powerful faceted filtering with boolean logic:
+
+- **Faceted Boolean Logic**: 
+  - **AND across facets**: All selected facets must be satisfied
+  - **OR within facets**: Multiple selections within the same facet use OR logic
+  - Example: (Tag A OR Tag B) AND Created AND (Last 7 days) AND (search matches "policy")
+
+- **Hierarchical Tag Filtering**:
+  - Select any tag in the hierarchy
+  - Per-tag toggle: "Include descendants" (default: OFF)
+  - When enabled for a parent tag, includes all child/descendant tags
+  - Multiple tags selected use OR logic within the Tags facet
+
+- **Event Type Filtering**:
+  - Filter by Created events only, Updated events only, or both (default: both)
+  - Both types selected means no filtering is applied by event type
+
+- **Quick Date Presets**:
+  - **Last 7 days**: Rolling 7-day window from now
+  - **This month**: From start of current calendar month to now (user timezone)
+  - **This year**: From January 1 of current year to now (user timezone)
+  - Custom range: Manually set start and end dates (clears preset when adjusted)
+
+- **Free-Text Search**:
+  - Case-insensitive substring matching
+  - Minimum query length: 2 characters
+  - Searches in: event title, body/message, tag names/paths, source/service name, actor display name
+  - Queries shorter than 2 characters are ignored
 
 ## Data Processing
 
@@ -79,7 +117,13 @@ Generate timeline visualizations to see chronological events:
 
 - **Chronological Ordering**: Events are sorted by timestamp
 - **Grouping**: Events are grouped into bands by time period (day, week, or month)
-- **Metadata**: Includes total event count, earliest and latest event timestamps
+- **Filtering**: Events are filtered using faceted boolean logic:
+  - Event type filtering (Created/Updated)
+  - Tag filtering with hierarchical support (per-tag descendant inclusion)
+  - Date range filtering (presets or custom)
+  - Free-text search across event metadata
+  - All filters combined with AND logic across facets, OR logic within facets
+- **Metadata**: Includes total event count, earliest and latest event timestamps, and applied filters
 
 ## Export Formats
 
@@ -134,9 +178,10 @@ PNG export includes:
 
 ## Future Enhancements
 
-- SkiaSharp-based custom controls for richer visualizations
+- SkiaSharp-based custom controls for richer visualizations (✅ Implemented)
 - Interactive word cloud (click words to filter/analyze)
-- Timeline zoom controls
-- Custom date range presets
+- Timeline zoom controls (✅ Implemented)
+- Custom date range presets (✅ Implemented)
+- Enhanced tag picker UI with hierarchical selection and per-tag descendant toggles
 - Export to additional formats (Excel, PDF)
 
