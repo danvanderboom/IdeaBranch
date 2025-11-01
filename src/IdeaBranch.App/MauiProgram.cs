@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using CommunityToolkit.Maui;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 using IdeaBranch.App.Services;
 using IdeaBranch.App.Services.Notifications;
 using IdeaBranch.App.ViewModels;
@@ -27,6 +28,7 @@ public static class MauiProgram
 		builder
 			.UseMauiApp<App>()
 			.UseMauiCommunityToolkit()
+			.UseSkiaSharp()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

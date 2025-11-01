@@ -1,0 +1,17 @@
+## 1. Implementation
+- [x] 1.1 Scaffold OpenSpec change dir with proposal/tasks and UI/Analytics deltas
+- [x] 1.2 Define precision-aware timeline event model in shared project (TemporalPrecision, TemporalInstant, TemporalRange)
+- [x] 1.3 Add SkiaSharp.Views.Maui package to IdeaBranch.App and initialize handlers in MauiProgram
+- [x] 1.4 Create SkiaTimelineView control inheriting SKCanvasView with draw loop and coordinate transforms
+- [x] 1.5 Implement zoom/pan gestures (pinch, wheel, drag) with inertia and bounds clamping
+- [x] 1.6 Implement precision-aware layout (year/month/day) with tick/grid generation
+- [x] 1.7 Implement event marker rendering sized/colored by type with legend display
+- [x] 1.8 Implement hit-testing for event selection and details navigation
+- [x] 1.9 Implement drag-to-select brush for range filtering with SelectedTimeRange binding
+- [x] 1.10 Implement pixel-density clustering that expands progressively on zoom
+- [x] 1.11 Add viewport culling/virtualization to sustain FPS with 50k+ events
+- [x] 1.12 Replace static list with Skia control in TimelinePage.xaml and wire to ViewModel
+- [x] 1.13 Add FPS/memory telemetry and diagnostics toggles (optional debug overlay)
+- [x] 1.14 Add unit tests for layout/clustering algorithms
+- [x] 1.15 Validate OpenSpec change with `openspec validate add-interactive-skiasharp-timeline --strict`
+

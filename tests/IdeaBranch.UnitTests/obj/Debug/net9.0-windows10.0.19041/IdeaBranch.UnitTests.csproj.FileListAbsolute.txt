@@ -664,3 +664,6 @@ C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UnitTests\bin\Debug\net9.0
 C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UnitTests\bin\Debug\net9.0-windows10.0.19041\runtimes\win-arm64\native\libSkiaSharp.dll
 C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UnitTests\bin\Debug\net9.0-windows10.0.19041\runtimes\win-x64\native\libSkiaSharp.dll
 C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UnitTests\bin\Debug\net9.0-windows10.0.19041\runtimes\win-x86\native\libSkiaSharp.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UnitTests\bin\Debug\net9.0-windows10.0.19041\SkiaSharp.Views.Maui.Controls.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UnitTests\bin\Debug\net9.0-windows10.0.19041\SkiaSharp.Views.Maui.Core.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UnitTests\bin\Debug\net9.0-windows10.0.19041\SkiaSharp.Views.Windows.dll

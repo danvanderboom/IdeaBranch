@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using IdeaBranch.Domain;
+using IdeaBranch.Domain.Timeline;
 using IdeaBranch.Infrastructure.Export;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Controls;
@@ -83,6 +84,7 @@ public class TimelineViewModel : INotifyPropertyChanged
                 OnPropertyChanged(nameof(TimelineData));
                 OnPropertyChanged(nameof(HasData));
                 OnPropertyChanged(nameof(EventCount));
+                OnPropertyChanged(nameof(TimelineEventViews));
                 GenerateCommand.ChangeCanExecute();
                 ExportJsonCommand.ChangeCanExecute();
                 ExportCsvCommand.ChangeCanExecute();
@@ -100,6 +102,25 @@ public class TimelineViewModel : INotifyPropertyChanged
     /// Gets the event count.
     /// </summary>
     public int EventCount => TimelineData?.Events.Count ?? 0;
+
+    /// <summary>
+    /// Gets the timeline events as TimelineEventView collection for SkiaSharp rendering.
+    /// </summary>
+    public ObservableCollection<TimelineEventView> TimelineEventViews
+    {
+        get
+        {
+            var views = new ObservableCollection<TimelineEventView>();
+            if (TimelineData?.Events != null)
+            {
+                foreach (var evt in TimelineData.Events)
+                {
+                    views.Add(TimelineEventView.FromDomainEvent(evt));
+                }
+            }
+            return views;
+        }
+    }
 
     /// <summary>
     /// Gets or sets whether a generation is in progress.

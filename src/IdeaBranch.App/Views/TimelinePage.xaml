@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels.Analytics"
+             xmlns:controls="clr-namespace:IdeaBranch.App.Controls"
              x:Class="IdeaBranch.App.Views.TimelinePage"
              x:DataType="vm:TimelineViewModel"
              Title="Timeline Analytics"
@@ -57,46 +58,21 @@
                                   IsVisible="{Binding IsLoading}" 
                                   HeightRequest="50" />
 
-                <!-- Timeline Display -->
-                <Border IsVisible="{Binding HasData}" 
-                       BackgroundColor="White" 
-                       Padding="10" 
-                       StrokeThickness="1" 
-                       Stroke="{StaticResource Gray500}">
+                        <!-- Timeline Display -->
+                        <Border IsVisible="{Binding HasData}" 
+                               BackgroundColor="White" 
+                               Padding="10" 
+                               StrokeThickness="1" 
+                               Stroke="{StaticResource Gray500}">
                     <VerticalStackLayout Spacing="10">
                         <Label Text="{Binding EventCount, StringFormat='Total Events: {0}'}" 
                                FontSize="16" 
                                FontAttributes="Bold" />
                         
-                        <!-- Timeline Bands -->
-                        <ScrollView>
-                            <VerticalStackLayout Spacing="10">
-                                <CollectionView ItemsSource="{Binding TimelineData.Bands}">
-                                    <CollectionView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border BackgroundColor="{StaticResource Gray100}" 
-                                                   Padding="10" 
-                                                   StrokeThickness="1" 
-                                                   Stroke="{StaticResource Gray500}">
-                                                <VerticalStackLayout Spacing="5">
-                                                    <Label Text="{Binding StartTime, StringFormat='{0:yyyy-MM-dd}'}" 
-                                                           FontSize="14" 
-                                                           FontAttributes="Bold" />
-                                                    <CollectionView ItemsSource="{Binding Events}">
-                                                        <CollectionView.ItemTemplate>
-                                                            <DataTemplate>
-                                                                <Label Text="{Binding Title}" 
-                                                                       FontSize="12" />
-                                                            </DataTemplate>
-                                                        </CollectionView.ItemTemplate>
-                                                    </CollectionView>
-                                                </VerticalStackLayout>
-                                            </Border>
-                                        </DataTemplate>
-                                    </CollectionView.ItemTemplate>
-                                </CollectionView>
-                            </VerticalStackLayout>
-                        </ScrollView>
+                        <!-- Interactive SkiaSharp Timeline -->
+                        <controls:SkiaTimelineView x:Name="TimelineView"
+                                                  Events="{Binding TimelineEventViews}"
+                                                  HeightRequest="400" />
 
                         <!-- Export Buttons -->
                         <HorizontalStackLayout Spacing="10">

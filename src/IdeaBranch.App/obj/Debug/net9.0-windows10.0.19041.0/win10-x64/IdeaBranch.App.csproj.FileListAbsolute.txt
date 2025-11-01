@@ -568,3 +568,8 @@ C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-windows
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\qualifiers.txt
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\qualifiers.txt.intermediate
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-windows10.0.19041.0\win10-x64\MultipleQualifiersPerDimensionFound.txt
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\SkiaSharp.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\libSkiaSharp.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\SkiaSharp.Views.Maui.Controls.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\SkiaSharp.Views.Maui.Core.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\SkiaSharp.Views.Windows.dll

@@ -154,3 +154,8 @@ C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.IntegrationTests\obj\Debug
 C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.IntegrationTests\obj\Debug\net9.0\IdeaBranch.IntegrationTests.pdb
 C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.IntegrationTests\obj\Debug\net9.0\IdeaBranch.IntegrationTests.genruntimeconfig.cache
 C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.IntegrationTests\obj\Debug\net9.0\ref\IdeaBranch.IntegrationTests.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.IntegrationTests\bin\Debug\net9.0\SkiaSharp.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.IntegrationTests\bin\Debug\net9.0\runtimes\osx\native\libSkiaSharp.dylib
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.IntegrationTests\bin\Debug\net9.0\runtimes\win-arm64\native\libSkiaSharp.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.IntegrationTests\bin\Debug\net9.0\runtimes\win-x64\native\libSkiaSharp.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.IntegrationTests\bin\Debug\net9.0\runtimes\win-x86\native\libSkiaSharp.dll

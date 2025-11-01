@@ -86,6 +86,121 @@
             Gets or sets the binding context that has SelectionStart and SelectionLength properties.
             </summary>
         </member>
+        <member name="T:IdeaBranch.App.Controls.SkiaTimelineView">
+            <summary>
+            Interactive SkiaSharp-based timeline control with zoom, pan, clustering, and filtering.
+            </summary>
+        </member>
+        <member name="F:IdeaBranch.App.Controls.SkiaTimelineView.EventsProperty">
+            <summary>
+            Identifies the Events bindable property.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Controls.SkiaTimelineView.#ctor">
+            <summary>
+            Initializes a new instance.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Controls.SkiaTimelineView.Events">
+            <summary>
+            Gets or sets the events to display.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Controls.SkiaTimelineView.SelectedTimeRange">
+            <summary>
+            Gets or sets the selected time range for filtering.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Controls.SkiaTimelineView.SelectedEvent">
+            <summary>
+            Gets or sets the selected event.
+            </summary>
+        </member>
+        <member name="E:IdeaBranch.App.Controls.SkiaTimelineView.SelectedTimeRangeChanged">
+            <summary>
+            Occurs when the selected time range changes.
+            </summary>
+        </member>
+        <member name="E:IdeaBranch.App.Controls.SkiaTimelineView.SelectedEventChanged">
+            <summary>
+            Occurs when the selected event changes.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Controls.SkiaTimelineView.ViewStartTime">
+            <summary>
+            Gets the current viewport start time.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Controls.SkiaTimelineView.ViewEndTime">
+            <summary>
+            Gets the current viewport end time.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Controls.SkiaTimelineView.ZoomLevel">
+            <summary>
+            Gets the current zoom level.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Controls.SkiaTimelineView.ShowDiagnostics">
+            <summary>
+            Gets or sets whether to show diagnostics overlay (FPS, draw time, etc.).
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Controls.SkiaTimelineView.CurrentFps">
+            <summary>
+            Gets the current FPS (frames per second).
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Controls.SkiaTimelineView.AverageDrawTimeMs">
+            <summary>
+            Gets the average draw time in milliseconds.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Controls.SkiaTimelineView.GetCanvasView">
+            <summary>
+            Gets the canvas view for internal access.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Controls.SkiaTimelineView.InvokeSelectedEventChanged(IdeaBranch.Domain.Timeline.TimelineEventView)">
+            <summary>
+            Invokes the SelectedEventChanged event.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Controls.SkiaTimelineView.InvokeSelectedTimeRangeChanged(System.Nullable{System.ValueTuple{System.DateTime,System.DateTime}})">
+            <summary>
+            Invokes the SelectedTimeRangeChanged event.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Controls.SkiaTimelineView.InvalidateCanvas">
+            <summary>
+            Invalidates the canvas to trigger a redraw.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Controls.SkiaTimelineView.Zoom(System.Double,System.Single)">
+            <summary>
+            Zooms the timeline by the specified factor.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Controls.SkiaTimelineView.Pan(System.Double)">
+            <summary>
+            Pans the timeline by the specified offset in pixels.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Controls.SkiaTimelineView.ResetView">
+            <summary>
+            Resets the view to show all events.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Controls.TimelineInteractionHandler">
+            <summary>
+            Handles touch/mouse interactions for the timeline.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Controls.TimelineRenderer">
+            <summary>
+            Handles rendering of timeline events using SkiaSharp.
+            </summary>
+        </member>
         <member name="T:IdeaBranch.App.Converters.CountToBoolConverter">
             <summary>
             Converts count (int) to bool: true if count > 0, false otherwise.
@@ -143,6 +258,11 @@
         <member name="T:IdeaBranch.App.Converters.TagTaxonomyNameConverter">
             <summary>
             Extracts Name from TagTaxonomyPayload stored in ITreeNode.PayloadObject.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Converters.WeightToFontSizeConverter">
+            <summary>
+            Converts word weight (0.0-1.0) to font size for word cloud display.
             </summary>
         </member>
         <member name="T:IdeaBranch.App.Platforms.Android.AndroidNotificationService">
@@ -811,6 +931,46 @@
             Gets or sets the selected tag IDs to exclude.
             </summary>
         </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.TagWeightFilters">
+            <summary>
+            Gets or sets tag weight filters for annotations.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.TemporalStart">
+            <summary>
+            Gets or sets the start of the temporal/historical time range filter.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.TemporalEnd">
+            <summary>
+            Gets or sets the end of the temporal/historical time range filter.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.ErrorMessage">
+            <summary>
+            Gets or sets any error message from the last search.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.HasError">
+            <summary>
+            Gets whether there is an error message.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.IncludeTagsDisplayText">
+            <summary>
+            Gets display text for include tags.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.ExcludeTagsDisplayText">
+            <summary>
+            Gets display text for exclude tags.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.ShowTemporalRange">
+            <summary>
+            Gets whether to show temporal range controls.
+            </summary>
+        </member>
         <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.PageSize">
             <summary>
             Gets or sets the page size for pagination.
@@ -864,6 +1024,271 @@
         <member name="M:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.ClearFilters">
             <summary>
             Clears all search filters and results.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel">
+            <summary>
+            ViewModel for timeline analytics page.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.#ctor(IdeaBranch.Domain.IAnalyticsService,IdeaBranch.Infrastructure.Export.AnalyticsExportService,IdeaBranch.Domain.ITagTaxonomyRepository)">
+            <summary>
+            Initializes a new instance with required services.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.#ctor">
+            <summary>
+            Initializes a new instance from dependency injection (parameterless constructor for XAML).
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.TimelineData">
+            <summary>
+            Gets or sets the timeline data.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.HasData">
+            <summary>
+            Gets whether there is timeline data.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.EventCount">
+            <summary>
+            Gets the event count.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.TimelineEventViews">
+            <summary>
+            Gets the timeline events as TimelineEventView collection for SkiaSharp rendering.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.IsLoading">
+            <summary>
+            Gets or sets whether a generation is in progress.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ErrorMessage">
+            <summary>
+            Gets or sets any error message.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.HasError">
+            <summary>
+            Gets whether there is an error message.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.IncludeTopics">
+            <summary>
+            Gets or sets whether to include topics.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.IncludeAnnotations">
+            <summary>
+            Gets or sets whether to include annotations.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.IncludeConversations">
+            <summary>
+            Gets or sets whether to include conversations.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.IncludeTagDescendants">
+            <summary>
+            Gets or sets whether to include tag descendants in filtering.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.StartDate">
+            <summary>
+            Gets or sets the start date filter.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.EndDate">
+            <summary>
+            Gets or sets the end date filter.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.Grouping">
+            <summary>
+            Gets or sets the timeline grouping level.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.SelectedTags">
+            <summary>
+            Gets the selected tags for filtering.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.GenerateCommand">
+            <summary>
+            Gets the command to generate the timeline.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ExportJsonCommand">
+            <summary>
+            Gets the command to export as JSON.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ExportCsvCommand">
+            <summary>
+            Gets the command to export as CSV.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ExportPngCommand">
+            <summary>
+            Gets the command to export as PNG.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.GenerateTimelineAsync(System.Threading.CancellationToken)">
+            <summary>
+            Generates the timeline.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ExportJsonAsync">
+            <summary>
+            Exports timeline data to JSON.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ExportCsvAsync">
+            <summary>
+            Exports timeline data to CSV.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.TimelineViewModel.ExportPngAsync">
+            <summary>
+            Exports timeline visualization to PNG.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel">
+            <summary>
+            ViewModel for word cloud analytics page.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.#ctor(IdeaBranch.Domain.IAnalyticsService,IdeaBranch.Infrastructure.Export.AnalyticsExportService,IdeaBranch.Domain.ITagTaxonomyRepository)">
+            <summary>
+            Initializes a new instance with required services.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.#ctor">
+            <summary>
+            Initializes a new instance from dependency injection (parameterless constructor for XAML).
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.WordCloudData">
+            <summary>
+            Gets or sets the word cloud data.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.HasData">
+            <summary>
+            Gets whether there is word cloud data.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.WordCount">
+            <summary>
+            Gets the word count.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.IsLoading">
+            <summary>
+            Gets or sets whether a generation is in progress.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.ErrorMessage">
+            <summary>
+            Gets or sets any error message.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.HasError">
+            <summary>
+            Gets whether there is an error message.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.IncludePrompts">
+            <summary>
+            Gets or sets whether to include prompts.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.IncludeResponses">
+            <summary>
+            Gets or sets whether to include responses.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.IncludeAnnotations">
+            <summary>
+            Gets or sets whether to include annotations.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.IncludeTopics">
+            <summary>
+            Gets or sets whether to include topics.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.IncludeTagDescendants">
+            <summary>
+            Gets or sets whether to include tag descendants in filtering.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.StartDate">
+            <summary>
+            Gets or sets the start date filter.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.EndDate">
+            <summary>
+            Gets or sets the end date filter.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.MinFrequency">
+            <summary>
+            Gets or sets the minimum frequency threshold.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.MaxWords">
+            <summary>
+            Gets or sets the maximum number of words.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.SelectedTags">
+            <summary>
+            Gets the selected tags for filtering.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.GenerateCommand">
+            <summary>
+            Gets the command to generate the word cloud.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.ExportJsonCommand">
+            <summary>
+            Gets the command to export as JSON.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.ExportCsvCommand">
+            <summary>
+            Gets the command to export as CSV.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.ExportPngCommand">
+            <summary>
+            Gets the command to export as PNG.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.GenerateWordCloudAsync(System.Threading.CancellationToken)">
+            <summary>
+            Generates the word cloud.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.ExportJsonAsync">
+            <summary>
+            Exports word cloud data to JSON.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.ExportCsvAsync">
+            <summary>
+            Exports word cloud data to CSV.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.Analytics.WordCloudViewModel.ExportPngAsync">
+            <summary>
+            Exports word cloud visualization to PNG.
             </summary>
         </member>
         <member name="T:IdeaBranch.App.ViewModels.AnnotationEditViewModel">
@@ -1175,6 +1600,101 @@
         <member name="M:IdeaBranch.App.ViewModels.SettingsViewModel.SavePushNotificationsEnabledAsync">
             <summary>
             Saves the push notifications enabled setting.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.ViewModels.SimpleSearchViewModel">
+            <summary>
+            ViewModel for simple inline search panel.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.SimpleSearchViewModel.#ctor(IdeaBranch.App.Services.Search.SearchCoordinator)">
+            <summary>
+            Initializes a new instance with the search coordinator.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.SimpleSearchViewModel.#ctor">
+            <summary>
+            Initializes a new instance from dependency injection (parameterless constructor for XAML).
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SimpleSearchViewModel.IsExpanded">
+            <summary>
+            Gets or sets whether the panel is expanded.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SimpleSearchViewModel.SearchText">
+            <summary>
+            Gets or sets the search text.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SimpleSearchViewModel.SearchTopicNodes">
+            <summary>
+            Gets or sets whether to search topic nodes.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SimpleSearchViewModel.SearchAnnotations">
+            <summary>
+            Gets or sets whether to search annotations.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SimpleSearchViewModel.SearchTags">
+            <summary>
+            Gets or sets whether to search tags.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SimpleSearchViewModel.SearchTemplates">
+            <summary>
+            Gets or sets whether to search templates.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SimpleSearchViewModel.UpdatedAtFrom">
+            <summary>
+            Gets or sets the start of the UpdatedAt range filter.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SimpleSearchViewModel.IsLoading">
+            <summary>
+            Gets or sets whether a search is currently in progress.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SimpleSearchViewModel.Results">
+            <summary>
+            Gets or sets the search results.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SimpleSearchViewModel.HasResults">
+            <summary>
+            Gets whether there are any search results.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SimpleSearchViewModel.ResultSummary">
+            <summary>
+            Gets a summary of the search results.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SimpleSearchViewModel.ErrorMessage">
+            <summary>
+            Gets or sets any error message from the last search.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SimpleSearchViewModel.HasError">
+            <summary>
+            Gets whether there is an error message.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.SimpleSearchViewModel.ExecuteSearchCommand">
+            <summary>
+            Gets the command to execute the search.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.SimpleSearchViewModel.HasAnyContentTypeSelected">
+            <summary>
+            Checks if any content type is selected.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.SimpleSearchViewModel.ExecuteSearchAsync(System.Threading.CancellationToken)">
+            <summary>
+            Executes the search with current filter settings.
             </summary>
         </member>
         <member name="T:IdeaBranch.App.ViewModels.TimelineViewModel">

@@ -1236,6 +1236,41 @@
           }
         }
       },
+      "SkiaSharp.Views.Maui.Controls/2.88.0": {
+        "dependencies": {
+          "SkiaSharp.Views.Maui.Core": "2.88.0"
+        },
+        "runtime": {
+          "lib/net6.0-windows10.0.18362/SkiaSharp.Views.Maui.Controls.dll": {
+            "assemblyVersion": "2.88.0.0",
+            "fileVersion": "2.88.0.0"
+          }
+        }
+      },
+      "SkiaSharp.Views.Maui.Core/2.88.0": {
+        "dependencies": {
+          "SkiaSharp": "2.88.8",
+          "SkiaSharp.Views.WinUI": "2.88.0"
+        },
+        "runtime": {
+          "lib/net6.0-windows10.0.18362/SkiaSharp.Views.Maui.Core.dll": {
+            "assemblyVersion": "2.88.0.0",
+            "fileVersion": "2.88.0.0"
+          }
+        }
+      },
+      "SkiaSharp.Views.WinUI/2.88.0": {
+        "dependencies": {
+          "Microsoft.WindowsAppSDK": "1.7.250606001",
+          "SkiaSharp": "2.88.8"
+        },
+        "runtime": {
+          "lib/net6.0-windows10.0.19041/SkiaSharp.Views.Windows.dll": {
+            "assemblyVersion": "2.88.0.0",
+            "fileVersion": "2.88.0.0"
+          }
+        }
+      },
       "sqlite-net-pcl/1.9.172": {
         "dependencies": {
           "SQLitePCLRaw.bundle_green": "2.1.2"
@@ -1468,7 +1503,8 @@
           "Microsoft.Agents.AI.OpenAI": "1.0.0-preview.251028.1",
           "Microsoft.Extensions.Http": "9.0.0",
           "Microsoft.Extensions.Logging.Debug": "9.0.8",
-          "Microsoft.Maui.Controls": "9.0.111"
+          "Microsoft.Maui.Controls": "9.0.111",
+          "SkiaSharp.Views.Maui.Controls": "2.88.0"
         },
         "runtime": {
           "IdeaBranch.App.dll": {
@@ -2014,6 +2050,27 @@
       "sha512": "sha512-O9QXoWEXA+6cweR4h3BOnwMz+pO9vL9mXdjLrpDd0w1QzCgWmLQBxa1VgySDITiH7nQndrDG1h6937zm9pLj1Q==",
       "path": "skiasharp.nativeassets.win32/2.88.8",
       "hashPath": "skiasharp.nativeassets.win32.2.88.8.nupkg.sha512"
+    },
+    "SkiaSharp.Views.Maui.Controls/2.88.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-5mGozMe/7zkIvOF1KJwmbUvFrSaBu8RRnU0Cn5Z3Kp0t5rz0+6vBKDbAGAgaIBlxLppiBaHynugs7nn5G5GRMw==",
+      "path": "skiasharp.views.maui.controls/2.88.0",
+      "hashPath": "skiasharp.views.maui.controls.2.88.0.nupkg.sha512"
+    },
+    "SkiaSharp.Views.Maui.Core/2.88.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-TZw0fhuZR/MsXhVuckque8h1uoh1wZuWMka2xb/EdXu7gmD0/CIoJnrIL4jK4C0D7rzLOfchCoqwVrCE9LfLpw==",
+      "path": "skiasharp.views.maui.core/2.88.0",
+      "hashPath": "skiasharp.views.maui.core.2.88.0.nupkg.sha512"
+    },
+    "SkiaSharp.Views.WinUI/2.88.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nO0TyOnEw5uNYcPWnU7ZdaD6M+pSYC9JMrdJas7N5lwF1RRyKKBTFUlAHZ3ansSD2PUNYe7PD7KWPk2ut44LKg==",
+      "path": "skiasharp.views.winui/2.88.0",
+      "hashPath": "skiasharp.views.winui.2.88.0.nupkg.sha512"
     },
     "sqlite-net-pcl/1.9.172": {
       "type": "package",

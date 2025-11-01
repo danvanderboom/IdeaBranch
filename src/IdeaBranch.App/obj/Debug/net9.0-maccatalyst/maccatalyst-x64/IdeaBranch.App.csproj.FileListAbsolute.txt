@@ -348,3 +348,8 @@ C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-maccata
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-maccatalyst\maccatalyst-x64\IdeaBranch.App.pdb
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-maccatalyst\maccatalyst-x64\IdeaBranch.App.genruntimeconfig.cache
 C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\obj\Debug\net9.0-maccatalyst\maccatalyst-x64\ref\IdeaBranch.App.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Debug\net9.0-maccatalyst\maccatalyst-x64\SkiaSharp.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Debug\net9.0-maccatalyst\maccatalyst-x64\libSkiaSharp.framework.zip
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Debug\net9.0-maccatalyst\maccatalyst-x64\SkiaSharp.Views.iOS.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Debug\net9.0-maccatalyst\maccatalyst-x64\SkiaSharp.Views.Maui.Controls.dll
+C:\Source\CriticalInsight\IdeaBranch\src\IdeaBranch.App\bin\Debug\net9.0-maccatalyst\maccatalyst-x64\SkiaSharp.Views.Maui.Core.dll

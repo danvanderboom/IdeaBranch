@@ -1566,6 +1566,56 @@
           }
         }
       },
+      "SkiaSharp.Views.Maui.Controls/2.88.0": {
+        "type": "package",
+        "dependencies": {
+          "SkiaSharp.Views.Maui.Core": "2.88.0"
+        },
+        "compile": {
+          "lib/net6.0-windows10.0.18362/SkiaSharp.Views.Maui.Controls.dll": {
+            "related": ".pdb"
+          }
+        },
+        "runtime": {
+          "lib/net6.0-windows10.0.18362/SkiaSharp.Views.Maui.Controls.dll": {
+            "related": ".pdb"
+          }
+        }
+      },
+      "SkiaSharp.Views.Maui.Core/2.88.0": {
+        "type": "package",
+        "dependencies": {
+          "SkiaSharp": "2.88.0",
+          "SkiaSharp.Views.WinUI": "2.88.0"
+        },
+        "compile": {
+          "lib/net6.0-windows10.0.18362/SkiaSharp.Views.Maui.Core.dll": {
+            "related": ".pdb"
+          }
+        },
+        "runtime": {
+          "lib/net6.0-windows10.0.18362/SkiaSharp.Views.Maui.Core.dll": {
+            "related": ".pdb"
+          }
+        }
+      },
+      "SkiaSharp.Views.WinUI/2.88.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.WindowsAppSDK": "1.0.3",
+          "SkiaSharp": "2.88.0"
+        },
+        "compile": {
+          "lib/net6.0-windows10.0.19041/SkiaSharp.Views.Windows.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0-windows10.0.19041/SkiaSharp.Views.Windows.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
       "sqlite-net-pcl/1.9.172": {
         "type": "package",
         "dependencies": {
@@ -1950,7 +2000,8 @@
           "Microsoft.Agents.AI.OpenAI": "1.0.0-preview.251028.1",
           "Microsoft.Extensions.Http": "9.0.0",
           "Microsoft.Extensions.Logging.Debug": "9.0.8",
-          "Microsoft.Maui.Controls": "9.0.111"
+          "Microsoft.Maui.Controls": "9.0.111",
+          "SkiaSharp.Views.Maui.Controls": "2.0.80"
         },
         "compile": {
           "bin/placeholder/IdeaBranch.App.dll": {}
@@ -5264,6 +5315,71 @@
         "skiasharp.nativeassets.win32.nuspec"
       ]
     },
+    "SkiaSharp.Views.Maui.Controls/2.88.0": {
+      "sha512": "5mGozMe/7zkIvOF1KJwmbUvFrSaBu8RRnU0Cn5Z3Kp0t5rz0+6vBKDbAGAgaIBlxLppiBaHynugs7nn5G5GRMw==",
+      "type": "package",
+      "path": "skiasharp.views.maui.controls/2.88.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "lib/net6.0-android30.0/SkiaSharp.Views.Maui.Controls.dll",
+        "lib/net6.0-android30.0/SkiaSharp.Views.Maui.Controls.pdb",
+        "lib/net6.0-ios13.6/SkiaSharp.Views.Maui.Controls.dll",
+        "lib/net6.0-ios13.6/SkiaSharp.Views.Maui.Controls.pdb",
+        "lib/net6.0-maccatalyst13.5/SkiaSharp.Views.Maui.Controls.dll",
+        "lib/net6.0-maccatalyst13.5/SkiaSharp.Views.Maui.Controls.pdb",
+        "lib/net6.0-windows10.0.18362/SkiaSharp.Views.Maui.Controls.dll",
+        "lib/net6.0-windows10.0.18362/SkiaSharp.Views.Maui.Controls.pdb",
+        "lib/net6.0/SkiaSharp.Views.Maui.Controls.dll",
+        "lib/net6.0/SkiaSharp.Views.Maui.Controls.pdb",
+        "skiasharp.views.maui.controls.2.88.0.nupkg.sha512",
+        "skiasharp.views.maui.controls.nuspec"
+      ]
+    },
+    "SkiaSharp.Views.Maui.Core/2.88.0": {
+      "sha512": "TZw0fhuZR/MsXhVuckque8h1uoh1wZuWMka2xb/EdXu7gmD0/CIoJnrIL4jK4C0D7rzLOfchCoqwVrCE9LfLpw==",
+      "type": "package",
+      "path": "skiasharp.views.maui.core/2.88.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "lib/net6.0-android30.0/SkiaSharp.Views.Maui.Core.dll",
+        "lib/net6.0-android30.0/SkiaSharp.Views.Maui.Core.pdb",
+        "lib/net6.0-ios13.6/SkiaSharp.Views.Maui.Core.dll",
+        "lib/net6.0-ios13.6/SkiaSharp.Views.Maui.Core.pdb",
+        "lib/net6.0-maccatalyst13.5/SkiaSharp.Views.Maui.Core.dll",
+        "lib/net6.0-maccatalyst13.5/SkiaSharp.Views.Maui.Core.pdb",
+        "lib/net6.0-windows10.0.18362/SkiaSharp.Views.Maui.Core.dll",
+        "lib/net6.0-windows10.0.18362/SkiaSharp.Views.Maui.Core.pdb",
+        "lib/net6.0/SkiaSharp.Views.Maui.Core.dll",
+        "lib/net6.0/SkiaSharp.Views.Maui.Core.pdb",
+        "skiasharp.views.maui.core.2.88.0.nupkg.sha512",
+        "skiasharp.views.maui.core.nuspec"
+      ]
+    },
+    "SkiaSharp.Views.WinUI/2.88.0": {
+      "sha512": "nO0TyOnEw5uNYcPWnU7ZdaD6M+pSYC9JMrdJas7N5lwF1RRyKKBTFUlAHZ3ansSD2PUNYe7PD7KWPk2ut44LKg==",
+      "type": "package",
+      "path": "skiasharp.views.winui/2.88.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "lib/net5.0-windows10.0.18362/SkiaSharp.Views.Windows.dll",
+        "lib/net5.0-windows10.0.18362/SkiaSharp.Views.Windows.pdb",
+        "lib/net5.0-windows10.0.18362/SkiaSharp.Views.Windows.xml",
+        "lib/net6.0-windows10.0.18362/SkiaSharp.Views.Windows.dll",
+        "lib/net6.0-windows10.0.18362/SkiaSharp.Views.Windows.pdb",
+        "lib/net6.0-windows10.0.18362/SkiaSharp.Views.Windows.xml",
+        "lib/net6.0-windows10.0.19041/SkiaSharp.Views.Windows.dll",
+        "lib/net6.0-windows10.0.19041/SkiaSharp.Views.Windows.pdb",
+        "lib/net6.0-windows10.0.19041/SkiaSharp.Views.Windows.xml",
+        "skiasharp.views.winui.2.88.0.nupkg.sha512",
+        "skiasharp.views.winui.nuspec"
+      ]
+    },
     "sqlite-net-pcl/1.9.172": {
       "sha512": "go533+huyvg5bOMmCpX+DyvLrcVRiEBIpqEiDHgXRijWIBBNkWnyMr/w+5ZzrUArKY+4ApucsbBnFtP3QITrJg==",
       "type": "package",
@@ -6008,5 +6124,17 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1603",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "IdeaBranch.App depends on SkiaSharp.Views.Maui.Controls (>= 2.0.80) but SkiaSharp.Views.Maui.Controls 2.0.80 was not found. SkiaSharp.Views.Maui.Controls 2.88.0 was resolved instead.",
+      "libraryId": "SkiaSharp.Views.Maui.Controls",
+      "targetGraphs": [
+        "net9.0-windows10.0.19041"
+      ]
+    }
+  ]
 }

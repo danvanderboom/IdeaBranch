@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "4xep7SDDbQo=",
+  "dgSpecHash": "p0p0X0Y5i2A=",
   "success": true,
   "projectFilePath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.App\\IdeaBranch.App.csproj",
   "expectedPackageFiles": [
@@ -79,6 +79,10 @@
     "C:\\Users\\danva\\.nuget\\packages\\skiasharp.nativeassets.maccatalyst\\2.88.8\\skiasharp.nativeassets.maccatalyst.2.88.8.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\skiasharp.nativeassets.macos\\2.88.8\\skiasharp.nativeassets.macos.2.88.8.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\skiasharp.nativeassets.win32\\2.88.8\\skiasharp.nativeassets.win32.2.88.8.nupkg.sha512",
+    "C:\\Users\\danva\\.nuget\\packages\\skiasharp.views\\2.88.0\\skiasharp.views.2.88.0.nupkg.sha512",
+    "C:\\Users\\danva\\.nuget\\packages\\skiasharp.views.maui.controls\\2.88.0\\skiasharp.views.maui.controls.2.88.0.nupkg.sha512",
+    "C:\\Users\\danva\\.nuget\\packages\\skiasharp.views.maui.core\\2.88.0\\skiasharp.views.maui.core.2.88.0.nupkg.sha512",
+    "C:\\Users\\danva\\.nuget\\packages\\skiasharp.views.winui\\2.88.0\\skiasharp.views.winui.2.88.0.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\sqlite-net-pcl\\1.9.172\\sqlite-net-pcl.1.9.172.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.1.10\\sqlitepclraw.bundle_e_sqlite3.2.1.10.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\sqlitepclraw.bundle_green\\2.1.2\\sqlitepclraw.bundle_green.2.1.2.nupkg.sha512",
@@ -209,5 +213,41 @@
     "C:\\Users\\danva\\.nuget\\packages\\xamarin.kotlinx.serialization.core.jvm\\1.7.3.4\\xamarin.kotlinx.serialization.core.jvm.1.7.3.4.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.19041.57\\microsoft.windows.sdk.net.ref.10.0.19041.57.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1603",
+      "level": "Warning",
+      "message": "IdeaBranch.App depends on SkiaSharp.Views.Maui.Controls (>= 2.0.80) but SkiaSharp.Views.Maui.Controls 2.0.80 was not found. SkiaSharp.Views.Maui.Controls 2.88.0 was resolved instead.",
+      "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.App\\IdeaBranch.App.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.App\\IdeaBranch.App.csproj",
+      "libraryId": "SkiaSharp.Views.Maui.Controls",
+      "targetGraphs": [
+        "net9.0-android35.0",
+        "net9.0-android35.0/android-arm64",
+        "net9.0-android35.0/android-x64",
+        "net9.0-android35.0/iossimulator-x64",
+        "net9.0-android35.0/maccatalyst-x64",
+        "net9.0-android35.0/win10-x64",
+        "net9.0-ios26.0",
+        "net9.0-ios26.0/android-arm64",
+        "net9.0-ios26.0/android-x64",
+        "net9.0-ios26.0/iossimulator-x64",
+        "net9.0-ios26.0/maccatalyst-x64",
+        "net9.0-ios26.0/win10-x64",
+        "net9.0-maccatalyst26.0",
+        "net9.0-maccatalyst26.0/android-arm64",
+        "net9.0-maccatalyst26.0/android-x64",
+        "net9.0-maccatalyst26.0/iossimulator-x64",
+        "net9.0-maccatalyst26.0/maccatalyst-x64",
+        "net9.0-maccatalyst26.0/win10-x64",
+        "net9.0-windows10.0.19041",
+        "net9.0-windows10.0.19041/android-arm64",
+        "net9.0-windows10.0.19041/android-x64",
+        "net9.0-windows10.0.19041/iossimulator-x64",
+        "net9.0-windows10.0.19041/maccatalyst-x64",
+        "net9.0-windows10.0.19041/win10-x64"
+      ]
+    }
+  ]
 }

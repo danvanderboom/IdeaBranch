@@ -678,7 +678,10 @@ public sealed class AgentTreeService : IAgentTreeService
             var exclusions = allResults.Skip(1).ToList();
             
             // Positive must match AND no exclusion should match
-            return positive && !exclusions.Any(e => e);
+            // If any exclusion matches, the node is excluded
+            if (!positive) return false; // Positive criterion must match first
+            if (exclusions.Any(e => e)) return false; // Any exclusion matching means exclusion
+            return true; // Positive matches and no exclusions match
         }
 
         return op switch

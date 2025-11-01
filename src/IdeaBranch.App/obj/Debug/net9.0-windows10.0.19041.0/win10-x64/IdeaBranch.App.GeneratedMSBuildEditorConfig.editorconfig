@@ -40,6 +40,12 @@ build_metadata.AdditionalFiles.ManifestResourceName = IdeaBranch.App.Controls.Si
 build_metadata.AdditionalFiles.TargetPath = Controls\SimpleSearchPanel.xaml
 build_metadata.AdditionalFiles.RelativePath = Controls\SimpleSearchPanel.xaml
 
+[C:/Source/CriticalInsight/IdeaBranch/src/IdeaBranch.App/Controls/SkiaTimelineView.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = IdeaBranch.App.Controls.SkiaTimelineView.xaml
+build_metadata.AdditionalFiles.TargetPath = Controls\SkiaTimelineView.xaml
+build_metadata.AdditionalFiles.RelativePath = Controls\SkiaTimelineView.xaml
+
 [C:/Source/CriticalInsight/IdeaBranch/src/IdeaBranch.App/Controls/TagPickerPopup.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = IdeaBranch.App.Controls.TagPickerPopup.xaml

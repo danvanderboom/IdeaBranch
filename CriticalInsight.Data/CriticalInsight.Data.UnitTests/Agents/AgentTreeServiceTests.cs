@@ -419,10 +419,14 @@ public class AgentTreeServiceTests
         var result = svc.SearchAdvanced(_editor, root.NodeId, options, new PageOptions { PageSize = 10 });
         
         Assert.That(result.Success, Is.True);
-        Assert.That(result.Data!.Items.Count, Is.EqualTo(2)); // Bedroom and Bathroom, but not Kitchen
+        // Bedroom and Bathroom match (> 100 sqft AND not containing "Kitchen")
+        // Kitchen is excluded (contains "Kitchen" in name)
+        // House is excluded because it's the parent (rooms only, not parent nodes)
+        Assert.That(result.Data!.Items.Count, Is.EqualTo(2)); // Bedroom and Bathroom, but not Kitchen or House
         Assert.That(result.Data.Items.Any(i => i.Contains("Bedroom")), Is.True);
         Assert.That(result.Data.Items.Any(i => i.Contains("Bathroom")), Is.True);
         Assert.That(result.Data.Items.Any(i => i.Contains("Kitchen")), Is.False);
+        Assert.That(result.Data.Items.Any(i => i.Contains("House")), Is.False);
     }
 
     [Test]

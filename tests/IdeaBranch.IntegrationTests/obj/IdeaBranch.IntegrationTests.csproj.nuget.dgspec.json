@@ -206,6 +206,14 @@
               "target": "Package",
               "version": "[8.4.0, )"
             },
+            "SkiaSharp": {
+              "target": "Package",
+              "version": "[2.88.8, )"
+            },
+            "System.Text.Json": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
             "sqlite-net-pcl": {
               "target": "Package",
               "version": "[1.9.172, )"
