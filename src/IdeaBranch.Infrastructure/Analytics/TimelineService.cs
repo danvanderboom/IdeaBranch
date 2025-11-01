@@ -46,24 +46,30 @@ public class TimelineService : IAnalyticsService
         TimelineOptions options,
         CancellationToken cancellationToken = default)
     {
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        var initialEventCount = 0;
+        
         var events = new List<TimelineEvent>();
 
         // Collect events from different sources
         if (options.SourceTypes.Contains(EventSourceType.Topics))
         {
             var topicEvents = await CollectTopicEventsAsync(options, cancellationToken);
+            initialEventCount += topicEvents.Count;
             events.AddRange(topicEvents);
         }
 
         if (options.SourceTypes.Contains(EventSourceType.Annotations))
         {
             var annotationEvents = await CollectAnnotationEventsAsync(options, cancellationToken);
+            initialEventCount += annotationEvents.Count;
             events.AddRange(annotationEvents);
         }
 
         if (options.SourceTypes.Contains(EventSourceType.Conversations))
         {
             var conversationEvents = await CollectConversationEventsAsync(options, cancellationToken);
+            initialEventCount += conversationEvents.Count;
             events.AddRange(conversationEvents);
         }
 
@@ -80,9 +86,17 @@ public class TimelineService : IAnalyticsService
         // Apply faceted boolean filters: AND across facets, OR within facets
 
         // Facet 1: Event Types (OR within facet, AND with other facets)
-        if (options.EventTypes != null && options.EventTypes.Count > 0)
+        if (options.EventTypes != null)
         {
-            events = events.Where(e => options.EventTypes.Contains(e.EventType)).ToList();
+            // Empty set means no events should be returned
+            if (options.EventTypes.Count == 0)
+            {
+                events.Clear();
+            }
+            else
+            {
+                events = events.Where(e => options.EventTypes.Contains(e.EventType)).ToList();
+            }
         }
 
         // Facet 2: Tag Selections (OR within facet - tag A OR tag B, AND with other facets)
@@ -176,6 +190,20 @@ public class TimelineService : IAnalyticsService
 
         var earliestEvent = events.Count > 0 ? events[0].Timestamp : (DateTime?)null;
         var latestEvent = events.Count > 0 ? events[events.Count - 1].Timestamp : (DateTime?)null;
+
+        stopwatch.Stop();
+        
+        // Emit performance telemetry (minimal - using Debug for now)
+        var finalEventCount = events.Count;
+        var filterCount = 0;
+        if (options.TagSelections != null && options.TagSelections.Count > 0) filterCount++;
+        if (options.EventTypes != null && options.EventTypes.Count > 0) filterCount++;
+        if (!string.IsNullOrWhiteSpace(options.SearchQuery) && options.SearchQuery.Length >= 2) filterCount++;
+        if (options.StartDate.HasValue || options.EndDate.HasValue) filterCount++;
+        
+        System.Diagnostics.Debug.WriteLine(
+            $"TimelineService: Generated {finalEventCount} events from {initialEventCount} source events in {stopwatch.ElapsedMilliseconds}ms " +
+            $"({filterCount} filters applied, reduction: {(initialEventCount > 0 ? (100.0 * (initialEventCount - finalEventCount) / initialEventCount) : 0):F1}%)");
 
         return new TimelineData
         {
