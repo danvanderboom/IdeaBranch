@@ -374,6 +374,8 @@ public class AnalyticsExportService
         int width = 1200,
         int height = 600,
         ExportOptions? options = null,
+        VisualizationTheme? theme = null,
+        IReadOnlyList<(Guid fromEventId, Guid toEventId)>? connections = null,
         CancellationToken cancellationToken = default)
     {
         return await Task.Run(() =>
@@ -381,8 +383,16 @@ public class AnalyticsExportService
             using var surface = SKSurface.Create(new SKImageInfo(width, height));
             var canvas = surface.Canvas;
 
-            // Clear background
-            canvas.Clear(SKColors.White);
+            // Clear background with theming
+            if (((theme == null) || theme.BackgroundType != BackgroundType.Transparent))
+            {
+                var bg = theme?.BackgroundColor ?? SKColors.White;
+                canvas.Clear(bg);
+            }
+            else
+            {
+                canvas.Clear(SKColors.Transparent);
+            }
 
             if (data.Bands.Count == 0)
             {
@@ -410,6 +420,7 @@ public class AnalyticsExportService
                 timeRange = 1;
 
             var yPos = padding;
+            var eventPositions = new Dictionary<Guid, (float x, float y)>();
             foreach (var band in data.Bands)
             {
                 // Draw band background
@@ -435,7 +446,9 @@ public class AnalyticsExportService
                         IsAntialias = true,
                         Style = SKPaintStyle.Fill
                     };
-                    canvas.DrawCircle(xPos, yPos + bandHeight / 2, 4, paint);
+                    var cy = yPos + bandHeight / 2;
+                    canvas.DrawCircle(xPos, cy, 4, paint);
+                    eventPositions[evt.Id] = (xPos, cy);
                 }
 
                 // Draw band label (date range)
@@ -453,7 +466,118 @@ public class AnalyticsExportService
                 yPos += bandHeight;
             }
 
+            // Draw connections if provided
+            if (connections != null && connections.Count > 0)
+            {
+                using var connPaint = new SKPaint
+                {
+                    Color = SKColors.DarkGray,
+                    IsAntialias = true,
+                    Style = SKPaintStyle.Stroke,
+                    StrokeWidth = 1.5f
+                };
+
+                foreach (var (fromEventId, toEventId) in connections)
+                {
+                    if (eventPositions.TryGetValue(fromEventId, out var p0) && eventPositions.TryGetValue(toEventId, out var p1))
+                    {
+                        canvas.DrawLine(p0.x, p0.y, p1.x, p1.y, connPaint);
+                    }
+                }
+            }
+
             return EncodeSurfaceToPng(surface);
+        }, cancellationToken);
+    }
+
+    /// <summary>
+    /// Exports timeline visualization to SVG format with optional connections.
+    /// </summary>
+    public async Task<string> ExportTimelineToSvgAsync(
+        TimelineData data,
+        int width = 1200,
+        int height = 600,
+        ExportOptions? options = null,
+        VisualizationTheme? theme = null,
+        IReadOnlyList<(Guid fromEventId, Guid toEventId)>? connections = null,
+        CancellationToken cancellationToken = default)
+    {
+        var exportOpts = options ?? new ExportOptions { Width = width, Height = height };
+        var writer = new SvgWriter(exportOpts.ScaledWidth, exportOpts.ScaledHeight);
+
+        return await Task.Run(() =>
+        {
+            writer.StartSvg();
+
+            // Background
+            if (((theme == null) || theme.BackgroundType != BackgroundType.Transparent))
+            {
+                var bg = theme?.BackgroundColor ?? SKColors.White;
+                using var bgPaint = new SKPaint { Color = bg, Style = SKPaintStyle.Fill };
+                writer.DrawRect(0, 0, exportOpts.ScaledWidth, exportOpts.ScaledHeight, bgPaint);
+            }
+
+            var padding = 50f;
+            var bandHeight = (exportOpts.ScaledHeight - padding * 2) / Math.Max(data.Bands.Count, 1);
+            var timelineWidth = exportOpts.ScaledWidth - padding * 2;
+
+            if (data.Bands.Count == 0)
+            {
+                using var paint = new SKPaint { Color = SKColors.Gray, TextSize = 24 * exportOpts.DpiScale, IsAntialias = true, TextAlign = SKTextAlign.Center };
+                writer.DrawText("No timeline events to display", exportOpts.ScaledWidth / 2, exportOpts.ScaledHeight / 2, paint);
+                writer.EndSvg();
+                return writer.GetContent();
+            }
+
+            var earliestTime = data.Bands.Min(b => b.StartTime);
+            var latestTime = data.Bands.Max(b => b.EndTime);
+            var timeRange = (latestTime - earliestTime).TotalDays;
+            if (timeRange < 1) timeRange = 1;
+
+            var yPos = padding;
+            var eventPositions = new Dictionary<Guid, (float x, float y)>();
+
+            foreach (var band in data.Bands)
+            {
+                using (var bandPaint = new SKPaint { Color = SKColors.LightGray.WithAlpha(128), IsAntialias = true })
+                {
+                    writer.DrawRect(padding, yPos, timelineWidth, bandHeight - 2, bandPaint);
+                }
+
+                foreach (var evt in band.Events)
+                {
+                    var daysFromStart = (evt.Timestamp - earliestTime).TotalDays;
+                    var xPos = padding + (float)(daysFromStart / timeRange * timelineWidth);
+                    var cy = yPos + bandHeight / 2;
+
+                    using var circlePaint = new SKPaint { Color = GetColorForEventType(evt.EventType), IsAntialias = true, Style = SKPaintStyle.Fill };
+                    writer.DrawCircle(xPos, cy, 4, circlePaint);
+                    eventPositions[evt.Id] = (xPos, cy);
+                }
+
+                using (var textPaint = new SKPaint { Color = SKColors.Black, TextSize = 10 * exportOpts.DpiScale, IsAntialias = true })
+                {
+                    var label = $"{band.StartTime:yyyy-MM-dd}";
+                    writer.DrawText(label, padding + 5, yPos + bandHeight / 2 + 3, textPaint);
+                }
+
+                yPos += bandHeight;
+            }
+
+            if (connections != null && connections.Count > 0)
+            {
+                using var connPaint = new SKPaint { Color = SKColors.DarkGray, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 1.5f };
+                foreach (var (fromEventId, toEventId) in connections)
+                {
+                    if (eventPositions.TryGetValue(fromEventId, out var p0) && eventPositions.TryGetValue(toEventId, out var p1))
+                    {
+                        writer.DrawLine(p0.x, p0.y, p1.x, p1.y, connPaint);
+                    }
+                }
+            }
+
+            writer.EndSvg();
+            return writer.GetContent();
         }, cancellationToken);
     }
 
