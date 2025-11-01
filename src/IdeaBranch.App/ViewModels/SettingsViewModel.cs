@@ -39,6 +39,14 @@ public class SettingsViewModel : INotifyPropertyChanged
         AppResources.SettingsCategory_ImportExport
     };
     
+    // Export settings state
+    private int _exportDpiScale = 1;
+    private string _exportBackgroundColor = "#FFFFFF";
+    private bool _exportIncludeLegend = true;
+    private string? _exportFontFamily;
+    private string _exportPalette = "vibrant";
+    private bool _exportTransparentBackground = false;
+    
     // Internal category keys for converter matching (must match the original keys used in XAML)
     public static string GetCategoryKey(string localizedCategory)
     {
@@ -296,6 +304,91 @@ public class SettingsViewModel : INotifyPropertyChanged
         }
     }
 
+    // Export settings properties
+    public int ExportDpiScale
+    {
+        get => _exportDpiScale;
+        set
+        {
+            if (_exportDpiScale != value)
+            {
+                _exportDpiScale = value;
+                OnPropertyChanged(nameof(ExportDpiScale));
+                SaveExportDpiScaleAsync();
+            }
+        }
+    }
+
+    public string ExportBackgroundColor
+    {
+        get => _exportBackgroundColor;
+        set
+        {
+            if (_exportBackgroundColor != value)
+            {
+                _exportBackgroundColor = value;
+                OnPropertyChanged(nameof(ExportBackgroundColor));
+                SaveExportBackgroundColorAsync();
+            }
+        }
+    }
+
+    public bool ExportIncludeLegend
+    {
+        get => _exportIncludeLegend;
+        set
+        {
+            if (_exportIncludeLegend != value)
+            {
+                _exportIncludeLegend = value;
+                OnPropertyChanged(nameof(ExportIncludeLegend));
+                SaveExportIncludeLegendAsync();
+            }
+        }
+    }
+
+    public string? ExportFontFamily
+    {
+        get => _exportFontFamily;
+        set
+        {
+            if (_exportFontFamily != value)
+            {
+                _exportFontFamily = value;
+                OnPropertyChanged(nameof(ExportFontFamily));
+                SaveExportFontFamilyAsync();
+            }
+        }
+    }
+
+    public string ExportPalette
+    {
+        get => _exportPalette;
+        set
+        {
+            if (_exportPalette != value)
+            {
+                _exportPalette = value;
+                OnPropertyChanged(nameof(ExportPalette));
+                SaveExportPaletteAsync();
+            }
+        }
+    }
+
+    public bool ExportTransparentBackground
+    {
+        get => _exportTransparentBackground;
+        set
+        {
+            if (_exportTransparentBackground != value)
+            {
+                _exportTransparentBackground = value;
+                OnPropertyChanged(nameof(ExportTransparentBackground));
+                SaveExportTransparentBackgroundAsync();
+            }
+        }
+    }
+
     /// <summary>
     /// Loads all settings from the service.
     /// </summary>
@@ -318,6 +411,14 @@ public class SettingsViewModel : INotifyPropertyChanged
             _inAppNotificationsEnabled = await _settingsService.GetInAppNotificationsEnabledAsync();
             _pushNotificationsEnabled = await _settingsService.GetPushNotificationsEnabledAsync();
             
+            // Export settings
+            _exportDpiScale = await _settingsService.GetExportDpiScaleAsync();
+            _exportBackgroundColor = await _settingsService.GetExportBackgroundColorAsync();
+            _exportIncludeLegend = await _settingsService.GetExportIncludeLegendAsync();
+            _exportFontFamily = await _settingsService.GetExportFontFamilyAsync();
+            _exportPalette = await _settingsService.GetExportPaletteAsync();
+            _exportTransparentBackground = await _settingsService.GetExportTransparentBackgroundAsync();
+            
             // Notify property changes
             OnPropertyChanged(nameof(SelectedLanguage));
             OnPropertyChanged(nameof(Provider));
@@ -328,6 +429,12 @@ public class SettingsViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(AzureApiKey));
             OnPropertyChanged(nameof(InAppNotificationsEnabled));
             OnPropertyChanged(nameof(PushNotificationsEnabled));
+            OnPropertyChanged(nameof(ExportDpiScale));
+            OnPropertyChanged(nameof(ExportBackgroundColor));
+            OnPropertyChanged(nameof(ExportIncludeLegend));
+            OnPropertyChanged(nameof(ExportFontFamily));
+            OnPropertyChanged(nameof(ExportPalette));
+            OnPropertyChanged(nameof(ExportTransparentBackground));
         }
         catch
         {
@@ -509,6 +616,36 @@ public class SettingsViewModel : INotifyPropertyChanged
         {
             // Error handling
         }
+    }
+
+    private async void SaveExportDpiScaleAsync()
+    {
+        try { await _settingsService.SetExportDpiScaleAsync(_exportDpiScale); } catch { }
+    }
+
+    private async void SaveExportBackgroundColorAsync()
+    {
+        try { await _settingsService.SetExportBackgroundColorAsync(_exportBackgroundColor); } catch { }
+    }
+
+    private async void SaveExportIncludeLegendAsync()
+    {
+        try { await _settingsService.SetExportIncludeLegendAsync(_exportIncludeLegend); } catch { }
+    }
+
+    private async void SaveExportFontFamilyAsync()
+    {
+        try { await _settingsService.SetExportFontFamilyAsync(_exportFontFamily); } catch { }
+    }
+
+    private async void SaveExportPaletteAsync()
+    {
+        try { await _settingsService.SetExportPaletteAsync(_exportPalette); } catch { }
+    }
+
+    private async void SaveExportTransparentBackgroundAsync()
+    {
+        try { await _settingsService.SetExportTransparentBackgroundAsync(_exportTransparentBackground); } catch { }
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

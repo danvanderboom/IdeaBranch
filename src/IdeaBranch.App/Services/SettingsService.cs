@@ -20,10 +20,23 @@ public class SettingsService
     private const string PushNotificationsEnabledKey = "push_notifications_enabled";
     private const string ShowCommentsKey = "annotation_show_comments";
 
+    // Export/Visualization settings
+    private const string ExportDpiScaleKey = "export_dpi_scale";
+    private const string ExportBackgroundColorKey = "export_background_color"; // hex like #FFFFFF
+    private const string ExportIncludeLegendKey = "export_include_legend";
+    private const string ExportFontFamilyKey = "export_font_family";
+    private const string ExportPaletteKey = "export_palette"; // e.g., vibrant, pastel
+    private const string ExportTransparentBackgroundKey = "export_transparent_bg";
+
     private const string DefaultProvider = "lmstudio";
     private const string DefaultLmStudioEndpoint = "http://localhost:1234/v1";
     private const string DefaultLmStudioModel = "phi-4";
     private const string DefaultLanguage = "system";
+    private const int DefaultExportDpiScale = 1;
+    private const string DefaultExportBackgroundColor = "#FFFFFF";
+    private const bool DefaultExportIncludeLegend = true;
+    private const string DefaultExportPalette = "vibrant";
+    private const bool DefaultExportTransparentBackground = false;
 
     /// <summary>
     /// Gets or sets the current LLM provider name ("lmstudio" or "azure").
@@ -229,6 +242,85 @@ public class SettingsService
     public async Task SetShowCommentsAsync(bool showComments)
     {
         await SecureStorage.SetAsync(ShowCommentsKey, showComments.ToString().ToLowerInvariant());
+    }
+
+    // Export/Visualization settings
+
+    public async Task<int> GetExportDpiScaleAsync()
+    {
+        var value = await SecureStorage.GetAsync(ExportDpiScaleKey);
+        return int.TryParse(value, out var scale) && scale >= 1 && scale <= 4 ? scale : DefaultExportDpiScale;
+    }
+
+    public async Task SetExportDpiScaleAsync(int scale)
+    {
+        if (scale < 1 || scale > 4) throw new ArgumentOutOfRangeException(nameof(scale), "DPI scale must be 1-4");
+        await SecureStorage.SetAsync(ExportDpiScaleKey, scale.ToString());
+    }
+
+    public async Task<string> GetExportBackgroundColorAsync()
+    {
+        var value = await SecureStorage.GetAsync(ExportBackgroundColorKey);
+        return string.IsNullOrWhiteSpace(value) ? DefaultExportBackgroundColor : value;
+    }
+
+    public async Task SetExportBackgroundColorAsync(string hex)
+    {
+        if (string.IsNullOrWhiteSpace(hex)) throw new ArgumentException("Color cannot be empty", nameof(hex));
+        await SecureStorage.SetAsync(ExportBackgroundColorKey, hex.Trim());
+    }
+
+    public async Task<bool> GetExportIncludeLegendAsync()
+    {
+        var value = await SecureStorage.GetAsync(ExportIncludeLegendKey);
+        if (value == null) return DefaultExportIncludeLegend;
+        return bool.TryParse(value, out var result) && result;
+    }
+
+    public async Task SetExportIncludeLegendAsync(bool includeLegend)
+    {
+        await SecureStorage.SetAsync(ExportIncludeLegendKey, includeLegend.ToString().ToLowerInvariant());
+    }
+
+    public async Task<string?> GetExportFontFamilyAsync()
+    {
+        return await SecureStorage.GetAsync(ExportFontFamilyKey);
+    }
+
+    public async Task SetExportFontFamilyAsync(string? fontFamily)
+    {
+        if (string.IsNullOrWhiteSpace(fontFamily))
+        {
+            SecureStorage.Remove(ExportFontFamilyKey);
+        }
+        else
+        {
+            await SecureStorage.SetAsync(ExportFontFamilyKey, fontFamily.Trim());
+        }
+    }
+
+    public async Task<string> GetExportPaletteAsync()
+    {
+        var value = await SecureStorage.GetAsync(ExportPaletteKey);
+        return string.IsNullOrWhiteSpace(value) ? DefaultExportPalette : value;
+    }
+
+    public async Task SetExportPaletteAsync(string palette)
+    {
+        if (string.IsNullOrWhiteSpace(palette)) throw new ArgumentException("Palette cannot be empty", nameof(palette));
+        await SecureStorage.SetAsync(ExportPaletteKey, palette.Trim().ToLowerInvariant());
+    }
+
+    public async Task<bool> GetExportTransparentBackgroundAsync()
+    {
+        var value = await SecureStorage.GetAsync(ExportTransparentBackgroundKey);
+        if (value == null) return DefaultExportTransparentBackground;
+        return bool.TryParse(value, out var result) && result;
+    }
+
+    public async Task SetExportTransparentBackgroundAsync(bool isTransparent)
+    {
+        await SecureStorage.SetAsync(ExportTransparentBackgroundKey, isTransparent.ToString().ToLowerInvariant());
     }
 }
 
