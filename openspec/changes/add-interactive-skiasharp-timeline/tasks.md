@@ -13,5 +13,10 @@
 - [x] 1.12 Replace static list with Skia control in TimelinePage.xaml and wire to ViewModel
 - [x] 1.13 Add FPS/memory telemetry and diagnostics toggles (optional debug overlay)
 - [x] 1.14 Add unit tests for layout/clustering algorithms
+  - ✅ TemporalInstantTests (13 tests): normalization, constructors, leap year, boundaries, equality
+  - ✅ TemporalRangeTests (18 tests): factory methods, DateTime overloads, validation, edge cases
+  - ✅ TimelineEventViewTests (12 tests): domain conversion, null handling, tags, equality
+  - ✅ TimelineRendererTests (11 tests): clustering, visible filtering, boundary conditions
+  - ✅ Total: 52 timeline tests (all passing)
 - [x] 1.15 Validate OpenSpec change with `openspec validate add-interactive-skiasharp-timeline --strict`
 

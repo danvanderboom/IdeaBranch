@@ -70,8 +70,17 @@ Our testing strategy uses multiple layers:
 - Tag taxonomy validation
 - Prompt template processing
 - AI response parsing
+- **Timeline domain models** (TemporalInstant, TemporalRange, TimelineEventView) ✅
+- **Timeline rendering algorithms** (clustering, visible event filtering) ✅
 
-**Location**: `tests/IdeaBranch.UnitTests/` (to be created)
+**Location**: `tests/IdeaBranch.UnitTests/` ✅
+
+**Timeline Test Coverage**:
+- **TemporalInstantTests** (13 tests): Normalization for Year/Month/Day precisions, leap year handling, boundaries, record equality
+- **TemporalRangeTests** (18 tests): Point/Duration factory methods, DateTime overloads, validation (end before start), edge cases
+- **TimelineEventViewTests** (12 tests): Domain event conversion, null handling, tags, constructors, record equality
+- **TimelineRendererTests** (11 tests): Clustering algorithms, visible event filtering, boundary conditions, pixel density scenarios
+- **Total**: 52 timeline tests (all passing)
 
 **Focus areas**:
 - Domain models and business logic
@@ -171,7 +180,7 @@ Our testing strategy uses multiple layers:
 ### Initial Release (MVP)
 - **UI tests**: Cover primary navigation and launch (IB-UI-001, IB-UI-010, IB-UI-011, IB-UI-012, IB-UI-013)
 - **Integration tests**: Core data persistence (IB-UI-080)
-- **Unit tests**: Critical domain logic (topic tree manipulation)
+- **Unit tests**: Critical domain logic (topic tree manipulation, timeline domain models - 52 tests)
 
 ### Future Iterations
 - Expand UI test coverage to all scenarios
@@ -194,8 +203,8 @@ Our testing strategy uses multiple layers:
 
 ## Next Steps
 
-1. **Set up unit test project** (`tests/IdeaBranch.UnitTests/`)
-2. **Set up integration test project** (`tests/IdeaBranch.IntegrationTests/`)
+1. ✅ **Set up unit test project** (`tests/IdeaBranch.UnitTests/`) - **COMPLETE**
+2. ✅ **Set up integration test project** (`tests/IdeaBranch.IntegrationTests/`) - **COMPLETE**
 3. **Implement UI test runner** for MAUI app launch
 4. **Create first UI test** (IB-UI-001: Cold start)
 5. **Add CI pipeline** with test execution steps
