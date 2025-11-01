@@ -25,10 +25,16 @@ Generate word clouds from your content to visualize the most frequent words acro
    - **Date Range**: Optional start and end date filters
    - **Tag Filters**: Select tags to filter content (with hierarchical support)
 4. Click **Generate Word Cloud** to create the visualization
-5. Export results as:
+5. Configure visualization:
+   - **Layout**: Random (default), Spiral, or Force-Directed
+   - **Theme**: Palettes, gradient color mapping, custom font-family
+   - **Background**: Solid color, transparent
+   - **DPI**: 1x–4x for high-resolution output
+6. Export results as:
    - **JSON**: Structured data format
    - **CSV**: Comma-separated values for spreadsheet applications
-   - **PNG**: Visual image of the word cloud
+   - **PNG**: Visual image (respects DPI, theme, background)
+   - **SVG**: Vector output (preserves fonts and styling)
 
 #### Filtering
 
@@ -65,10 +71,14 @@ Generate timeline visualizations to see chronological events:
    - Per-type event counts automatically update with filters
    - Time-series trend sparklines show event frequency over time (auto-binned by day/week/month based on date range)
    - Click on stat items to highlight corresponding events on the timeline
-7. Export results as:
+7. Connections overlay (optional):
+   - Show lines between related events within/across bands
+   - Routed to reduce overlaps; included in exports when enabled
+8. Export results as:
    - **JSON**: Structured data format with all event fields (respects all active filters)
    - **CSV**: Comma-separated values with all event fields (respects all active filters)
-   - **PNG**: Visual image of the timeline
+   - **PNG**: Visual image (respects DPI, theme)
+   - **SVG**: Vector output (preserves bands, connections, fonts)
 
 #### Event Types
 
@@ -164,6 +174,17 @@ Timeline Analytics supports powerful faceted filtering with boolean logic:
   - All filters combined with AND logic across facets, OR logic within facets
 - **Metadata**: Includes total event count, earliest and latest event timestamps, and applied filters
 
+### Map Visualization
+
+View geospatial overlays and export current viewport:
+
+1. Place overlay points/labels
+2. Optional tile grid (provider tiles may have licensing limits)
+3. Theme/background options; DPI 1x–4x
+4. Export:
+   - **PNG**: Visual image (respects DPI, legend)
+   - **SVG**: Vector output (labels, points, grid)
+
 ## Export Formats
 
 ### JSON
@@ -184,12 +205,14 @@ CSV export includes:
 - **Respects all active filters**: Only exports events matching current filter criteria
 - Special characters (commas, quotes, newlines) are properly escaped
 
-### PNG
+### PNG & SVG
 
-PNG export includes:
-- Visual representation of the data
-- Word cloud: Words sized by frequency
-- Timeline: Chronological bands with event markers
+PNG/SVG exports include:
+- Visual representation of the data with theming and background options
+- Word cloud: Layout (Random/Spiral/Force-Directed), gradient palettes, custom fonts
+- Timeline: Banded layout, optional connections, optional statistics panel
+- Map: Overlays, optional grid/legend
+- DPI scaling: 1x–4x (applies to PNG); SVG is resolution-independent
 - Progress indication during export operations
 
 ## Architecture

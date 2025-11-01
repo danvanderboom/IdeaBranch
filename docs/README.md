@@ -12,7 +12,7 @@ The primary product source document is located at:
 
 ## Features
 
-- **Analytics**: Word cloud and timeline visualizations - see [Analytics Documentation](development/analytics.md)
+- **Analytics**: Word cloud, timeline, and map visualizations with PNG/SVG export (DPI scaling, theming, connections) - see [Analytics Documentation](development/analytics.md)
 
 ## Application Settings
 

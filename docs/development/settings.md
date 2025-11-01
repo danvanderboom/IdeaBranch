@@ -105,6 +105,46 @@ All Azure settings are optional (nullable).
   - es → "Spanish"
   - fr → "French"
 
+### Export / Visualization Settings
+
+Settings controlling visualization exports (Word Cloud, Timeline, Map).
+
+- **DPI Scale**
+  - **Key**: `export_dpi_scale`
+  - **Type**: `int` (1–4)
+  - **Default**: `1`
+  - **Methods**: `GetExportDpiScaleAsync()`, `SetExportDpiScaleAsync(int)`
+
+- **Background Color**
+  - **Key**: `export_background_color`
+  - **Type**: `string` (HEX, e.g. `#FFFFFF`)
+  - **Default**: `#FFFFFF`
+  - **Methods**: `GetExportBackgroundColorAsync()`, `SetExportBackgroundColorAsync(string)`
+
+- **Include Legend**
+  - **Key**: `export_include_legend`
+  - **Type**: `bool`
+  - **Default**: `true`
+  - **Methods**: `GetExportIncludeLegendAsync()`, `SetExportIncludeLegendAsync(bool)`
+
+- **Font Family**
+  - **Key**: `export_font_family`
+  - **Type**: `string?`
+  - **Default**: `null`
+  - **Methods**: `GetExportFontFamilyAsync()`, `SetExportFontFamilyAsync(string?)`
+
+- **Palette**
+  - **Key**: `export_palette`
+  - **Type**: `string` (e.g., `vibrant`, `pastel`)
+  - **Default**: `vibrant`
+  - **Methods**: `GetExportPaletteAsync()`, `SetExportPaletteAsync(string)`
+
+- **Transparent Background**
+  - **Key**: `export_transparent_bg`
+  - **Type**: `bool`
+  - **Default**: `false`
+  - **Methods**: `GetExportTransparentBackgroundAsync()`, `SetExportTransparentBackgroundAsync(bool)`
+
 ## Settings UI
 
 ### SettingsPage
