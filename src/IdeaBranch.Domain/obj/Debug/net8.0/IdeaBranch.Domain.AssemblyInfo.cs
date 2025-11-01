@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IdeaBranch.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d14caf938dbed2fe205993120e5de72b97af5c85")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e441a7cc99ad5291de30d1b3766080d2a475b8e6")]
 [assembly: System.Reflection.AssemblyProductAttribute("IdeaBranch.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IdeaBranch.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -154,3 +154,10 @@ The system SHALL allow users to export word clouds as PNG or SVG files with cust
 - **AND** all words, colors, and background are rendered at the higher resolution
 - **AND** the file size reflects the increased resolution
 
+### Requirement: Timeline analytics uses shared renderer
+The system SHALL reuse the SkiaSharp timeline renderer for analytics timelines to ensure consistent interactions and performance.
+
+#### Scenario: Shared interactions
+- **WHEN** an analytics timeline is shown
+- **THEN** it supports the same zoom, scroll, selection, and clustering behaviors as the main Timeline view
+
