@@ -825,6 +825,161 @@ public class AnalyticsExportService
     private float Clamp(float v, float min, float max) => v < min ? min : (v > max ? max : v);
 
     /// <summary>
+    /// Exports a simple map visualization to PNG with optional tile grid and overlays.
+    /// Overlays use normalized coordinates in [0,1] relative to the viewport.
+    /// </summary>
+    public async Task<byte[]> ExportMapToPngAsync(
+        IReadOnlyList<(double xNorm, double yNorm, string? label)> overlays,
+        int width = 1200,
+        int height = 800,
+        ExportOptions? options = null,
+        VisualizationTheme? theme = null,
+        bool includeTiles = false,
+        bool includeLegend = false,
+        CancellationToken cancellationToken = default)
+    {
+        var exportOpts = options ?? new ExportOptions { Width = width, Height = height };
+        var scaledWidth = exportOpts.ScaledWidth;
+        var scaledHeight = exportOpts.ScaledHeight;
+
+        return await Task.Run(() =>
+        {
+            using var surface = SKSurface.Create(new SKImageInfo(scaledWidth, scaledHeight));
+            var canvas = surface.Canvas;
+
+            if (((theme == null) || theme.BackgroundType != BackgroundType.Transparent) &&
+                (exportOpts.BackgroundColor.HasValue || (theme?.BackgroundColor.HasValue ?? false)))
+            {
+                var bg = theme?.BackgroundColor ?? exportOpts.BackgroundColor ?? SKColors.White;
+                canvas.Clear(bg);
+            }
+            else
+            {
+                canvas.Clear(SKColors.Transparent);
+            }
+
+            // Optional tile grid (placeholder for map tiles)
+            if (includeTiles)
+            {
+                using var gridPaint = new SKPaint { Color = new SKColor(220, 220, 220), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 1f };
+                var tileSize = 128 * exportOpts.DpiScale;
+                for (int x = 0; x <= scaledWidth; x += tileSize)
+                {
+                    canvas.DrawLine(x, 0, x, scaledHeight, gridPaint);
+                }
+                for (int y = 0; y <= scaledHeight; y += tileSize)
+                {
+                    canvas.DrawLine(0, y, scaledWidth, y, gridPaint);
+                }
+            }
+
+            // Draw overlays
+            using var pointPaint = new SKPaint { Color = SKColors.Red, IsAntialias = true, Style = SKPaintStyle.Fill };
+            using var labelPaint = new SKPaint { Color = SKColors.Black, IsAntialias = true, TextSize = 12f * exportOpts.DpiScale };
+            foreach (var (xNorm, yNorm, label) in overlays)
+            {
+                var x = (float)(xNorm * scaledWidth);
+                var y = (float)(yNorm * scaledHeight);
+                canvas.DrawCircle(x, y, 4 * exportOpts.DpiScale, pointPaint);
+                if (!string.IsNullOrWhiteSpace(label))
+                {
+                    canvas.DrawText(label!, x + 6 * exportOpts.DpiScale, y - 6 * exportOpts.DpiScale, labelPaint);
+                }
+            }
+
+            // Optional legend
+            if (includeLegend)
+            {
+                using var bg = new SKPaint { Color = new SKColor(255, 255, 255, 230), Style = SKPaintStyle.Fill };
+                var legendWidth = 160f * exportOpts.DpiScale;
+                var legendHeight = 40f * exportOpts.DpiScale;
+                var lx = scaledWidth - legendWidth - 10 * exportOpts.DpiScale;
+                var ly = 10 * exportOpts.DpiScale;
+                canvas.DrawRect(lx, ly, legendWidth, legendHeight, bg);
+                canvas.DrawCircle(lx + 14 * exportOpts.DpiScale, ly + 20 * exportOpts.DpiScale, 4 * exportOpts.DpiScale, pointPaint);
+                using var text = new SKPaint { Color = SKColors.Black, IsAntialias = true, TextSize = 12f * exportOpts.DpiScale };
+                canvas.DrawText("Overlay point", lx + 26 * exportOpts.DpiScale, ly + 24 * exportOpts.DpiScale, text);
+            }
+
+            return EncodeSurfaceToPng(surface);
+        }, cancellationToken);
+    }
+
+    /// <summary>
+    /// Exports a simple map visualization to SVG with optional tile grid and overlays.
+    /// Overlays use normalized coordinates in [0,1] relative to the viewport.
+    /// </summary>
+    public async Task<string> ExportMapToSvgAsync(
+        IReadOnlyList<(double xNorm, double yNorm, string? label)> overlays,
+        int width = 1200,
+        int height = 800,
+        ExportOptions? options = null,
+        VisualizationTheme? theme = null,
+        bool includeTiles = false,
+        bool includeLegend = false,
+        CancellationToken cancellationToken = default)
+    {
+        var exportOpts = options ?? new ExportOptions { Width = width, Height = height };
+        var writer = new SvgWriter(exportOpts.ScaledWidth, exportOpts.ScaledHeight);
+
+        return await Task.Run(() =>
+        {
+            writer.StartSvg();
+
+            if (((theme == null) || theme.BackgroundType != BackgroundType.Transparent) &&
+                (exportOpts.BackgroundColor.HasValue || (theme?.BackgroundColor.HasValue ?? false)))
+            {
+                var bg = theme?.BackgroundColor ?? exportOpts.BackgroundColor ?? SKColors.White;
+                using var bgPaint = new SKPaint { Color = bg, Style = SKPaintStyle.Fill };
+                writer.DrawRect(0, 0, exportOpts.ScaledWidth, exportOpts.ScaledHeight, bgPaint);
+            }
+
+            if (includeTiles)
+            {
+                using var gridPaint = new SKPaint { Color = new SKColor(220, 220, 220), IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 1f };
+                var tileSize = 128 * exportOpts.DpiScale;
+                for (int x = 0; x <= exportOpts.ScaledWidth; x += tileSize)
+                {
+                    writer.DrawLine(x, 0, x, exportOpts.ScaledHeight, gridPaint);
+                }
+                for (int y = 0; y <= exportOpts.ScaledHeight; y += tileSize)
+                {
+                    writer.DrawLine(0, y, exportOpts.ScaledWidth, y, gridPaint);
+                }
+            }
+
+            using var pointPaint = new SKPaint { Color = SKColors.Red, IsAntialias = true, Style = SKPaintStyle.Fill };
+            using var labelPaint = new SKPaint { Color = SKColors.Black, IsAntialias = true, TextSize = 12f * exportOpts.DpiScale };
+            foreach (var (xNorm, yNorm, label) in overlays)
+            {
+                var x = (float)(xNorm * exportOpts.ScaledWidth);
+                var y = (float)(yNorm * exportOpts.ScaledHeight);
+                writer.DrawCircle(x, y, 4 * exportOpts.DpiScale, pointPaint);
+                if (!string.IsNullOrWhiteSpace(label))
+                {
+                    writer.DrawText(label!, x + 6 * exportOpts.DpiScale, y - 6 * exportOpts.DpiScale, labelPaint);
+                }
+            }
+
+            if (includeLegend)
+            {
+                using var bg = new SKPaint { Color = new SKColor(255, 255, 255, 230), Style = SKPaintStyle.Fill };
+                var legendWidth = 160f * exportOpts.DpiScale;
+                var legendHeight = 40f * exportOpts.DpiScale;
+                var lx = exportOpts.ScaledWidth - legendWidth - 10 * exportOpts.DpiScale;
+                var ly = 10 * exportOpts.DpiScale;
+                writer.DrawRect(lx, ly, legendWidth, legendHeight, bg);
+                writer.DrawCircle(lx + 14 * exportOpts.DpiScale, ly + 20 * exportOpts.DpiScale, 4 * exportOpts.DpiScale, pointPaint);
+                using var text = new SKPaint { Color = SKColors.Black, IsAntialias = true, TextSize = 12f * exportOpts.DpiScale };
+                writer.DrawText("Overlay point", lx + 26 * exportOpts.DpiScale, ly + 24 * exportOpts.DpiScale, text);
+            }
+
+            writer.EndSvg();
+            return writer.GetContent();
+        }, cancellationToken);
+    }
+
+    /// <summary>
     /// Gets a color for an event type.
     /// </summary>
     private SKColor GetColorForEventType(TimelineEventType eventType)
