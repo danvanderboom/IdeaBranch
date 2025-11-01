@@ -1,4 +1,7 @@
 using IdeaBranch.App.ViewModels.Analytics;
+using IdeaBranch.App.Controls;
+using IdeaBranch.Domain;
+using System.Linq;
 
 namespace IdeaBranch.App.Views;
 
@@ -28,13 +31,25 @@ public partial class TimelinePage : ContentPage
     {
     }
 
-    private void OnTagPickerClicked(object? sender, EventArgs e)
+    private async void OnTagPickerClicked(object? sender, EventArgs e)
     {
-        // TODO: Show TagPickerPopup when enhanced with TagSelection support
         if (BindingContext is TimelineViewModel vm)
         {
-            // Placeholder: Show alert for now
-            DisplayAlert("Tag Picker", "Tag picker with hierarchical selection and per-tag 'Include descendants' toggle will be implemented here.", "OK");
+            // Get current selections
+            var currentSelections = vm.SelectedTagSelections.ToList();
+            
+            // Show tag picker dialog
+            var selections = await TagPickerPopup.ShowAsync(this, currentSelections);
+            
+            // Update selections if not null (user clicked OK)
+            if (selections != null)
+            {
+                vm.SelectedTagSelections.Clear();
+                foreach (var selection in selections)
+                {
+                    vm.SelectedTagSelections.Add(selection);
+                }
+            }
         }
     }
 

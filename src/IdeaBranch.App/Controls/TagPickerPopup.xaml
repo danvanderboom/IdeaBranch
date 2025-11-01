@@ -1,6 +1,86 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="IdeaBranch.App.Controls.TagPickerPopup">
-</ContentView>
+             xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels"
+             x:Class="IdeaBranch.App.Controls.TagPickerPopup"
+             x:DataType="vm:TagPickerViewModel">
+    <Border BackgroundColor="White" 
+            StrokeThickness="2" 
+            Stroke="Gray"
+            Padding="15"
+            MinimumWidthRequest="500"
+            MinimumHeightRequest="600">
+        <Grid RowDefinitions="Auto,*,Auto" RowSpacing="10">
+            <!-- Header -->
+            <Label Grid.Row="0" 
+                   Text="Select Tags" 
+                   FontSize="18" 
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
 
+            <!-- Tag List -->
+            <Border Grid.Row="1" 
+                    BackgroundColor="{StaticResource Light}" 
+                    Padding="10"
+                    StrokeThickness="1"
+                    Stroke="{StaticResource Gray500}">
+                <ScrollView>
+                    <CollectionView ItemsSource="{Binding TagItems}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:TagPickerItem">
+                                <Border Margin="{Binding IndentationMargin}"
+                                       Padding="5,3">
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <!-- Tag Checkbox and Name -->
+                                        <HorizontalStackLayout Grid.Column="0" 
+                                                              Spacing="10"
+                                                              VerticalOptions="Center">
+                                            <CheckBox IsChecked="{Binding IsSelected}" 
+                                                      VerticalOptions="Center" />
+                                            <Label Text="{Binding Node.Name}" 
+                                                   FontSize="14"
+                                                   VerticalOptions="Center" />
+                                        </HorizontalStackLayout>
+
+                                        <!-- Include Descendants Toggle -->
+                                        <HorizontalStackLayout Grid.Column="1" 
+                                                              Spacing="5"
+                                                              VerticalOptions="Center"
+                                                              HorizontalOptions="End"
+                                                              IsVisible="{Binding IsSelected}">
+                                            <Label Text="Descendants" 
+                                                   FontSize="11"
+                                                   VerticalOptions="Center"
+                                                   TextColor="Gray" />
+                                            <Switch IsToggled="{Binding IncludeDescendants}" 
+                                                    VerticalOptions="Center" />
+                                        </HorizontalStackLayout>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </ScrollView>
+            </Border>
+
+            <!-- Footer Buttons -->
+            <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Button Grid.Column="0" 
+                        Text="Cancel" 
+                        Clicked="OnCancelClicked" />
+                <Button Grid.Column="1" 
+                        Text="OK" 
+                        Clicked="OnOkClicked" />
+            </Grid>
+
+            <!-- Loading Indicator -->
+            <ActivityIndicator Grid.RowSpan="3"
+                              IsRunning="{Binding IsLoading}"
+                              IsVisible="{Binding IsLoading}"
+                              HeightRequest="50"
+                              WidthRequest="50"
+                              HorizontalOptions="Center"
+                              VerticalOptions="Center" />
+        </Grid>
+    </Border>
+</ContentView>

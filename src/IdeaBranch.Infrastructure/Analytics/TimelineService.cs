@@ -120,6 +120,25 @@ public class TimelineService : IAnalyticsService
         if (!string.IsNullOrWhiteSpace(options.SearchQuery) && options.SearchQuery.Length >= 2)
         {
             var searchLower = options.SearchQuery.ToLowerInvariant();
+            
+            // Pre-load tag taxonomy for tag name/path search
+            var tagNameLookup = new Dictionary<Guid, string>();
+            var tagPathLookup = new Dictionary<Guid, string>();
+            
+            if (events.Any(e => e.TagIds != null && e.TagIds.Count > 0))
+            {
+                // Collect all unique tag IDs from events
+                var allTagIds = events
+                    .Where(e => e.TagIds != null && e.TagIds.Count > 0)
+                    .SelectMany(e => e.TagIds)
+                    .Distinct()
+                    .ToList();
+                
+                // Build tag name and path lookups
+                var root = await _tagTaxonomyRepository.GetRootAsync(cancellationToken);
+                await BuildTagLookupsAsync(root, allTagIds, tagNameLookup, tagPathLookup, cancellationToken);
+            }
+            
             events = events.Where(e =>
             {
                 // Search in: title, details, tag names/paths, source/service name, actor display name
@@ -128,8 +147,22 @@ public class TimelineService : IAnalyticsService
                 if (e.Details != null && e.Details.ToLowerInvariant().Contains(searchLower))
                     return true;
 
-                // Search in tag names/paths - would need tag taxonomy lookup, simplified for now
-                // TODO: Enhance with actual tag name/path search when tag taxonomy service is available
+                // Search in tag names/paths
+                if (e.TagIds != null && e.TagIds.Count > 0)
+                {
+                    foreach (var tagId in e.TagIds)
+                    {
+                        // Check tag name
+                        if (tagNameLookup.TryGetValue(tagId, out var tagName) &&
+                            tagName.ToLowerInvariant().Contains(searchLower))
+                            return true;
+                        
+                        // Check tag path
+                        if (tagPathLookup.TryGetValue(tagId, out var tagPath) &&
+                            tagPath.ToLowerInvariant().Contains(searchLower))
+                            return true;
+                    }
+                }
 
                 return false;
             }).ToList();
@@ -514,6 +547,54 @@ public class TimelineService : IAnalyticsService
         }
 
         return descendants;
+    }
+
+    /// <summary>
+    /// Recursively builds tag name and path lookups for specified tag IDs.
+    /// </summary>
+    private async Task BuildTagLookupsAsync(
+        TagTaxonomyNode node,
+        IReadOnlyList<Guid> tagIdsToFind,
+        Dictionary<Guid, string> nameLookup,
+        Dictionary<Guid, string> pathLookup,
+        CancellationToken cancellationToken,
+        List<string>? currentPath = null)
+    {
+        currentPath ??= new List<string>();
+        
+        // Build current path (skip root node name)
+        var nodePath = currentPath.Count > 0 ? string.Join(" / ", currentPath) : string.Empty;
+        
+        // Add to lookups if this tag is in the list
+        if (tagIdsToFind.Contains(node.Id))
+        {
+            nameLookup[node.Id] = node.Name;
+            pathLookup[node.Id] = nodePath.Length > 0 ? $"{nodePath} / {node.Name}" : node.Name;
+        }
+        
+        // Build path for children
+        var childPath = new List<string>(currentPath);
+        // Only add non-root nodes to path
+        if (node.ParentId.HasValue)
+        {
+            childPath.Add(node.Name);
+        }
+        
+        // Load children if not already loaded
+        if (node.Children.Count == 0)
+        {
+            var children = await _tagTaxonomyRepository.GetChildrenAsync(node.Id, cancellationToken);
+            foreach (var child in children)
+            {
+                node.AddChild(child);
+            }
+        }
+        
+        // Recurse into children
+        foreach (var child in node.Children)
+        {
+            await BuildTagLookupsAsync(child, tagIdsToFind, nameLookup, pathLookup, cancellationToken, childPath);
+        }
     }
 }
 
