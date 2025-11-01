@@ -6,6 +6,7 @@ using CommunityToolkit.Maui;
 using IdeaBranch.App.Services;
 using IdeaBranch.App.Services.Notifications;
 using IdeaBranch.App.ViewModels;
+using IdeaBranch.Presentation.ViewModels;
 using IdeaBranch.Domain;
 using IdeaBranch.Infrastructure.Resilience;
 using IdeaBranch.Infrastructure.Storage;
@@ -114,6 +115,12 @@ public static class MauiProgram
 			return new TagTaxonomyViewModel(repository, annotationsRepository);
 		});
 
+		builder.Services.AddTransient<AdvancedSearchViewModel>(sp =>
+		{
+			var searchCoordinator = sp.GetRequiredService<IdeaBranch.App.Services.Search.SearchCoordinator>();
+			return new AdvancedSearchViewModel(searchCoordinator);
+		});
+
 		// Register resilience policies for HttpClientFactory and outbound I/O
 		builder.Services.AddResiliencePolicies();
 
@@ -128,6 +135,20 @@ public static class MauiProgram
 
 		// Register example service for demonstration
 		builder.Services.AddSingleton<IdeaBranch.App.Services.ExampleApiService>();
+
+		// Register search coordinator
+		builder.Services.AddSingleton<IdeaBranch.App.Services.Search.SearchCoordinator>(sp =>
+		{
+			var annotationsRepository = sp.GetRequiredService<IAnnotationsRepository>();
+			var tagTaxonomyRepository = sp.GetRequiredService<ITagTaxonomyRepository>();
+			var promptTemplateRepository = sp.GetRequiredService<IPromptTemplateRepository>();
+			var topicTreeRepository = sp.GetRequiredService<ITopicTreeRepository>();
+			return new IdeaBranch.App.Services.Search.SearchCoordinator(
+				annotationsRepository,
+				tagTaxonomyRepository,
+				promptTemplateRepository,
+				topicTreeRepository);
+		});
 
 		// Register sync services
 		builder.Services.AddSingleton<IConnectivityService, MauiConnectivityService>();

@@ -208,6 +208,82 @@ public class SqlitePromptTemplateRepository : IPromptTemplateRepository
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
+    public async Task<IReadOnlyList<PromptTemplate>> SearchAsync(
+        string? textContains = null,
+        DateTime? updatedAtFrom = null,
+        DateTime? updatedAtTo = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await Task.Run(() =>
+        {
+            var whereParts = new List<string>();
+
+            using var command = _connection.CreateCommand();
+            var queryParts = new List<string>
+            {
+                @"SELECT Id, ParentId, Name, Body, ""Order"", CreatedAt, UpdatedAt",
+                "FROM prompt_templates"
+            };
+
+            // Text search in Name or Body
+            if (!string.IsNullOrWhiteSpace(textContains))
+            {
+                whereParts.Add("(Name LIKE @TextContains OR Body LIKE @TextContains)");
+            }
+
+            // UpdatedAt range filter
+            if (updatedAtFrom.HasValue && updatedAtTo.HasValue)
+            {
+                whereParts.Add("UpdatedAt BETWEEN @UpdatedAtFrom AND @UpdatedAtTo");
+            }
+            else if (updatedAtFrom.HasValue)
+            {
+                whereParts.Add("UpdatedAt >= @UpdatedAtFrom");
+            }
+            else if (updatedAtTo.HasValue)
+            {
+                whereParts.Add("UpdatedAt <= @UpdatedAtTo");
+            }
+
+            if (whereParts.Count > 0)
+            {
+                queryParts.Add("WHERE " + string.Join(" AND ", whereParts));
+            }
+
+            queryParts.Add(@"ORDER BY ""Order"", Name");
+
+            command.CommandText = string.Join("\n", queryParts);
+
+            // Add parameters
+            if (!string.IsNullOrWhiteSpace(textContains))
+            {
+                command.Parameters.AddWithValue("@TextContains", $"%{textContains}%");
+            }
+
+            if (updatedAtFrom.HasValue)
+            {
+                command.Parameters.AddWithValue("@UpdatedAtFrom", updatedAtFrom.Value.ToString("O"));
+            }
+
+            if (updatedAtTo.HasValue)
+            {
+                command.Parameters.AddWithValue("@UpdatedAtTo", updatedAtTo.Value.ToString("O"));
+            }
+
+            var templates = new List<PromptTemplate>();
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var template = ReadTemplate(reader);
+                templates.Add(template);
+            }
+
+            return templates.AsReadOnly();
+        }, cancellationToken);
+    }
+
     /// <summary>
     /// Saves a prompt template (upsert by ID).
     /// </summary>

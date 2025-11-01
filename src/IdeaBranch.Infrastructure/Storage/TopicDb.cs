@@ -11,7 +11,7 @@ public class TopicDb : IDisposable
 {
     private readonly SqliteConnection _connection;
     private bool _disposed;
-    private const int CurrentSchemaVersion = 6;
+    private const int CurrentSchemaVersion = 7;
     private const string SchemaInfoKey = "schema_version";
 
     /// <summary>
@@ -142,6 +142,12 @@ public class TopicDb : IDisposable
         if (fromVersion < 6)
         {
             ApplyMigrationV6();
+        }
+
+        // Migration v7: Add Weight column to annotation_tags
+        if (fromVersion < 7)
+        {
+            ApplyMigrationV7();
         }
     }
 
@@ -341,6 +347,23 @@ public class TopicDb : IDisposable
 
             CREATE INDEX IF NOT EXISTS idx_prompt_templates_name 
                 ON prompt_templates(Name);
+        ";
+        command.ExecuteNonQuery();
+    }
+
+    /// <summary>
+    /// Applies migration v7: Adds Weight column to annotation_tags table for tag weight range queries.
+    /// </summary>
+    private void ApplyMigrationV7()
+    {
+        using var command = _connection.CreateCommand();
+        command.CommandText = @"
+            -- Add Weight column to annotation_tags (nullable for existing rows)
+            ALTER TABLE annotation_tags ADD COLUMN Weight REAL NULL;
+
+            -- Create index on Weight for range queries
+            CREATE INDEX IF NOT EXISTS idx_annotation_tags_weight 
+                ON annotation_tags(Weight);
         ";
         command.ExecuteNonQuery();
     }

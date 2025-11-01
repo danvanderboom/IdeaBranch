@@ -1,6 +1,6 @@
 using System.Globalization;
 using CriticalInsight.Data.Hierarchical;
-using IdeaBranch.App.Adapters;
+using IdeaBranch.Presentation.Adapters;
 
 namespace IdeaBranch.App.Converters;
 

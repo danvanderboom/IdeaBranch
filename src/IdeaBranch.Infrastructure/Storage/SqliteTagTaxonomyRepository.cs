@@ -141,6 +141,82 @@ public class SqliteTagTaxonomyRepository : ITagTaxonomyRepository
         }, cancellationToken);
     }
 
+    /// <inheritdoc/>
+    public async Task<IReadOnlyList<TagTaxonomyNode>> SearchAsync(
+        string? nameContains = null,
+        DateTime? updatedAtFrom = null,
+        DateTime? updatedAtTo = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await Task.Run(() =>
+        {
+            var whereParts = new List<string>();
+
+            using var command = _connection.CreateCommand();
+            var queryParts = new List<string>
+            {
+                @"SELECT Id, ParentId, Name, ""Order"", CreatedAt, UpdatedAt",
+                "FROM tag_taxonomy_nodes"
+            };
+
+            // Name contains filter
+            if (!string.IsNullOrWhiteSpace(nameContains))
+            {
+                whereParts.Add("Name LIKE @NameContains");
+            }
+
+            // UpdatedAt range filter
+            if (updatedAtFrom.HasValue && updatedAtTo.HasValue)
+            {
+                whereParts.Add("UpdatedAt BETWEEN @UpdatedAtFrom AND @UpdatedAtTo");
+            }
+            else if (updatedAtFrom.HasValue)
+            {
+                whereParts.Add("UpdatedAt >= @UpdatedAtFrom");
+            }
+            else if (updatedAtTo.HasValue)
+            {
+                whereParts.Add("UpdatedAt <= @UpdatedAtTo");
+            }
+
+            if (whereParts.Count > 0)
+            {
+                queryParts.Add("WHERE " + string.Join(" AND ", whereParts));
+            }
+
+            queryParts.Add(@"ORDER BY ""Order"", Name");
+
+            command.CommandText = string.Join("\n", queryParts);
+
+            // Add parameters
+            if (!string.IsNullOrWhiteSpace(nameContains))
+            {
+                command.Parameters.AddWithValue("@NameContains", $"%{nameContains}%");
+            }
+
+            if (updatedAtFrom.HasValue)
+            {
+                command.Parameters.AddWithValue("@UpdatedAtFrom", updatedAtFrom.Value.ToString("O"));
+            }
+
+            if (updatedAtTo.HasValue)
+            {
+                command.Parameters.AddWithValue("@UpdatedAtTo", updatedAtTo.Value.ToString("O"));
+            }
+
+            var nodes = new List<TagTaxonomyNode>();
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var node = ReadNode(reader);
+                nodes.Add(node);
+            }
+
+            return nodes.AsReadOnly();
+        }, cancellationToken);
+    }
+
     /// <summary>
     /// Saves a tag taxonomy node (upsert by ID).
     /// </summary>

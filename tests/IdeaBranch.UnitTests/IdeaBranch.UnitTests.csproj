@@ -32,18 +32,34 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\IdeaBranch.App\IdeaBranch.App.csproj" />
     <ProjectReference Include="..\..\src\IdeaBranch.Domain\IdeaBranch.Domain.csproj" />
     <ProjectReference Include="..\..\src\IdeaBranch.Infrastructure\IdeaBranch.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\IdeaBranch.Presentation\IdeaBranch.Presentation.csproj" />
     <ProjectReference Include="..\IdeaBranch.TestHelpers\IdeaBranch.TestHelpers.csproj" />
-    <Reference Include="IdeaBranch.App">
-      <HintPath>..\..\src\IdeaBranch.App\bin\Debug\net9.0-windows10.0.19041.0\win10-x64\IdeaBranch.App.dll</HintPath>
-      <Private>true</Private>
-    </Reference>
   </ItemGroup>
-
-  <Target Name="ResizetizeImages" />
-  <Target Name="ProcessMauiSplashScreens" />
-  <Target Name="ProcessMauiFonts" />
-  <Target Name="ProcessMauiImages" />
+  
+  <!-- Suppress MAUI resource processing - empty targets override MAUI's -->
+  <Target Name="ResizetizeImages" BeforeTargets="Build" />
+  <Target Name="ProcessMauiSplashScreens" BeforeTargets="Build" />
+  <Target Name="ProcessMauiFonts" BeforeTargets="Build" />
+  <Target Name="ProcessMauiImages" BeforeTargets="Build" />
+  
+  <!-- Remove all MAUI assets to prevent conflicts -->
+  <Target Name="RemoveMauiAssets" BeforeTargets="ResizetizeImages">
+    <ItemGroup>
+      <MauiAsset Remove="@(MauiAsset)" />
+      <MauiSplashScreen Remove="@(MauiSplashScreen)" />
+      <MauiFont Remove="@(MauiFont)" />
+      <MauiImage Remove="@(MauiImage)" />
+    </ItemGroup>
+  </Target>
+  
+  <ItemGroup>
+    <MauiAsset Remove="@(MauiAsset)" />
+    <MauiSplashScreen Remove="@(MauiSplashScreen)" />
+    <MauiFont Remove="@(MauiFont)" />
+    <MauiImage Remove="@(MauiImage)" />
+  </ItemGroup>
 
 </Project>

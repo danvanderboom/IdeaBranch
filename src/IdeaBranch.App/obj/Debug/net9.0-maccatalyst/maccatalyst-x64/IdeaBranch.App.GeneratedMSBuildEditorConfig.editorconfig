@@ -78,6 +78,12 @@ build_metadata.AdditionalFiles.ManifestResourceName = IdeaBranch.App.Views.Setti
 build_metadata.AdditionalFiles.TargetPath = Views\SettingsPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\SettingsPage.xaml
 
+[C:/Source/CriticalInsight/IdeaBranch/src/IdeaBranch.App/Views/TagTaxonomyPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = IdeaBranch.App.Views.TagTaxonomyPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\TagTaxonomyPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\TagTaxonomyPage.xaml
+
 [C:/Source/CriticalInsight/IdeaBranch/src/IdeaBranch.App/Views/TimelinePage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = IdeaBranch.App.Views.TimelinePage.xaml

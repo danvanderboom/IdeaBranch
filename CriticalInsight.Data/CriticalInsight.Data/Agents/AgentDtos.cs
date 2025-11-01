@@ -98,7 +98,7 @@ public sealed class SearchPredicate
 
 public sealed class SearchGroup
 {
-    public string Op { get; set; } = "and"; // and | or
+    public string Op { get; set; } = "and"; // and | or | but-not-if
     public List<SearchPredicate> Predicates { get; set; } = new();
     public List<SearchGroup> Groups { get; set; } = new();
 }

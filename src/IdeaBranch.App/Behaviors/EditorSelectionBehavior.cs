@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel;
 using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.Behaviors;
+using CommunityToolkit.Maui.Behaviors;
 
 namespace IdeaBranch.App.Behaviors;
 

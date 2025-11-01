@@ -314,5 +314,67 @@ public class PromptTemplateRepositoryTests
         // Assert
         Assert.That(result, Is.Null);
     }
+
+    [Test]
+    public async Task SearchAsync_WithTextContains_ReturnsMatchingTemplates()
+    {
+        // Arrange
+        var template1 = new PromptTemplate("Template One", "This is about definitions", null);
+        var template2 = new PromptTemplate("Template Two", "This is about explanations", null);
+        var template3 = new PromptTemplate("Definitions Template", "Body text", null);
+        await _repository.SaveAsync(template1);
+        await _repository.SaveAsync(template2);
+        await _repository.SaveAsync(template3);
+
+        // Act - Search for "definition" (should match Name or Body)
+        var results = await _repository.SearchAsync(textContains: "definition");
+
+        // Assert
+        Assert.That(results.Count, Is.EqualTo(2));
+        var names = results.Select(r => r.Name).ToHashSet();
+        Assert.That(names, Contains.Item("Template One"));
+        Assert.That(names, Contains.Item("Definitions Template"));
+        Assert.That(names, Does.Not.Contain("Template Two"));
+    }
+
+    [Test]
+    public async Task SearchAsync_WithUpdatedAtRange_ReturnsTemplatesInTimeRange()
+    {
+        // Arrange
+        var template1 = new PromptTemplate("Template1", "Body1", null);
+        await _repository.SaveAsync(template1);
+
+        // Capture time after first save, then save template2
+        var cutoffTime = DateTime.UtcNow;
+        await Task.Delay(10); // Small delay to ensure different timestamps
+        var template2 = new PromptTemplate("Template2", "Body2", null);
+        await _repository.SaveAsync(template2);
+
+        // Act
+        var results = await _repository.SearchAsync(updatedAtFrom: cutoffTime); // Match items updated after the cutoff time
+
+        // Assert
+        Assert.That(results.Count, Is.EqualTo(1));
+        Assert.That(results[0].Name, Is.EqualTo("Template2"));
+    }
+
+    [Test]
+    public async Task SearchAsync_WithNoFilters_ReturnsAllTemplates()
+    {
+        // Arrange
+        var template1 = new PromptTemplate("Template1", "Body1", null);
+        var template2 = new PromptTemplate("Template2", "Body2", null);
+        await _repository.SaveAsync(template1);
+        await _repository.SaveAsync(template2);
+
+        // Act
+        var results = await _repository.SearchAsync();
+
+        // Assert - Should return all templates
+        Assert.That(results.Count, Is.GreaterThanOrEqualTo(2));
+        var names = results.Select(r => r.Name).ToHashSet();
+        Assert.That(names, Contains.Item("Template1"));
+        Assert.That(names, Contains.Item("Template2"));
+    }
 }
 

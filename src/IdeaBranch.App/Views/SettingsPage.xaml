@@ -16,7 +16,7 @@
                             SelectedItem="{Binding SelectedCategory}"
                             SelectionChanged="OnCategorySelectionChanged">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="x:String">
                         <Grid Padding="12,8">
                             <Label Text="{Binding .}"
                                    FontSize="16"
@@ -73,11 +73,7 @@
                         <Picker ItemsSource="{Binding LanguageOptions}"
                                 SelectedItem="{Binding SelectedLanguage}"
                                 AutomationId="LanguagePicker"
-                                SemanticProperties.Description="Select the language for the application interface">
-                            <Picker.ItemDisplayBinding>
-                                <Binding Path="."/>
-                            </Picker.ItemDisplayBinding>
-                        </Picker>
+                                SemanticProperties.Description="Select the language for the application interface" />
                         <Label Text="{x:Static res:AppResources.SettingsPage_LanguageRestartNote}"
                                FontSize="12"
                                TextColor="Gray"
@@ -116,11 +112,7 @@
                             <Picker ItemsSource="{Binding ProviderOptions}"
                                     SelectedItem="{Binding Provider}"
                                     AutomationId="ProviderPicker"
-                                    SemanticProperties.Description="Select the language model provider for AI features">
-                                <Picker.ItemDisplayBinding>
-                                    <Binding Path="."/>
-                                </Picker.ItemDisplayBinding>
-                            </Picker>
+                                    SemanticProperties.Description="Select the language model provider for AI features" />
                         </StackLayout>
 
                         <!-- LM Studio Settings -->

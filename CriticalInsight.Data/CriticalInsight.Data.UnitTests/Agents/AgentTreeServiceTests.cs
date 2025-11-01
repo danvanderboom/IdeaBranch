@@ -389,6 +389,43 @@ public class AgentTreeServiceTests
     }
 
     [Test]
+    public void SearchAdvanced_WithButNotIf_ExcludesMatchingCriteria()
+    {
+        var root = new TreeNode<Space>(new Space { Name = "Root", SquareFeet = 0 });
+        var house = root.Children.Add(new TreeNode<Space>(new Space { Name = "House", SquareFeet = 2000 }));
+        var kitchen = house.Children.Add(new TreeNode<Space>(new Space { Name = "Kitchen", SquareFeet = 200 }));
+        var bedroom = house.Children.Add(new TreeNode<Space>(new Space { Name = "Bedroom", SquareFeet = 150 }));
+        var bathroom = house.Children.Add(new TreeNode<Space>(new Space { Name = "Bathroom", SquareFeet = 120 }));
+
+        var view = new TreeView(root);
+        var svc = new AgentTreeService(root, view, PayloadTypes);
+
+        // Search for rooms > 100 sqft BUT-NOT-IF name contains "Kitchen"
+        var options = new AdvancedSearchOptions
+        {
+            RootGroup = new SearchGroup
+            {
+                Op = "but-not-if",
+                Predicates = new List<SearchPredicate>
+                {
+                    // Positive: SquareFeet > 100
+                    new SearchPredicate { Path = "SquareFeet", Op = "gt", Value = "100" },
+                    // Exclusion: Name contains "Kitchen"
+                    new SearchPredicate { Path = "Name", Op = "contains", Value = "Kitchen" }
+                }
+            }
+        };
+
+        var result = svc.SearchAdvanced(_editor, root.NodeId, options, new PageOptions { PageSize = 10 });
+        
+        Assert.That(result.Success, Is.True);
+        Assert.That(result.Data!.Items.Count, Is.EqualTo(2)); // Bedroom and Bathroom, but not Kitchen
+        Assert.That(result.Data.Items.Any(i => i.Contains("Bedroom")), Is.True);
+        Assert.That(result.Data.Items.Any(i => i.Contains("Bathroom")), Is.True);
+        Assert.That(result.Data.Items.Any(i => i.Contains("Kitchen")), Is.False);
+    }
+
+    [Test]
     public void SelectNodes_WithSimpleExpression_ReturnsMatchingNodes()
     {
         var root = new TreeNode<Space>(new Space { Name = "Root", SquareFeet = 0 });

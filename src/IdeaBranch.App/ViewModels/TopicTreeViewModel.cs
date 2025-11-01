@@ -254,6 +254,41 @@ public class TopicTreeViewModel : INotifyPropertyChanged
     }
 
     /// <summary>
+    /// Promotes a node to the top level under the root (moves it to be a direct child of the root).
+    /// </summary>
+    public async Task PromoteNodeToRootAsync(ITreeNode node)
+    {
+        var nodeId = GetDomainNodeId(node);
+        if (nodeId == null)
+            return;
+
+        var domainNode = FindDomainNode(nodeId.Value);
+        if (domainNode == null || _rootDomainNode == null || domainNode.Parent == null)
+            return; // Can't promote root or nodes without parent
+
+        // Can't promote if already a child of root
+        if (domainNode.Parent == _rootDomainNode)
+            return;
+
+        // Remove from old parent
+        domainNode.Parent.RemoveChild(domainNode);
+
+        // Set order to be after all existing root children
+        var maxOrder = _rootDomainNode.Children.Count > 0
+            ? _rootDomainNode.Children.Max(c => c.Order)
+            : -1;
+        domainNode.Order = maxOrder + 1;
+
+        // Add to root
+        _rootDomainNode.AddChild(domainNode);
+
+        await SaveAndRefreshAsync();
+
+        // Emit telemetry
+        _telemetry?.EmitCrudEvent("move", domainNode.Id.ToString());
+    }
+
+    /// <summary>
     /// Gets the domain TopicNode for an ITreeNode. Used for editing.
     /// </summary>
     public TopicNode? GetDomainNode(ITreeNode node)
@@ -278,20 +313,23 @@ public class TopicTreeViewModel : INotifyPropertyChanged
         var llmFactory = _llmFactory;
         if (llmFactory == null)
         {
-            var services = Application.Current?.MainPage?.Handler?.MauiContext?.Services;
-            llmFactory = services?.GetService<LLMClientFactory>();
+            var window = Application.Current?.Windows.FirstOrDefault();
+            var appServices = window?.Handler?.MauiContext?.Services;
+            llmFactory = appServices?.GetService<LLMClientFactory>();
         }
 
         // Get telemetry service
         var telemetry = _telemetry;
         if (telemetry == null)
         {
-            var services = Application.Current?.MainPage?.Handler?.MauiContext?.Services;
-            telemetry = services?.GetService<Services.TelemetryService>();
+            var window = Application.Current?.Windows.FirstOrDefault();
+            var telemetryServices = window?.Handler?.MauiContext?.Services;
+            telemetry = telemetryServices?.GetService<Services.TelemetryService>();
         }
 
         // Get annotations repository and settings service
-        var services = Application.Current?.MainPage?.Handler?.MauiContext?.Services;
+        var windowForServices = Application.Current?.Windows.FirstOrDefault();
+        var services = windowForServices?.Handler?.MauiContext?.Services;
         var annotationsRepository = services?.GetService<Domain.IAnnotationsRepository>();
         var settingsService = services?.GetService<Services.SettingsService>();
 
@@ -317,7 +355,8 @@ public class TopicTreeViewModel : INotifyPropertyChanged
         var detailPage = new Views.TopicNodeDetailPage(detailViewModel);
         
         // Get current page for navigation
-        var currentPage = Application.Current?.MainPage;
+        var windowForNav = Application.Current?.Windows.FirstOrDefault();
+        var currentPage = windowForNav?.Page;
         if (currentPage != null)
         {
             await currentPage.Navigation.PushAsync(detailPage);

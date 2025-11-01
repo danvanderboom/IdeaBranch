@@ -70,6 +70,358 @@
         }
       }
     },
+    "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.App\\IdeaBranch.App.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.App\\IdeaBranch.App.csproj",
+        "projectName": "IdeaBranch.App",
+        "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.App\\IdeaBranch.App.csproj",
+        "packagesPath": "C:\\Users\\danva\\.nuget\\packages\\",
+        "outputPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.App\\obj\\",
+        "projectStyle": "PackageReference",
+        "crossTargeting": true,
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\danva\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0-android",
+          "net9.0-ios",
+          "net9.0-maccatalyst",
+          "net9.0-windows10.0.19041.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0-android35.0": {
+            "targetAlias": "net9.0-android",
+            "projectReferences": {
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\CriticalInsight.Data\\CriticalInsight.Data\\CriticalInsight.Data.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\CriticalInsight.Data\\CriticalInsight.Data\\CriticalInsight.Data.csproj"
+              },
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Domain\\IdeaBranch.Domain.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Domain\\IdeaBranch.Domain.csproj"
+              },
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj"
+              },
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj"
+              }
+            }
+          },
+          "net9.0-ios26.0": {
+            "targetAlias": "net9.0-ios",
+            "projectReferences": {
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\CriticalInsight.Data\\CriticalInsight.Data\\CriticalInsight.Data.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\CriticalInsight.Data\\CriticalInsight.Data\\CriticalInsight.Data.csproj"
+              },
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Domain\\IdeaBranch.Domain.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Domain\\IdeaBranch.Domain.csproj"
+              },
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj"
+              },
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj"
+              }
+            }
+          },
+          "net9.0-maccatalyst26.0": {
+            "targetAlias": "net9.0-maccatalyst",
+            "projectReferences": {
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\CriticalInsight.Data\\CriticalInsight.Data\\CriticalInsight.Data.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\CriticalInsight.Data\\CriticalInsight.Data\\CriticalInsight.Data.csproj"
+              },
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Domain\\IdeaBranch.Domain.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Domain\\IdeaBranch.Domain.csproj"
+              },
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj"
+              },
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj"
+              }
+            }
+          },
+          "net9.0-windows10.0.19041": {
+            "targetAlias": "net9.0-windows10.0.19041.0",
+            "projectReferences": {
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\CriticalInsight.Data\\CriticalInsight.Data\\CriticalInsight.Data.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\CriticalInsight.Data\\CriticalInsight.Data\\CriticalInsight.Data.csproj"
+              },
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Domain\\IdeaBranch.Domain.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Domain\\IdeaBranch.Domain.csproj"
+              },
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj"
+              },
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0-android35.0": {
+          "targetAlias": "net9.0-android",
+          "dependencies": {
+            "Azure.Identity": {
+              "target": "Package",
+              "version": "[1.12.0, )"
+            },
+            "CommunityToolkit.Maui": {
+              "target": "Package",
+              "version": "[9.0.3, )"
+            },
+            "Microsoft.Agents.AI.OpenAI": {
+              "target": "Package",
+              "version": "[1.0.0-preview.251028.1, )"
+            },
+            "Microsoft.Extensions.Http": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Extensions.Logging.Debug": {
+              "target": "Package",
+              "version": "[9.0.8, )"
+            },
+            "Microsoft.Maui.Controls": {
+              "target": "Package",
+              "version": "[9.0.111, )"
+            },
+            "Microsoft.NET.ILLink.Tasks": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.10, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.Android": {
+              "privateAssets": "all"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
+        },
+        "net9.0-ios26.0": {
+          "targetAlias": "net9.0-ios",
+          "dependencies": {
+            "Azure.Identity": {
+              "target": "Package",
+              "version": "[1.12.0, )"
+            },
+            "CommunityToolkit.Maui": {
+              "target": "Package",
+              "version": "[9.0.3, )"
+            },
+            "Microsoft.Agents.AI.OpenAI": {
+              "target": "Package",
+              "version": "[1.0.0-preview.251028.1, )"
+            },
+            "Microsoft.Extensions.Http": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Extensions.Logging.Debug": {
+              "target": "Package",
+              "version": "[9.0.8, )"
+            },
+            "Microsoft.Maui.Controls": {
+              "target": "Package",
+              "version": "[9.0.111, )"
+            },
+            "Microsoft.NET.ILLink.Tasks": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.10, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.iOS": {
+              "privateAssets": "all"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
+        },
+        "net9.0-maccatalyst26.0": {
+          "targetAlias": "net9.0-maccatalyst",
+          "dependencies": {
+            "Azure.Identity": {
+              "target": "Package",
+              "version": "[1.12.0, )"
+            },
+            "CommunityToolkit.Maui": {
+              "target": "Package",
+              "version": "[9.0.3, )"
+            },
+            "Microsoft.Agents.AI.OpenAI": {
+              "target": "Package",
+              "version": "[1.0.0-preview.251028.1, )"
+            },
+            "Microsoft.Extensions.Http": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Extensions.Logging.Debug": {
+              "target": "Package",
+              "version": "[9.0.8, )"
+            },
+            "Microsoft.Maui.Controls": {
+              "target": "Package",
+              "version": "[9.0.111, )"
+            },
+            "Microsoft.NET.ILLink.Tasks": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.10, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "xamarinios10",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.MacCatalyst": {
+              "privateAssets": "all"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
+        },
+        "net9.0-windows10.0.19041": {
+          "targetAlias": "net9.0-windows10.0.19041.0",
+          "dependencies": {
+            "Azure.Identity": {
+              "target": "Package",
+              "version": "[1.12.0, )"
+            },
+            "CommunityToolkit.Maui": {
+              "target": "Package",
+              "version": "[9.0.3, )"
+            },
+            "Microsoft.Agents.AI.OpenAI": {
+              "target": "Package",
+              "version": "[1.0.0-preview.251028.1, )"
+            },
+            "Microsoft.Extensions.Http": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Extensions.Logging.Debug": {
+              "target": "Package",
+              "version": "[9.0.8, )"
+            },
+            "Microsoft.Maui.Controls": {
+              "target": "Package",
+              "version": "[9.0.111, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.Windows.SDK.NET.Ref",
+              "version": "[10.0.19041.57, 10.0.19041.57]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            },
+            "Microsoft.Windows.SDK.NET.Ref.Windows": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306\\RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "android-arm64": {
+          "#import": []
+        },
+        "android-x64": {
+          "#import": []
+        },
+        "iossimulator-x64": {
+          "#import": []
+        },
+        "maccatalyst-x64": {
+          "#import": []
+        },
+        "win10-x64": {
+          "#import": []
+        }
+      }
+    },
     "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Domain\\IdeaBranch.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
@@ -231,6 +583,85 @@
         }
       }
     },
+    "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj",
+        "projectName": "IdeaBranch.Presentation",
+        "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj",
+        "packagesPath": "C:\\Users\\danva\\.nuget\\packages\\",
+        "outputPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\danva\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\CriticalInsight.Data\\CriticalInsight.Data\\CriticalInsight.Data.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\CriticalInsight.Data\\CriticalInsight.Data\\CriticalInsight.Data.csproj"
+              },
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Domain\\IdeaBranch.Domain.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Domain\\IdeaBranch.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "System.Text.Json": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
     "C:\\Source\\CriticalInsight\\IdeaBranch\\tests\\IdeaBranch.TestHelpers\\IdeaBranch.TestHelpers.csproj": {
       "version": "1.0.0",
       "restore": {
@@ -333,7 +764,7 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net9.0"
+          "net9.0-windows10.0.19041"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -341,14 +772,20 @@
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
+          "net9.0-windows10.0.19041": {
+            "targetAlias": "net9.0-windows10.0.19041",
             "projectReferences": {
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.App\\IdeaBranch.App.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.App\\IdeaBranch.App.csproj"
+              },
               "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Domain\\IdeaBranch.Domain.csproj": {
                 "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Domain\\IdeaBranch.Domain.csproj"
               },
               "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj": {
                 "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj"
+              },
+              "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj": {
+                "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj"
               },
               "C:\\Source\\CriticalInsight\\IdeaBranch\\tests\\IdeaBranch.TestHelpers\\IdeaBranch.TestHelpers.csproj": {
                 "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\tests\\IdeaBranch.TestHelpers\\IdeaBranch.TestHelpers.csproj"
@@ -369,8 +806,8 @@
         "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
+        "net9.0-windows10.0.19041": {
+          "targetAlias": "net9.0-windows10.0.19041",
           "dependencies": {
             "FluentAssertions": {
               "target": "Package",
@@ -378,7 +815,7 @@
             },
             "Microsoft.Extensions.Logging.Abstractions": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[9.0.10, )"
             },
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",
@@ -400,6 +837,10 @@
               "target": "Package",
               "version": "[4.6.0, )"
             },
+            "Polly": {
+              "target": "Package",
+              "version": "[8.4.0, )"
+            },
             "coverlet.collector": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
@@ -418,9 +859,21 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.Windows.SDK.NET.Ref",
+              "version": "[10.0.19041.57, 10.0.19041.57]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
+            },
+            "Microsoft.Windows.SDK.NET.Ref.Windows": {
+              "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WindowsForms": {
+              "privateAssets": "none"
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"

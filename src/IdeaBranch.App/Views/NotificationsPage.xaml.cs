@@ -15,8 +15,10 @@ public partial class NotificationsPage : ContentPage
 
     public NotificationsPage() : this(
         new NotificationsViewModel(
-            Microsoft.Maui.Controls.Application.Current?.Handler?.MauiContext?.Services.GetRequiredService<IdeaBranch.Domain.INotificationsRepository>(),
-            Microsoft.Maui.Controls.Application.Current?.Handler?.MauiContext?.Services.GetService<IdeaBranch.App.Services.Notifications.INotificationService>()))
+            (Microsoft.Maui.Controls.Application.Current?.Handler?.MauiContext?.Services)!
+                .GetRequiredService<IdeaBranch.Domain.INotificationsRepository>(),
+            Microsoft.Maui.Controls.Application.Current?.Handler?.MauiContext?.Services!
+                .GetService<IdeaBranch.App.Services.Notifications.INotificationService>()))
     {
     }
 

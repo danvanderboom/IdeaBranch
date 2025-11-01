@@ -454,6 +454,347 @@ public class SqliteAnnotationsRepository : IAnnotationsRepository
         return new Annotation(id, nodeId, startOffset, endOffset, createdAt, updatedAt, comment);
     }
 
+    /// <inheritdoc/>
+    public async Task<IReadOnlyList<Annotation>> SearchAsync(
+        Guid nodeId,
+        AnnotationsSearchOptions options,
+        CancellationToken cancellationToken = default)
+    {
+        return await Task.Run(() =>
+        {
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+
+            var queryParts = new List<string>();
+            var joinParts = new List<string>();
+            var whereParts = new List<string> { "a.NodeId = @NodeId" };
+            var havingParts = new List<string>();
+
+            queryParts.Add("SELECT a.Id, a.NodeId, a.StartOffset, a.EndOffset, a.Comment, a.CreatedAt, a.UpdatedAt");
+            queryParts.Add("FROM annotations a");
+
+            var hasIncludeTags = options.IncludeTags != null && options.IncludeTags.Count > 0;
+            var hasExcludeTags = options.ExcludeTags != null && options.ExcludeTags.Count > 0;
+            var hasWeightFilters = options.TagWeightFilters != null && options.TagWeightFilters.Count > 0;
+            var hasCommentSearch = !string.IsNullOrWhiteSpace(options.CommentContains);
+            var hasUpdatedAtFilter = options.UpdatedAtFrom.HasValue || options.UpdatedAtTo.HasValue;
+            var hasTemporalFilter = options.TemporalStart.HasValue || options.TemporalEnd.HasValue;
+
+            // Track if we need GROUP BY (only if we have include tags)
+            var needsGroupBy = false;
+
+            // Include tags filter (AND logic via GROUP BY/HAVING)
+            if (hasIncludeTags)
+            {
+                var tagIdStrings = options.IncludeTags.Select(id => id.ToString()).ToList();
+                var placeholders = string.Join(",", tagIdStrings.Select((_, i) => $"@IncludeTagId{i}"));
+                joinParts.Add("INNER JOIN annotation_tags at_include ON a.Id = at_include.AnnotationId");
+                whereParts.Add($"at_include.TagId IN ({placeholders})");
+                needsGroupBy = true;
+                havingParts.Add($"COUNT(DISTINCT at_include.TagId) = @IncludeTagCount");
+            }
+
+            // Exclude tags filter (NOT EXISTS)
+            if (hasExcludeTags)
+            {
+                var tagIdStrings = options.ExcludeTags.Select(id => id.ToString()).ToList();
+                var placeholders = string.Join(",", tagIdStrings.Select((_, i) => $"@ExcludeTagId{i}"));
+                whereParts.Add($@"NOT EXISTS (
+                    SELECT 1 FROM annotation_tags at_exclude
+                    WHERE at_exclude.AnnotationId = a.Id AND at_exclude.TagId IN ({placeholders})
+                )");
+            }
+
+            // Tag weight filters
+            if (hasWeightFilters)
+            {
+                var weightConditions = new List<string>();
+                int weightIndex = 0;
+                foreach (var filter in options.TagWeightFilters!)
+                {
+                    var alias = $"atw{weightIndex}";
+                    joinParts.Add($"LEFT JOIN annotation_tags {alias} ON a.Id = {alias}.AnnotationId AND {alias}.TagId = @WeightTagId{weightIndex}");
+                    
+                    var condition = filter.Op.ToLowerInvariant() switch
+                    {
+                        "gt" => $"{alias}.Weight > @WeightValue{weightIndex}",
+                        "lt" => $"{alias}.Weight < @WeightValue{weightIndex}",
+                        "between" => $"{alias}.Weight >= @WeightValue{weightIndex} AND {alias}.Weight <= @WeightValue2{weightIndex}",
+                        _ => throw new ArgumentException($"Unsupported weight filter operator: {filter.Op}", nameof(options))
+                    };
+                    weightConditions.Add(condition);
+                    weightIndex++;
+                }
+                // For AND logic, all weight conditions must be true
+                // If we have GROUP BY, add to HAVING instead of WHERE
+                var weightCondition = "(" + string.Join(" AND ", weightConditions) + ")";
+                if (needsGroupBy)
+                {
+                    havingParts.Add(weightCondition);
+                }
+                else
+                {
+                    whereParts.Add(weightCondition);
+                }
+            }
+
+            // Comment text search
+            if (hasCommentSearch)
+            {
+                whereParts.Add("a.Comment LIKE @CommentContains");
+            }
+
+            // UpdatedAt range filter
+            if (hasUpdatedAtFilter)
+            {
+                if (options.UpdatedAtFrom.HasValue && options.UpdatedAtTo.HasValue)
+                {
+                    whereParts.Add("a.UpdatedAt BETWEEN @UpdatedAtFrom AND @UpdatedAtTo");
+                }
+                else if (options.UpdatedAtFrom.HasValue)
+                {
+                    whereParts.Add("a.UpdatedAt >= @UpdatedAtFrom");
+                }
+                else if (options.UpdatedAtTo.HasValue)
+                {
+                    whereParts.Add("a.UpdatedAt <= @UpdatedAtTo");
+                }
+            }
+
+            // Temporal/historical time range filter
+            if (hasTemporalFilter)
+            {
+                joinParts.Add("INNER JOIN annotation_values av_temporal ON a.Id = av_temporal.AnnotationId AND av_temporal.ValueType = 'temporal'");
+                if (options.TemporalStart.HasValue && options.TemporalEnd.HasValue)
+                {
+                    whereParts.Add("av_temporal.TemporalValue BETWEEN @TemporalStart AND @TemporalEnd");
+                }
+                else if (options.TemporalStart.HasValue)
+                {
+                    whereParts.Add("av_temporal.TemporalValue >= @TemporalStart");
+                }
+                else if (options.TemporalEnd.HasValue)
+                {
+                    whereParts.Add("av_temporal.TemporalValue <= @TemporalEnd");
+                }
+            }
+
+            // Combine query parts
+            if (joinParts.Count > 0)
+            {
+                queryParts.Insert(2, string.Join(" ", joinParts));
+            }
+
+            queryParts.Add("WHERE " + string.Join(" AND ", whereParts));
+
+            // Add GROUP BY if needed (for include tags AND logic)
+            if (needsGroupBy)
+            {
+                queryParts.Add("GROUP BY a.Id, a.NodeId, a.StartOffset, a.EndOffset, a.Comment, a.CreatedAt, a.UpdatedAt");
+            }
+
+            if (havingParts.Count > 0)
+            {
+                queryParts.Add("HAVING " + string.Join(" AND ", havingParts));
+            }
+
+            queryParts.Add("ORDER BY a.StartOffset, a.EndOffset");
+
+            // Add pagination
+            if (options.PageSize.HasValue)
+            {
+                queryParts.Add($"LIMIT @PageSize");
+                if (options.PageOffset.HasValue)
+                {
+                    queryParts.Add($"OFFSET @PageOffset");
+                }
+            }
+
+            using var command = _connection.CreateCommand();
+            command.CommandText = string.Join("\n", queryParts);
+            command.Parameters.AddWithValue("@NodeId", nodeId.ToString());
+
+            // Add parameters for include tags
+            if (hasIncludeTags)
+            {
+                var tagIdStrings = options.IncludeTags.Select(id => id.ToString()).ToList();
+                for (int i = 0; i < tagIdStrings.Count; i++)
+                {
+                    command.Parameters.AddWithValue($"@IncludeTagId{i}", tagIdStrings[i]);
+                }
+                command.Parameters.AddWithValue("@IncludeTagCount", tagIdStrings.Count);
+            }
+
+            // Add parameters for exclude tags
+            if (hasExcludeTags)
+            {
+                var tagIdStrings = options.ExcludeTags.Select(id => id.ToString()).ToList();
+                for (int i = 0; i < tagIdStrings.Count; i++)
+                {
+                    command.Parameters.AddWithValue($"@ExcludeTagId{i}", tagIdStrings[i]);
+                }
+            }
+
+            // Add parameters for weight filters
+            if (hasWeightFilters)
+            {
+                int weightIndex = 0;
+                foreach (var filter in options.TagWeightFilters!)
+                {
+                    command.Parameters.AddWithValue($"@WeightTagId{weightIndex}", filter.TagId.ToString());
+                    command.Parameters.AddWithValue($"@WeightValue{weightIndex}", filter.Value);
+                    if (filter.Op.ToLowerInvariant() == "between" && filter.Value2.HasValue)
+                    {
+                        command.Parameters.AddWithValue($"@WeightValue2{weightIndex}", filter.Value2.Value);
+                    }
+                    weightIndex++;
+                }
+            }
+
+            // Add parameters for comment search
+            if (hasCommentSearch)
+            {
+                command.Parameters.AddWithValue("@CommentContains", $"%{options.CommentContains}%");
+            }
+
+            // Add parameters for UpdatedAt filter
+            if (hasUpdatedAtFilter)
+            {
+                if (options.UpdatedAtFrom.HasValue)
+                {
+                    command.Parameters.AddWithValue("@UpdatedAtFrom", options.UpdatedAtFrom.Value.ToString("O"));
+                }
+                if (options.UpdatedAtTo.HasValue)
+                {
+                    command.Parameters.AddWithValue("@UpdatedAtTo", options.UpdatedAtTo.Value.ToString("O"));
+                }
+            }
+
+            // Add parameters for temporal filter
+            if (hasTemporalFilter)
+            {
+                if (options.TemporalStart.HasValue)
+                {
+                    command.Parameters.AddWithValue("@TemporalStart", options.TemporalStart.Value.ToString("O"));
+                }
+                if (options.TemporalEnd.HasValue)
+                {
+                    command.Parameters.AddWithValue("@TemporalEnd", options.TemporalEnd.Value.ToString("O"));
+                }
+            }
+
+            // Add parameters for pagination
+            if (options.PageSize.HasValue)
+            {
+                command.Parameters.AddWithValue("@PageSize", options.PageSize.Value);
+                if (options.PageOffset.HasValue)
+                {
+                    command.Parameters.AddWithValue("@PageOffset", options.PageOffset.Value);
+                }
+            }
+
+            var annotations = new List<Annotation>();
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var annotation = ReadAnnotation(reader);
+                annotations.Add(annotation);
+            }
+
+            return annotations.AsReadOnly();
+        }, cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public async Task<IDictionary<Guid, IReadOnlyList<Guid>>> GetTagIdsForAnnotationsAsync(
+        IEnumerable<Guid> annotationIds,
+        CancellationToken cancellationToken = default)
+    {
+        return await Task.Run(() =>
+        {
+            var annotationIdList = annotationIds.ToList();
+            if (annotationIdList.Count == 0)
+                return new Dictionary<Guid, IReadOnlyList<Guid>>();
+
+            var annotationIdStrings = annotationIdList.Select(id => id.ToString()).ToList();
+            var placeholders = string.Join(",", annotationIdStrings.Select((_, i) => $"@AnnotationId{i}"));
+
+            using var command = _connection.CreateCommand();
+            command.CommandText = $@"
+                SELECT AnnotationId, TagId
+                FROM annotation_tags
+                WHERE AnnotationId IN ({placeholders})
+                ORDER BY AnnotationId, TagId
+            ";
+
+            for (int i = 0; i < annotationIdStrings.Count; i++)
+            {
+                command.Parameters.AddWithValue($"@AnnotationId{i}", annotationIdStrings[i]);
+            }
+
+            var result = new Dictionary<Guid, List<Guid>>();
+            
+            // Initialize all annotation IDs with empty lists
+            foreach (var id in annotationIdList)
+            {
+                result[id] = new List<Guid>();
+            }
+
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                var annotationId = Guid.Parse(reader.GetString(0));
+                var tagId = Guid.Parse(reader.GetString(1));
+
+                if (result.TryGetValue(annotationId, out var tagList))
+                {
+                    tagList.Add(tagId);
+                }
+                else
+                {
+                    result[annotationId] = new List<Guid> { tagId };
+                }
+            }
+
+            // Convert to IReadOnlyList
+            return result.ToDictionary(kvp => kvp.Key, kvp => (IReadOnlyList<Guid>)kvp.Value.AsReadOnly());
+        }, cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public async Task SetTagWeightAsync(
+        Guid annotationId,
+        Guid tagId,
+        double? weight,
+        CancellationToken cancellationToken = default)
+    {
+        await Task.Run(() =>
+        {
+            // First, ensure the tag association exists
+            using var ensureCommand = _connection.CreateCommand();
+            ensureCommand.CommandText = @"
+                INSERT OR IGNORE INTO annotation_tags (AnnotationId, TagId, Weight)
+                VALUES (@AnnotationId, @TagId, NULL)
+            ";
+            ensureCommand.Parameters.AddWithValue("@AnnotationId", annotationId.ToString());
+            ensureCommand.Parameters.AddWithValue("@TagId", tagId.ToString());
+            ensureCommand.ExecuteNonQuery();
+
+            // Then update the weight
+            using var updateCommand = _connection.CreateCommand();
+            updateCommand.CommandText = @"
+                UPDATE annotation_tags
+                SET Weight = @Weight
+                WHERE AnnotationId = @AnnotationId AND TagId = @TagId
+            ";
+            updateCommand.Parameters.AddWithValue("@AnnotationId", annotationId.ToString());
+            updateCommand.Parameters.AddWithValue("@TagId", tagId.ToString());
+            updateCommand.Parameters.AddWithValue("@Weight", (object?)weight ?? DBNull.Value);
+            updateCommand.ExecuteNonQuery();
+        }, cancellationToken);
+    }
+
     /// <summary>
     /// Reads an AnnotationValue from a data reader.
     /// </summary>

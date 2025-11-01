@@ -54,11 +54,12 @@ public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterD
 	}
 
 	// UNUserNotificationCenterDelegate implementation
-	public void WillPresentNotification(UNUserNotificationCenter center, UNNotification notification, Action<UNNotificationPresentationOptions> completionHandler)
-	{
-		// Show notification even when app is in foreground
-		completionHandler(UNNotificationPresentationOptions.Alert | UNNotificationPresentationOptions.Sound);
-	}
+    public void WillPresentNotification(UNUserNotificationCenter center, UNNotification notification, Action<UNNotificationPresentationOptions> completionHandler)
+    {
+        // Show notification even when app is in foreground (use non-deprecated options)
+        var options = UNNotificationPresentationOptions.List | UNNotificationPresentationOptions.Banner | UNNotificationPresentationOptions.Sound;
+        completionHandler(options);
+    }
 
 	public void DidReceiveNotificationResponse(UNUserNotificationCenter center, UNNotificationResponse response, Action completionHandler)
 	{

@@ -267,5 +267,67 @@ public class TagTaxonomyRepositoryTests
         // Assert
         Assert.That(result, Is.Null);
     }
+
+    [Test]
+    public async Task SearchAsync_WithNameContains_ReturnsMatchingTags()
+    {
+        // Arrange
+        var tag1 = new TagTaxonomyNode("Kitchen", null);
+        var tag2 = new TagTaxonomyNode("Bedroom", null);
+        var tag3 = new TagTaxonomyNode("Bathroom", null);
+        await _repository.SaveAsync(tag1);
+        await _repository.SaveAsync(tag2);
+        await _repository.SaveAsync(tag3);
+
+        // Act
+        var results = await _repository.SearchAsync(nameContains: "room");
+
+        // Assert
+        Assert.That(results.Count, Is.EqualTo(2));
+        var names = results.Select(r => r.Name).ToHashSet();
+        Assert.That(names, Contains.Item("Bedroom"));
+        Assert.That(names, Contains.Item("Bathroom"));
+        Assert.That(names, Does.Not.Contain("Kitchen"));
+    }
+
+    [Test]
+    public async Task SearchAsync_WithUpdatedAtRange_ReturnsTagsInTimeRange()
+    {
+        // Arrange
+        var tag1 = new TagTaxonomyNode("Tag1", null);
+        await _repository.SaveAsync(tag1);
+
+        // Capture time after first save, then save tag2
+        var cutoffTime = DateTime.UtcNow;
+        await Task.Delay(10); // Small delay to ensure different timestamps
+        var tag2 = new TagTaxonomyNode("Tag2", null);
+        await _repository.SaveAsync(tag2);
+
+        // Act
+        var results = await _repository.SearchAsync(updatedAtFrom: cutoffTime); // Match items updated after the cutoff time
+
+        // Assert
+        Assert.That(results.Count, Is.EqualTo(1));
+        Assert.That(results[0].Name, Is.EqualTo("Tag2"));
+    }
+
+    [Test]
+    public async Task SearchAsync_WithNoFilters_ReturnsAllTags()
+    {
+        // Arrange
+        var tag1 = new TagTaxonomyNode("Tag1", null);
+        var tag2 = new TagTaxonomyNode("Tag2", null);
+        await _repository.SaveAsync(tag1);
+        await _repository.SaveAsync(tag2);
+
+        // Act
+        var results = await _repository.SearchAsync();
+
+        // Assert - Should return all tags (including default root if it exists)
+        Assert.That(results.Count, Is.GreaterThanOrEqualTo(2));
+        var names = results.Select(r => r.Name).ToHashSet();
+        Assert.That(names, Contains.Item("Tag1"));
+        Assert.That(names, Contains.Item("Tag2"));
+    }
 }
 

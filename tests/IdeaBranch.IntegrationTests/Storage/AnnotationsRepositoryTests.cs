@@ -150,5 +150,203 @@ public class AnnotationsRepositoryTests
         Assert.That(values[0].ValueType, Is.EqualTo("numeric"));
         Assert.That(values[0].NumericValue, Is.EqualTo(42.5));
     }
+
+    [Test]
+    public async Task SearchAsync_WithIncludeTags_ReturnsAnnotationsWithAllTags()
+    {
+        // Arrange
+        var annotation1 = new Annotation(_testNodeId, 0, 10, "Annotation 1");
+        var annotation2 = new Annotation(_testNodeId, 20, 30, "Annotation 2");
+        var annotation3 = new Annotation(_testNodeId, 40, 50, "Annotation 3");
+        await _repository.SaveAsync(annotation1);
+        await _repository.SaveAsync(annotation2);
+        await _repository.SaveAsync(annotation3);
+
+        var tag1 = CreateTestTag("Tag1");
+        var tag2 = CreateTestTag("Tag2");
+
+        // Annotation1 has both tags
+        await _repository.AddTagAsync(annotation1.Id, tag1);
+        await _repository.AddTagAsync(annotation1.Id, tag2);
+
+        // Annotation2 has only tag1
+        await _repository.AddTagAsync(annotation2.Id, tag1);
+
+        // Annotation3 has no tags
+
+        var options = new AnnotationsSearchOptions
+        {
+            IncludeTags = new[] { tag1, tag2 }
+        };
+
+        // Act
+        var results = await _repository.SearchAsync(_testNodeId, options);
+
+        // Assert
+        Assert.That(results.Count, Is.EqualTo(1));
+        Assert.That(results[0].Id, Is.EqualTo(annotation1.Id));
+    }
+
+    [Test]
+    public async Task SearchAsync_WithExcludeTags_ExcludesAnnotationsWithThoseTags()
+    {
+        // Arrange
+        var annotation1 = new Annotation(_testNodeId, 0, 10, "Annotation 1");
+        var annotation2 = new Annotation(_testNodeId, 20, 30, "Annotation 2");
+        await _repository.SaveAsync(annotation1);
+        await _repository.SaveAsync(annotation2);
+
+        var tag1 = CreateTestTag("Tag1");
+        var tag2 = CreateTestTag("Tag2");
+
+        await _repository.AddTagAsync(annotation1.Id, tag1);
+        await _repository.AddTagAsync(annotation2.Id, tag2);
+
+        var options = new AnnotationsSearchOptions
+        {
+            ExcludeTags = new[] { tag2 }
+        };
+
+        // Act
+        var results = await _repository.SearchAsync(_testNodeId, options);
+
+        // Assert
+        Assert.That(results.Count, Is.EqualTo(1));
+        Assert.That(results[0].Id, Is.EqualTo(annotation1.Id));
+    }
+
+    [Test]
+    public async Task SearchAsync_WithTagWeightFilters_ReturnsAnnotationsMatchingWeightCriteria()
+    {
+        // Arrange
+        var annotation1 = new Annotation(_testNodeId, 0, 10);
+        var annotation2 = new Annotation(_testNodeId, 20, 30);
+        await _repository.SaveAsync(annotation1);
+        await _repository.SaveAsync(annotation2);
+
+        var tag1 = CreateTestTag("Tag1");
+
+        await _repository.AddTagAsync(annotation1.Id, tag1);
+        await _repository.AddTagAsync(annotation2.Id, tag1);
+
+        // Set weights
+        await _repository.SetTagWeightAsync(annotation1.Id, tag1, 5.0);
+        await _repository.SetTagWeightAsync(annotation2.Id, tag1, 2.0);
+
+        var options = new AnnotationsSearchOptions
+        {
+            TagWeightFilters = new[]
+            {
+                new TagWeightFilter { TagId = tag1, Op = "gt", Value = 3.0 }
+            }
+        };
+
+        // Act
+        var results = await _repository.SearchAsync(_testNodeId, options);
+
+        // Assert
+        Assert.That(results.Count, Is.EqualTo(1));
+        Assert.That(results[0].Id, Is.EqualTo(annotation1.Id));
+    }
+
+    [Test]
+    public async Task SearchAsync_WithCommentContains_ReturnsAnnotationsWithMatchingComment()
+    {
+        // Arrange
+        var annotation1 = new Annotation(_testNodeId, 0, 10, "This is a test comment");
+        var annotation2 = new Annotation(_testNodeId, 20, 30, "Another annotation");
+        await _repository.SaveAsync(annotation1);
+        await _repository.SaveAsync(annotation2);
+
+        var options = new AnnotationsSearchOptions
+        {
+            CommentContains = "test"
+        };
+
+        // Act
+        var results = await _repository.SearchAsync(_testNodeId, options);
+
+        // Assert
+        Assert.That(results.Count, Is.EqualTo(1));
+        Assert.That(results[0].Id, Is.EqualTo(annotation1.Id));
+    }
+
+    [Test]
+    public async Task SearchAsync_WithUpdatedAtRange_ReturnsAnnotationsInTimeRange()
+    {
+        // Arrange
+        var annotation1 = new Annotation(_testNodeId, 0, 10);
+        var annotation2 = new Annotation(_testNodeId, 20, 30);
+        await _repository.SaveAsync(annotation1);
+        await _repository.SaveAsync(annotation2);
+
+        // Capture time after both saves, then update annotation2
+        var cutoffTime = DateTime.UtcNow;
+        await Task.Delay(10); // Small delay to ensure different timestamps
+        annotation2 = new Annotation(annotation2.Id, annotation2.NodeId, annotation2.StartOffset, annotation2.EndOffset, annotation2.CreatedAt, DateTime.UtcNow, annotation2.Comment);
+        await _repository.SaveAsync(annotation2);
+
+        var options = new AnnotationsSearchOptions
+        {
+            UpdatedAtFrom = cutoffTime // Match items updated after the cutoff time
+        };
+
+        // Act
+        var results = await _repository.SearchAsync(_testNodeId, options);
+
+        // Assert
+        Assert.That(results.Count, Is.EqualTo(1));
+        Assert.That(results[0].Id, Is.EqualTo(annotation2.Id));
+    }
+
+    [Test]
+    public async Task SearchAsync_WithTemporalRange_ReturnsAnnotationsWithTemporalValuesInRange()
+    {
+        // Arrange
+        var annotation1 = new Annotation(_testNodeId, 0, 10);
+        var annotation2 = new Annotation(_testNodeId, 20, 30);
+        await _repository.SaveAsync(annotation1);
+        await _repository.SaveAsync(annotation2);
+
+        var temporal1 = new AnnotationValue(annotation1.Id, "temporal")
+        {
+            TemporalValue = "2020-01-01T00:00:00Z"
+        };
+        var temporal2 = new AnnotationValue(annotation2.Id, "temporal")
+        {
+            TemporalValue = "2021-06-15T12:00:00Z"
+        };
+        await _repository.SaveValueAsync(temporal1);
+        await _repository.SaveValueAsync(temporal2);
+
+        var options = new AnnotationsSearchOptions
+        {
+            TemporalStart = DateTime.Parse("2021-01-01T00:00:00Z"),
+            TemporalEnd = DateTime.Parse("2022-01-01T00:00:00Z")
+        };
+
+        // Act
+        var results = await _repository.SearchAsync(_testNodeId, options);
+
+        // Assert
+        Assert.That(results.Count, Is.EqualTo(1));
+        Assert.That(results[0].Id, Is.EqualTo(annotation2.Id));
+    }
+
+    private Guid CreateTestTag(string name)
+    {
+        var tagId = Guid.NewGuid();
+        using var command = _testDb.Connection.CreateCommand();
+        command.CommandText = @"
+            INSERT INTO tag_taxonomy_nodes (Id, ParentId, Name, ""Order"", CreatedAt, UpdatedAt)
+            VALUES (@Id, NULL, @Name, 0, @CreatedAt, @UpdatedAt)
+        ";
+        command.Parameters.AddWithValue("@Id", tagId.ToString());
+        command.Parameters.AddWithValue("@Name", name);
+        command.Parameters.AddWithValue("@CreatedAt", DateTime.UtcNow.ToString("O"));
+        command.Parameters.AddWithValue("@UpdatedAt", DateTime.UtcNow.ToString("O"));
+        command.ExecuteNonQuery();
+        return tagId;
+    }
 }
 

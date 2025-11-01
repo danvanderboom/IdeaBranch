@@ -76,6 +76,16 @@
             Gets the root TreeNode.
             </summary>
         </member>
+        <member name="T:IdeaBranch.App.Behaviors.EditorSelectionBehavior">
+            <summary>
+            Behavior that tracks text selection in an Editor and updates a ViewModel.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Behaviors.EditorSelectionBehavior.SelectionContext">
+            <summary>
+            Gets or sets the binding context that has SelectionStart and SelectionLength properties.
+            </summary>
+        </member>
         <member name="T:IdeaBranch.App.Converters.CountToBoolConverter">
             <summary>
             Converts count (int) to bool: true if count > 0, false otherwise.
@@ -99,6 +109,11 @@
             Used to show unread notifications in bold.
             </summary>
         </member>
+        <member name="T:IdeaBranch.App.Converters.IsNotNullConverter">
+            <summary>
+            Converts a value to true if it's not null, false otherwise.
+            </summary>
+        </member>
         <member name="T:IdeaBranch.App.Converters.NodePayloadDomainIdConverter">
             <summary>
             Extracts DomainNodeId from TopicNodePayload stored in ITreeNode.PayloadObject.
@@ -118,6 +133,16 @@
             <summary>
             Converts string equality to bool: returns true if the value equals the parameter (case-insensitive).
             Useful for conditional visibility based on selected category or option.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Converters.TagTaxonomyDomainIdConverter">
+            <summary>
+            Extracts DomainNodeId from TagTaxonomyPayload stored in ITreeNode.PayloadObject.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Converters.TagTaxonomyNameConverter">
+            <summary>
+            Extracts Name from TagTaxonomyPayload stored in ITreeNode.PayloadObject.
             </summary>
         </member>
         <member name="T:IdeaBranch.App.Platforms.Android.AndroidNotificationService">
@@ -462,6 +487,149 @@
             Clears the stored device token.
             </summary>
         </member>
+        <member name="T:IdeaBranch.App.Services.Search.SearchCoordinator">
+            <summary>
+            Coordinates searches across different content types: nodes, annotations, tags, and templates.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.Search.SearchCoordinator.#ctor(IdeaBranch.Domain.IAnnotationsRepository,IdeaBranch.Domain.ITagTaxonomyRepository,IdeaBranch.Domain.IPromptTemplateRepository,IdeaBranch.Domain.ITopicTreeRepository)">
+            <summary>
+            Initializes a new instance with required repositories.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.Search.SearchCoordinator.SearchAsync(IdeaBranch.App.Services.Search.SearchRequest,System.Threading.CancellationToken)">
+            <summary>
+            Performs a search across the specified content types.
+            </summary>
+            <param name="request">The search request with content types and filters.</param>
+            <param name="cancellationToken">Token to cancel the operation.</param>
+            <returns>Search results grouped by content type.</returns>
+        </member>
+        <member name="T:IdeaBranch.App.Services.Search.SearchContentType">
+            <summary>
+            Content types that can be searched.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Services.Search.SearchRequest">
+            <summary>
+            Search request with filters applicable across content types.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.SearchRequest.ContentTypes">
+            <summary>
+            Gets or sets the content types to search.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.SearchRequest.TextContains">
+            <summary>
+            Gets or sets text to search for (applies to relevant fields per content type).
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.SearchRequest.IncludeTags">
+            <summary>
+            Gets or sets tag IDs to include (AND logic).
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.SearchRequest.ExcludeTags">
+            <summary>
+            Gets or sets tag IDs to exclude.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.SearchRequest.TagWeightFilters">
+            <summary>
+            Gets or sets tag weight filters (for annotations).
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.SearchRequest.UpdatedAtFrom">
+            <summary>
+            Gets or sets the start of the UpdatedAt range filter (inclusive).
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.SearchRequest.UpdatedAtTo">
+            <summary>
+            Gets or sets the end of the UpdatedAt range filter (inclusive).
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.SearchRequest.TemporalStart">
+            <summary>
+            Gets or sets the start of the temporal/historical time range filter (inclusive, for annotations).
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.SearchRequest.TemporalEnd">
+            <summary>
+            Gets or sets the end of the temporal/historical time range filter (inclusive, for annotations).
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.SearchRequest.PageSize">
+            <summary>
+            Gets or sets the page size for pagination.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.SearchRequest.PageOffset">
+            <summary>
+            Gets or sets the page offset for pagination.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Services.Search.SearchResults">
+            <summary>
+            Search results grouped by content type.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.SearchResults.RequestedContentTypes">
+            <summary>
+            Gets or sets the content types that were requested.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.SearchResults.Nodes">
+            <summary>
+            Gets or sets the topic node search results.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.SearchResults.Annotations">
+            <summary>
+            Gets or sets the annotation search results.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.SearchResults.Tags">
+            <summary>
+            Gets or sets the tag search results.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.SearchResults.Templates">
+            <summary>
+            Gets or sets the prompt template search results.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.Services.Search.TopicNodeSearchResult">
+            <summary>
+            Search result for a topic node.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.TopicNodeSearchResult.NodeId">
+            <summary>
+            Gets or sets the node ID.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.TopicNodeSearchResult.Title">
+            <summary>
+            Gets or sets the node title.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.TopicNodeSearchResult.Prompt">
+            <summary>
+            Gets or sets the prompt text.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.TopicNodeSearchResult.Response">
+            <summary>
+            Gets or sets the response text.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.Services.Search.TopicNodeSearchResult.UpdatedAt">
+            <summary>
+            Gets or sets the last updated timestamp.
+            </summary>
+        </member>
         <member name="T:IdeaBranch.App.Services.SettingsService">
             <summary>
             Service for managing application settings, including LLM provider configuration.
@@ -557,6 +725,16 @@
             Sets whether push notifications are enabled.
             </summary>
         </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.GetShowCommentsAsync">
+            <summary>
+            Gets whether annotation comments should be shown (default: true).
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.Services.SettingsService.SetShowCommentsAsync(System.Boolean)">
+            <summary>
+            Sets whether annotation comments should be shown.
+            </summary>
+        </member>
         <member name="T:IdeaBranch.App.Services.TelemetryService">
             <summary>
             Service for emitting telemetry events with consent support.
@@ -588,6 +766,106 @@
             <param name="success">Whether the operation succeeded.</param>
             <param name="errorMessage">Optional error message if the operation failed.</param>
         </member>
+        <member name="T:IdeaBranch.App.ViewModels.AdvancedSearchViewModel">
+            <summary>
+            ViewModel for advanced search that coordinates searches across content types.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.#ctor(IdeaBranch.App.Services.Search.SearchCoordinator)">
+            <summary>
+            Initializes a new instance with the search coordinator.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.#ctor">
+            <summary>
+            Initializes a new instance from dependency injection (parameterless constructor for XAML).
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.SelectedContentTypes">
+            <summary>
+            Gets or sets the selected content types to search.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.SearchText">
+            <summary>
+            Gets or sets the search text to find in content.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.UpdatedAtFrom">
+            <summary>
+            Gets or sets the start of the UpdatedAt range filter.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.UpdatedAtTo">
+            <summary>
+            Gets or sets the end of the UpdatedAt range filter.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.SelectedIncludeTags">
+            <summary>
+            Gets or sets the selected tag IDs to include (AND logic).
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.SelectedExcludeTags">
+            <summary>
+            Gets or sets the selected tag IDs to exclude.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.PageSize">
+            <summary>
+            Gets or sets the page size for pagination.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.PageOffset">
+            <summary>
+            Gets or sets the page offset for pagination.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.IsLoading">
+            <summary>
+            Gets or sets whether a search is currently in progress.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.Results">
+            <summary>
+            Gets or sets the search results.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.HasResults">
+            <summary>
+            Gets whether there are any search results.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.TotalResultCount">
+            <summary>
+            Gets the total count of results across all content types.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.ExecuteSearchCommand">
+            <summary>
+            Gets the command to execute the search.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.ExecuteSearchAsync">
+            <summary>
+            Executes the search with current filter settings.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.AddContentType(IdeaBranch.App.Services.Search.SearchContentType)">
+            <summary>
+            Adds a content type to the search.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.RemoveContentType(IdeaBranch.App.Services.Search.SearchContentType)">
+            <summary>
+            Removes a content type from the search.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.AdvancedSearchViewModel.ClearFilters">
+            <summary>
+            Clears all search filters and results.
+            </summary>
+        </member>
         <member name="T:IdeaBranch.App.ViewModels.AnnotationEditViewModel">
             <summary>
             ViewModel for AnnotationEditPage that manages creating and editing annotations.
@@ -615,12 +893,22 @@
         </member>
         <member name="P:IdeaBranch.App.ViewModels.AnnotationEditViewModel.AvailableTags">
             <summary>
-            Gets the available tags from the taxonomy.
+            Gets the available tags from the taxonomy as selectable items.
+            </summary>
+        </member>
+        <member name="T:IdeaBranch.App.ViewModels.AnnotationEditViewModel.SelectableTagItem">
+            <summary>
+            Wrapper class for selectable tag items in the UI.
             </summary>
         </member>
         <member name="P:IdeaBranch.App.ViewModels.AnnotationEditViewModel.SelectedTags">
             <summary>
             Gets or sets the selected tag IDs.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.AnnotationEditViewModel.UpdateSelectedTags">
+            <summary>
+            Updates selected tags based on SelectableTagItems selection state.
             </summary>
         </member>
         <member name="P:IdeaBranch.App.ViewModels.AnnotationEditViewModel.NumericValue">
@@ -899,7 +1187,7 @@
             ViewModel for TopicNodeDetailPage that manages editing a single topic node.
             </summary>
         </member>
-        <member name="M:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.#ctor(IdeaBranch.Domain.TopicNode,System.Func{IdeaBranch.Domain.TopicNode,System.Threading.Tasks.Task},IdeaBranch.App.Services.LLM.LLMClientFactory,System.Func{IdeaBranch.Domain.TopicNode,System.Threading.Tasks.Task},IdeaBranch.App.Services.TelemetryService,IdeaBranch.Domain.IAnnotationsRepository)">
+        <member name="M:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.#ctor(IdeaBranch.Domain.TopicNode,System.Func{IdeaBranch.Domain.TopicNode,System.Threading.Tasks.Task},IdeaBranch.App.Services.LLM.LLMClientFactory,System.Func{IdeaBranch.Domain.TopicNode,System.Threading.Tasks.Task},IdeaBranch.App.Services.TelemetryService,IdeaBranch.Domain.IAnnotationsRepository,IdeaBranch.App.Services.SettingsService)">
             <summary>
             Initializes a new instance with a topic node to edit.
             </summary>
@@ -999,9 +1287,39 @@
             Gets or sets whether comments should be visible.
             </summary>
         </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.LoadShowCommentsSettingAsync">
+            <summary>
+            Loads the ShowComments setting from storage.
+            </summary>
+        </member>
         <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.HasTextSelection">
             <summary>
             Gets or sets whether text is currently selected in the Editor.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.SelectionStart">
+            <summary>
+            Gets or sets the start offset of the text selection.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.SelectionLength">
+            <summary>
+            Gets or sets the length of the text selection.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.SelectionEnd">
+            <summary>
+            Gets the end offset of the text selection.
+            </summary>
+        </member>
+        <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.SelectedText">
+            <summary>
+            Gets the selected text based on current selection.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.UpdateSelectionState">
+            <summary>
+            Updates the selection state based on SelectionStart and SelectionLength.
             </summary>
         </member>
         <member name="P:IdeaBranch.App.ViewModels.TopicNodeDetailViewModel.SelectedAnnotation">
@@ -1102,6 +1420,11 @@
         <member name="M:IdeaBranch.App.ViewModels.TopicTreeViewModel.MoveNodeAsync(CriticalInsight.Data.Hierarchical.ITreeNode,CriticalInsight.Data.Hierarchical.ITreeNode)">
             <summary>
             Moves a node to a new parent.
+            </summary>
+        </member>
+        <member name="M:IdeaBranch.App.ViewModels.TopicTreeViewModel.PromoteNodeToRootAsync(CriticalInsight.Data.Hierarchical.ITreeNode)">
+            <summary>
+            Promotes a node to the top level under the root (moves it to be a direct child of the root).
             </summary>
         </member>
         <member name="M:IdeaBranch.App.ViewModels.TopicTreeViewModel.GetDomainNode(CriticalInsight.Data.Hierarchical.ITreeNode)">

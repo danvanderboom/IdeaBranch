@@ -661,7 +661,27 @@ public sealed class AgentTreeService : IAgentTreeService
         var allResults = predicateResults.Concat(groupResults).ToList();
         if (allResults.Count == 0) return true;
 
-        return group.Op.ToLowerInvariant() switch
+        var op = group.Op.ToLowerInvariant();
+        
+        // BUT-NOT-IF operator: positive criteria AND NOT exclusion criteria
+        if (op == "but-not-if")
+        {
+            if (allResults.Count < 2)
+            {
+                // Need at least one positive and one exclusion criterion
+                // If only one, treat as positive (always matches if positive matches)
+                return allResults.Count == 1 ? allResults[0] : true;
+            }
+
+            // First result is positive, rest are exclusions
+            var positive = allResults[0];
+            var exclusions = allResults.Skip(1).ToList();
+            
+            // Positive must match AND no exclusion should match
+            return positive && !exclusions.Any(e => e);
+        }
+
+        return op switch
         {
             "and" => allResults.All(r => r),
             "or" => allResults.Any(r => r),

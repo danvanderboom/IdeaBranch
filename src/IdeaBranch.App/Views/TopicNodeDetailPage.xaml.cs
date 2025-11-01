@@ -8,7 +8,7 @@ namespace IdeaBranch.App.Views;
 
 public partial class TopicNodeDetailPage : ContentPage
 {
-    private readonly TopicNodeDetailViewModel _viewModel;
+    private readonly TopicNodeDetailViewModel _viewModel = null!;
 
     public TopicNodeDetailPage(TopicNodeDetailViewModel viewModel)
     {

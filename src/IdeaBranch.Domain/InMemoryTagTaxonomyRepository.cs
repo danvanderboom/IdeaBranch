@@ -85,6 +85,49 @@ public class InMemoryTagTaxonomyRepository : ITagTaxonomyRepository
         return Task.FromResult(false);
     }
 
+    /// <inheritdoc/>
+    public Task<IReadOnlyList<TagTaxonomyNode>> SearchAsync(
+        string? nameContains = null,
+        DateTime? updatedAtFrom = null,
+        DateTime? updatedAtTo = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (_root == null)
+            return Task.FromResult<IReadOnlyList<TagTaxonomyNode>>(Array.Empty<TagTaxonomyNode>());
+
+        var results = new List<TagTaxonomyNode>();
+        CollectNodes(_root, results);
+
+        // Apply filters
+        var filtered = results.Where(node =>
+        {
+            if (!string.IsNullOrWhiteSpace(nameContains))
+            {
+                if (!node.Name.Contains(nameContains, StringComparison.OrdinalIgnoreCase))
+                    return false;
+            }
+
+            if (updatedAtFrom.HasValue && node.UpdatedAt < updatedAtFrom.Value)
+                return false;
+
+            if (updatedAtTo.HasValue && node.UpdatedAt > updatedAtTo.Value)
+                return false;
+
+            return true;
+        }).ToList();
+
+        return Task.FromResult<IReadOnlyList<TagTaxonomyNode>>(filtered.AsReadOnly());
+    }
+
+    private void CollectNodes(TagTaxonomyNode node, List<TagTaxonomyNode> collection)
+    {
+        collection.Add(node);
+        foreach (var child in node.Children)
+        {
+            CollectNodes(child, collection);
+        }
+    }
+
     private TagTaxonomyNode? FindNode(TagTaxonomyNode node, Guid id)
     {
         if (node.Id == id)

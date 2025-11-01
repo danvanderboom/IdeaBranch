@@ -551,6 +551,126 @@ namespace IdeaBranch.App.Resources {
             }
         }
 
+        public static string TopicNodeDetailPage_AnnotateButton {
+            get {
+                return ResourceManager.GetString("TopicNodeDetailPage_AnnotateButton", resourceCulture);
+            }
+        }
+
+        public static string TopicNodeDetailPage_AnnotationsLabel {
+            get {
+                return ResourceManager.GetString("TopicNodeDetailPage_AnnotationsLabel", resourceCulture);
+            }
+        }
+
+        public static string TopicNodeDetailPage_ShowCommentsLabel {
+            get {
+                return ResourceManager.GetString("TopicNodeDetailPage_ShowCommentsLabel", resourceCulture);
+            }
+        }
+
+        public static string TopicNodeDetailPage_NoAnnotationsLabel {
+            get {
+                return ResourceManager.GetString("TopicNodeDetailPage_NoAnnotationsLabel", resourceCulture);
+            }
+        }
+
+        public static string AnnotationEditPage_Title {
+            get {
+                return ResourceManager.GetString("AnnotationEditPage_Title", resourceCulture);
+            }
+        }
+
+        public static string AnnotationEditPage_SelectedTextLabel {
+            get {
+                return ResourceManager.GetString("AnnotationEditPage_SelectedTextLabel", resourceCulture);
+            }
+        }
+
+        public static string AnnotationEditPage_CommentLabel {
+            get {
+                return ResourceManager.GetString("AnnotationEditPage_CommentLabel", resourceCulture);
+            }
+        }
+
+        public static string AnnotationEditPage_CommentPlaceholder {
+            get {
+                return ResourceManager.GetString("AnnotationEditPage_CommentPlaceholder", resourceCulture);
+            }
+        }
+
+        public static string AnnotationEditPage_TagsLabel {
+            get {
+                return ResourceManager.GetString("AnnotationEditPage_TagsLabel", resourceCulture);
+            }
+        }
+
+        public static string AnnotationEditPage_TagsNote {
+            get {
+                return ResourceManager.GetString("AnnotationEditPage_TagsNote", resourceCulture);
+            }
+        }
+
+        public static string AnnotationEditPage_NoTagsLabel {
+            get {
+                return ResourceManager.GetString("AnnotationEditPage_NoTagsLabel", resourceCulture);
+            }
+        }
+
+        public static string AnnotationEditPage_OptionalValuesLabel {
+            get {
+                return ResourceManager.GetString("AnnotationEditPage_OptionalValuesLabel", resourceCulture);
+            }
+        }
+
+        public static string AnnotationEditPage_NumericValueLabel {
+            get {
+                return ResourceManager.GetString("AnnotationEditPage_NumericValueLabel", resourceCulture);
+            }
+        }
+
+        public static string AnnotationEditPage_NumericValuePlaceholder {
+            get {
+                return ResourceManager.GetString("AnnotationEditPage_NumericValuePlaceholder", resourceCulture);
+            }
+        }
+
+        public static string AnnotationEditPage_TemporalValueLabel {
+            get {
+                return ResourceManager.GetString("AnnotationEditPage_TemporalValueLabel", resourceCulture);
+            }
+        }
+
+        public static string AnnotationEditPage_GeospatialValueLabel {
+            get {
+                return ResourceManager.GetString("AnnotationEditPage_GeospatialValueLabel", resourceCulture);
+            }
+        }
+
+        public static string AnnotationEditPage_GeospatialValuePlaceholder {
+            get {
+                return ResourceManager.GetString("AnnotationEditPage_GeospatialValuePlaceholder", resourceCulture);
+            }
+        }
+
+        public static string AnnotationEditPage_SaveButton {
+            get {
+                return ResourceManager.GetString("AnnotationEditPage_SaveButton", resourceCulture);
+            }
+        }
+
+        public static string AnnotationEditPage_CancelButton {
+            get {
+                return ResourceManager.GetString("AnnotationEditPage_CancelButton", resourceCulture);
+            }
+        }
+
+        public static string AnnotationEditPage_DeleteButton {
+            get {
+                return ResourceManager.GetString("AnnotationEditPage_DeleteButton", resourceCulture);
+            }
+        }
+
         public static string TopicTreePage_Title {
             get {
                 return ResourceManager.GetString("TopicTreePage_Title", resourceCulture);

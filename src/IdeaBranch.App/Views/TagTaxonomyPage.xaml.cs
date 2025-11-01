@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using CriticalInsight.Data.Hierarchical;
-using IdeaBranch.App.ViewModels;
+using IdeaBranch.Presentation.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;

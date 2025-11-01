@@ -49,7 +49,9 @@ public class TopicTreeAdapter
             UpdatedAt = domainNode.UpdatedAt
         };
 
-        var treeNode = new TreeNode<TopicNodePayload>(payload, parentTreeNode);
+        var treeNode = parentTreeNode == null
+            ? new TreeNode<TopicNodePayload>(payload)
+            : new TreeNode<TopicNodePayload>(payload, parentTreeNode);
         
         // Add to mappings
         _domainNodeIdToTreeNode[domainNode.Id] = treeNode;
@@ -59,7 +61,7 @@ public class TopicTreeAdapter
         foreach (var childDomainNode in domainNode.Children)
         {
             var childTreeNode = BuildTreeNode(childDomainNode, treeNode);
-            treeNode.Children.Add(childTreeNode);
+            treeNode.Children.Add(childTreeNode, updateParent: false);
         }
 
         return treeNode;

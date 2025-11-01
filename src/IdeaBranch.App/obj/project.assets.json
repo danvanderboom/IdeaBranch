@@ -1097,7 +1097,7 @@
           "lib/MonoAndroid10/_._": {}
         }
       },
-      "System.Runtime.CompilerServices.Unsafe/4.7.1": {
+      "System.Runtime.CompilerServices.Unsafe/4.5.3": {
         "type": "package",
         "compile": {
           "ref/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll": {
@@ -1157,23 +1157,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
-        "dependencies": {
-          "Microsoft.Bcl.AsyncInterfaces": "1.1.0",
-          "System.Buffers": "4.5.1",
-          "System.Runtime.CompilerServices.Unsafe": "4.7.1",
-          "System.Text.Encodings.Web": "4.7.1"
-        },
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading.Tasks.Extensions/4.5.4": {
@@ -3087,6 +3084,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -4186,7 +4198,7 @@
           "lib/MonoAndroid10/_._": {}
         }
       },
-      "System.Runtime.CompilerServices.Unsafe/4.7.1": {
+      "System.Runtime.CompilerServices.Unsafe/4.5.3": {
         "type": "package",
         "compile": {
           "ref/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll": {
@@ -4230,23 +4242,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
-        "dependencies": {
-          "Microsoft.Bcl.AsyncInterfaces": "1.1.0",
-          "System.Buffers": "4.5.1",
-          "System.Runtime.CompilerServices.Unsafe": "4.7.1",
-          "System.Text.Encodings.Web": "4.7.1"
-        },
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading.Tasks.Extensions/4.5.4": {
@@ -6160,6 +6169,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -7259,7 +7283,7 @@
           "lib/MonoAndroid10/_._": {}
         }
       },
-      "System.Runtime.CompilerServices.Unsafe/4.7.1": {
+      "System.Runtime.CompilerServices.Unsafe/4.5.3": {
         "type": "package",
         "compile": {
           "ref/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll": {
@@ -7303,23 +7327,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
-        "dependencies": {
-          "Microsoft.Bcl.AsyncInterfaces": "1.1.0",
-          "System.Buffers": "4.5.1",
-          "System.Runtime.CompilerServices.Unsafe": "4.7.1",
-          "System.Text.Encodings.Web": "4.7.1"
-        },
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading.Tasks.Extensions/4.5.4": {
@@ -9233,6 +9254,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -10332,7 +10368,7 @@
           "lib/MonoAndroid10/_._": {}
         }
       },
-      "System.Runtime.CompilerServices.Unsafe/4.7.1": {
+      "System.Runtime.CompilerServices.Unsafe/4.5.3": {
         "type": "package",
         "compile": {
           "ref/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll": {
@@ -10376,23 +10412,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
-        "dependencies": {
-          "Microsoft.Bcl.AsyncInterfaces": "1.1.0",
-          "System.Buffers": "4.5.1",
-          "System.Runtime.CompilerServices.Unsafe": "4.7.1",
-          "System.Text.Encodings.Web": "4.7.1"
-        },
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading.Tasks.Extensions/4.5.4": {
@@ -12306,6 +12339,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -13405,7 +13453,7 @@
           "lib/MonoAndroid10/_._": {}
         }
       },
-      "System.Runtime.CompilerServices.Unsafe/4.7.1": {
+      "System.Runtime.CompilerServices.Unsafe/4.5.3": {
         "type": "package",
         "compile": {
           "ref/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll": {
@@ -13449,23 +13497,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
-        "dependencies": {
-          "Microsoft.Bcl.AsyncInterfaces": "1.1.0",
-          "System.Buffers": "4.5.1",
-          "System.Runtime.CompilerServices.Unsafe": "4.7.1",
-          "System.Text.Encodings.Web": "4.7.1"
-        },
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading.Tasks.Extensions/4.5.4": {
@@ -15379,6 +15424,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -16478,7 +16538,7 @@
           "lib/MonoAndroid10/_._": {}
         }
       },
-      "System.Runtime.CompilerServices.Unsafe/4.7.1": {
+      "System.Runtime.CompilerServices.Unsafe/4.5.3": {
         "type": "package",
         "compile": {
           "ref/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll": {
@@ -16522,23 +16582,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
-        "dependencies": {
-          "Microsoft.Bcl.AsyncInterfaces": "1.1.0",
-          "System.Buffers": "4.5.1",
-          "System.Runtime.CompilerServices.Unsafe": "4.7.1",
-          "System.Text.Encodings.Web": "4.7.1"
-        },
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading.Tasks.Extensions/4.5.4": {
@@ -18452,6 +18509,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -19759,17 +19831,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading/4.3.0": {
@@ -19846,6 +19921,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -21291,17 +21381,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading/4.3.0": {
@@ -21379,6 +21472,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -22824,17 +22932,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading/4.3.0": {
@@ -22912,6 +23023,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -24357,17 +24483,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading/4.3.0": {
@@ -24445,6 +24574,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -25890,17 +26034,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading/4.3.0": {
@@ -25978,6 +26125,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -27404,17 +27566,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading/4.3.0": {
@@ -27492,6 +27657,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -28660,17 +28840,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading.Tasks.Extensions/4.5.4": {
@@ -28719,6 +28902,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -29798,17 +29996,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading.Tasks.Extensions/4.5.4": {
@@ -29857,6 +30058,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -30936,17 +31152,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading.Tasks.Extensions/4.5.4": {
@@ -30995,6 +31214,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -32071,17 +32305,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading.Tasks.Extensions/4.5.4": {
@@ -32130,6 +32367,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -33209,17 +33461,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading.Tasks.Extensions/4.5.4": {
@@ -33268,6 +33523,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -34344,17 +34614,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading.Tasks.Extensions/4.5.4": {
@@ -34403,6 +34676,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -35840,17 +36128,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading.Tasks.Extensions/4.5.4": {
@@ -35899,6 +36190,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -37179,17 +37485,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading.Tasks.Extensions/4.5.4": {
@@ -37238,6 +37547,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -38518,17 +38842,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading.Tasks.Extensions/4.5.4": {
@@ -38577,6 +38904,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -39854,17 +40196,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading.Tasks.Extensions/4.5.4": {
@@ -39913,6 +40258,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -41193,17 +41553,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading.Tasks.Extensions/4.5.4": {
@@ -41252,6 +41615,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     },
@@ -42542,17 +42920,20 @@
           }
         }
       },
-      "System.Text.Json/4.7.2": {
+      "System.Text.Json/9.0.0": {
         "type": "package",
         "compile": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Text.Json.dll": {
+          "lib/net9.0/System.Text.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       },
       "System.Threading.Tasks.Extensions/4.5.4": {
@@ -42601,6 +42982,21 @@
         },
         "runtime": {
           "bin/placeholder/IdeaBranch.Infrastructure.dll": {}
+        }
+      },
+      "IdeaBranch.Presentation/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "CriticalInsight.Data": "1.0.0",
+          "IdeaBranch.Domain": "1.0.0",
+          "System.Text.Json": "9.0.0"
+        },
+        "compile": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IdeaBranch.Presentation.dll": {}
         }
       }
     }
@@ -46559,14 +46955,13 @@
         "system.runtime.nuspec"
       ]
     },
-    "System.Runtime.CompilerServices.Unsafe/4.7.1": {
-      "sha512": "zOHkQmzPCn5zm/BH+cxC1XbUS3P4Yoi3xzW7eRgVpDR2tPGSzyMZ17Ig1iRkfJuY0nhxkQQde8pgePNiA7z7TQ==",
+    "System.Runtime.CompilerServices.Unsafe/4.5.3": {
+      "sha512": "3TIsJhD1EiiT0w2CcDMN/iSSwnNnsrnbzeVHSKkaEgV85txMprmuO+Yq2AdSbeVGcg28pdNDTPK87tJhX7VFHw==",
       "type": "package",
-      "path": "system.runtime.compilerservices.unsafe/4.7.1",
+      "path": "system.runtime.compilerservices.unsafe/4.5.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "Icon.png",
         "LICENSE.TXT",
         "THIRD-PARTY-NOTICES.TXT",
         "lib/net461/System.Runtime.CompilerServices.Unsafe.dll",
@@ -46583,7 +46978,7 @@
         "ref/netstandard1.0/System.Runtime.CompilerServices.Unsafe.xml",
         "ref/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll",
         "ref/netstandard2.0/System.Runtime.CompilerServices.Unsafe.xml",
-        "system.runtime.compilerservices.unsafe.4.7.1.nupkg.sha512",
+        "system.runtime.compilerservices.unsafe.4.5.3.nupkg.sha512",
         "system.runtime.compilerservices.unsafe.nuspec",
         "useSharedDesignerContext.txt",
         "version.txt"
@@ -46970,26 +47365,75 @@
         "version.txt"
       ]
     },
-    "System.Text.Json/4.7.2": {
-      "sha512": "TcMd95wcrubm9nHvJEQs70rC0H/8omiSGGpU4FQ/ZA1URIqD4pjmFJh2Mfv1yH1eHgJDWTi2hMDXwTET+zOOyg==",
+    "System.Text.Json/9.0.0": {
+      "sha512": "js7+qAu/9mQvnhA4EfGMZNEzXtJCDxgkgj8ohuxq/Qxv+R56G+ljefhiJHOxTNiw54q8vmABCWUwkMulNdlZ4A==",
       "type": "package",
-      "path": "system.text.json/4.7.2",
+      "path": "system.text.json/9.0.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
         "LICENSE.TXT",
+        "PACKAGE.md",
         "THIRD-PARTY-NOTICES.TXT",
-        "lib/net461/System.Text.Json.dll",
-        "lib/net461/System.Text.Json.xml",
-        "lib/netcoreapp3.0/System.Text.Json.dll",
-        "lib/netcoreapp3.0/System.Text.Json.xml",
+        "analyzers/dotnet/roslyn3.11/cs/System.Text.Json.SourceGeneration.dll",
+        "analyzers/dotnet/roslyn3.11/cs/cs/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn3.11/cs/de/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn3.11/cs/es/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn3.11/cs/fr/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn3.11/cs/it/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn3.11/cs/ja/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn3.11/cs/ko/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn3.11/cs/pl/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn3.11/cs/pt-BR/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn3.11/cs/ru/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn3.11/cs/tr/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn3.11/cs/zh-Hans/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn3.11/cs/zh-Hant/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.0/cs/System.Text.Json.SourceGeneration.dll",
+        "analyzers/dotnet/roslyn4.0/cs/cs/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.0/cs/de/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.0/cs/es/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.0/cs/fr/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.0/cs/it/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.0/cs/ja/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.0/cs/ko/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.0/cs/pl/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.0/cs/pt-BR/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.0/cs/ru/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.0/cs/tr/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.0/cs/zh-Hans/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.0/cs/zh-Hant/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.4/cs/System.Text.Json.SourceGeneration.dll",
+        "analyzers/dotnet/roslyn4.4/cs/cs/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.4/cs/de/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.4/cs/es/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.4/cs/fr/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.4/cs/it/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.4/cs/ja/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.4/cs/ko/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.4/cs/pl/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.4/cs/pt-BR/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.4/cs/ru/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.4/cs/tr/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.4/cs/zh-Hans/System.Text.Json.SourceGeneration.resources.dll",
+        "analyzers/dotnet/roslyn4.4/cs/zh-Hant/System.Text.Json.SourceGeneration.resources.dll",
+        "buildTransitive/net461/System.Text.Json.targets",
+        "buildTransitive/net462/System.Text.Json.targets",
+        "buildTransitive/net8.0/System.Text.Json.targets",
+        "buildTransitive/netcoreapp2.0/System.Text.Json.targets",
+        "buildTransitive/netstandard2.0/System.Text.Json.targets",
+        "lib/net462/System.Text.Json.dll",
+        "lib/net462/System.Text.Json.xml",
+        "lib/net8.0/System.Text.Json.dll",
+        "lib/net8.0/System.Text.Json.xml",
+        "lib/net9.0/System.Text.Json.dll",
+        "lib/net9.0/System.Text.Json.xml",
         "lib/netstandard2.0/System.Text.Json.dll",
         "lib/netstandard2.0/System.Text.Json.xml",
-        "system.text.json.4.7.2.nupkg.sha512",
+        "system.text.json.9.0.0.nupkg.sha512",
         "system.text.json.nuspec",
-        "useSharedDesignerContext.txt",
-        "version.txt"
+        "useSharedDesignerContext.txt"
       ]
     },
     "System.Threading/4.3.0": {
@@ -49038,6 +49482,11 @@
       "type": "project",
       "path": "../IdeaBranch.Infrastructure/IdeaBranch.Infrastructure.csproj",
       "msbuildProject": "../IdeaBranch.Infrastructure/IdeaBranch.Infrastructure.csproj"
+    },
+    "IdeaBranch.Presentation/1.0.0": {
+      "type": "project",
+      "path": "../IdeaBranch.Presentation/IdeaBranch.Presentation.csproj",
+      "msbuildProject": "../IdeaBranch.Presentation/IdeaBranch.Presentation.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -49047,6 +49496,7 @@
       "CriticalInsight.Data >= 1.0.0",
       "IdeaBranch.Domain >= 1.0.0",
       "IdeaBranch.Infrastructure >= 1.0.0",
+      "IdeaBranch.Presentation >= 1.0.0",
       "Microsoft.Agents.AI.OpenAI >= 1.0.0-preview.251028.1",
       "Microsoft.Extensions.Http >= 9.0.0",
       "Microsoft.Extensions.Logging.Debug >= 9.0.8",
@@ -49059,6 +49509,7 @@
       "CriticalInsight.Data >= 1.0.0",
       "IdeaBranch.Domain >= 1.0.0",
       "IdeaBranch.Infrastructure >= 1.0.0",
+      "IdeaBranch.Presentation >= 1.0.0",
       "Microsoft.Agents.AI.OpenAI >= 1.0.0-preview.251028.1",
       "Microsoft.Extensions.Http >= 9.0.0",
       "Microsoft.Extensions.Logging.Debug >= 9.0.8",
@@ -49071,6 +49522,7 @@
       "CriticalInsight.Data >= 1.0.0",
       "IdeaBranch.Domain >= 1.0.0",
       "IdeaBranch.Infrastructure >= 1.0.0",
+      "IdeaBranch.Presentation >= 1.0.0",
       "Microsoft.Agents.AI.OpenAI >= 1.0.0-preview.251028.1",
       "Microsoft.Extensions.Http >= 9.0.0",
       "Microsoft.Extensions.Logging.Debug >= 9.0.8",
@@ -49083,6 +49535,7 @@
       "CriticalInsight.Data >= 1.0.0",
       "IdeaBranch.Domain >= 1.0.0",
       "IdeaBranch.Infrastructure >= 1.0.0",
+      "IdeaBranch.Presentation >= 1.0.0",
       "Microsoft.Agents.AI.OpenAI >= 1.0.0-preview.251028.1",
       "Microsoft.Extensions.Http >= 9.0.0",
       "Microsoft.Extensions.Logging.Debug >= 9.0.8",
@@ -49134,6 +49587,9 @@
             },
             "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj": {
               "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj"
+            },
+            "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj": {
+              "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj"
             }
           }
         },
@@ -49148,6 +49604,9 @@
             },
             "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj": {
               "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj"
+            },
+            "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj": {
+              "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj"
             }
           }
         },
@@ -49162,6 +49621,9 @@
             },
             "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj": {
               "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj"
+            },
+            "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj": {
+              "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj"
             }
           }
         },
@@ -49176,6 +49638,9 @@
             },
             "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj": {
               "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Infrastructure\\IdeaBranch.Infrastructure.csproj"
+            },
+            "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj": {
+              "projectPath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.Presentation\\IdeaBranch.Presentation.csproj"
             }
           }
         }

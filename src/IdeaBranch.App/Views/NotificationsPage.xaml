@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels"
-             xmlns:domain="clr-namespace:IdeaBranch.Domain"
+             xmlns:domain="clr-namespace:IdeaBranch.Domain;assembly=IdeaBranch.Domain"
              xmlns:res="clr-namespace:IdeaBranch.App.Resources"
              x:Class="IdeaBranch.App.Views.NotificationsPage"
              x:DataType="vm:NotificationsViewModel"
@@ -43,7 +43,7 @@
                             SelectionMode="None"
                             EmptyView="{x:Static res:AppResources.NotificationsPage_EmptyView}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="domain:NotificationItem">
                         <Grid Padding="16,12"
                               ColumnDefinitions="*,Auto,Auto"
                               AutomationId="{Binding Id, StringFormat='NotificationsPage_Notification_{0}'}">

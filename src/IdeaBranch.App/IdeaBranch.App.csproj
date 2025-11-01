@@ -19,6 +19,7 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
 
 		<!-- Display name -->
 		<ApplicationTitle>IdeaBranch.App</ApplicationTitle>
@@ -83,6 +84,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\IdeaBranch.Domain\IdeaBranch.Domain.csproj" />
 	  <ProjectReference Include="..\IdeaBranch.Infrastructure\IdeaBranch.Infrastructure.csproj" />
+	  <ProjectReference Include="..\IdeaBranch.Presentation\IdeaBranch.Presentation.csproj" />
 	  <ProjectReference Include="..\..\CriticalInsight.Data\CriticalInsight.Data\CriticalInsight.Data.csproj" />
 	</ItemGroup>
 

@@ -2,9 +2,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels"
+             xmlns:domain="clr-namespace:IdeaBranch.Domain;assembly=IdeaBranch.Domain"
              xmlns:res="clr-namespace:IdeaBranch.App.Resources"
              x:Class="IdeaBranch.App.Views.TopicNodeDetailPage"
              x:DataType="vm:TopicNodeDetailViewModel"
+             x:Name="TopicNodeDetailPageRoot"
              Title="{x:Static res:AppResources.TopicNodeDetailPage_Title}"
              AutomationId="TopicNodeDetailPage">
     <ScrollView>
@@ -124,7 +126,7 @@
                                 SelectionChanged="OnAnnotationSelected"
                                 AutomationId="TopicNodeDetailPage_AnnotationsList">
                     <CollectionView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="domain:Annotation">
                             <Grid Padding="8" BackgroundColor="#F5F5F5" Margin="0,4">
                                 <Grid.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="OnAnnotationTapped" CommandParameter="{Binding .}" />
@@ -136,7 +138,7 @@
                                 <Label Grid.Row="0"
                                        Text="{Binding Comment}"
                                        FontSize="14"
-                                       IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:TopicNodeDetailViewModel}}, Path=ShowComments}"
+                                       IsVisible="{Binding BindingContext.ShowComments, Source={x:Reference TopicNodeDetailPageRoot}}"
                                        AutomationId="{Binding Id, StringFormat='Annotation_{0}_Comment'}" />
                                 <Label Grid.Row="1"
                                        FontSize="12"

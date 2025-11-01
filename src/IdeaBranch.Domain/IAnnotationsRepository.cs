@@ -117,5 +117,40 @@ public interface IAnnotationsRepository
         DateTime? temporalEnd = null,
         (double minLat, double minLon, double maxLat, double maxLon)? geoBbox = null,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Searches annotations for a node with advanced filtering options including tag expressions, tag weights, text search, and time ranges.
+    /// </summary>
+    /// <param name="nodeId">The topic node ID.</param>
+    /// <param name="options">Search options including tag filters, weight filters, text search, and time ranges.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A list of annotations matching the search criteria.</returns>
+    Task<IReadOnlyList<Annotation>> SearchAsync(
+        Guid nodeId,
+        AnnotationsSearchOptions options,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets tag IDs for multiple annotations in a single query (batch operation).
+    /// </summary>
+    /// <param name="annotationIds">The annotation IDs to fetch tag IDs for.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A dictionary mapping annotation ID to list of tag IDs.</returns>
+    Task<IDictionary<Guid, IReadOnlyList<Guid>>> GetTagIdsForAnnotationsAsync(
+        IEnumerable<Guid> annotationIds,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Sets the weight for a tag on an annotation. Creates the tag association if it doesn't exist.
+    /// </summary>
+    /// <param name="annotationId">The annotation ID.</param>
+    /// <param name="tagId">The tag taxonomy node ID.</param>
+    /// <param name="weight">The weight value, or null to remove the weight (keeps the tag association).</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    Task SetTagWeightAsync(
+        Guid annotationId,
+        Guid tagId,
+        double? weight,
+        CancellationToken cancellationToken = default);
 }
 
