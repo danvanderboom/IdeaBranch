@@ -97,6 +97,7 @@
                        IsVisible="{Binding HasError}"
                        AutomationId="SimpleSearchPanel_ErrorMessage" />
             </VerticalStackLayout>
+            </VerticalStackLayout>
         </Frame>
     </Grid>
 </ContentView>
