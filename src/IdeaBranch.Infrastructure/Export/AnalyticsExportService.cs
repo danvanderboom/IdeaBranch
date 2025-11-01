@@ -180,6 +180,7 @@ public class AnalyticsExportService
         int width = 800,
         int height = 600,
         ExportOptions? options = null,
+        VisualizationTheme? theme = null,
         CancellationToken cancellationToken = default)
     {
         var exportOpts = options ?? new ExportOptions { Width = width, Height = height };
@@ -191,8 +192,17 @@ public class AnalyticsExportService
             using var surface = SKSurface.Create(new SKImageInfo(scaledWidth, scaledHeight));
             var canvas = surface.Canvas;
 
-            // Clear background
-            canvas.Clear(exportOpts.BackgroundColor ?? SKColors.White);
+            // Clear background honoring theme/background options
+            if (((theme == null) || theme.BackgroundType != BackgroundType.Transparent) &&
+                (exportOpts.BackgroundColor.HasValue || (theme?.BackgroundColor.HasValue ?? false)))
+            {
+                var bgColor = theme?.BackgroundColor ?? exportOpts.BackgroundColor ?? SKColors.White;
+                canvas.Clear(bgColor);
+            }
+            else
+            {
+                canvas.Clear(SKColors.Transparent);
+            }
 
             // Calculate layout for words
             var words = data.WordFrequencies.Take(50).ToList(); // Limit to top 50 for readability
@@ -274,6 +284,11 @@ public class AnalyticsExportService
                     IsAntialias = true,
                     TextAlign = SKTextAlign.Center
                 };
+
+                if (theme?.FontFamily != null)
+                {
+                    paint.Typeface = SKTypeface.FromFamilyName(theme.FontFamily);
+                }
 
                 canvas.DrawText(wordFreq.Word, x, y, paint);
             }
