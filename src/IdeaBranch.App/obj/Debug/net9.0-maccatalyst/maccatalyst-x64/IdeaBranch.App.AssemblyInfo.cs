@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IdeaBranch.App")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+1626bc4dfe50888f4c8ce65ca7403a8d9ce960ff")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+5e5c358bd892a713e90cf97aeec8d7a7ff1dfc6f")]
 [assembly: System.Reflection.AssemblyProductAttribute("IdeaBranch.App")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IdeaBranch.App")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

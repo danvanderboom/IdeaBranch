@@ -1,4 +1,4 @@
-using IdeaBranch.App.ViewModels;
+using IdeaBranch.App.ViewModels.Analytics;
 
 namespace IdeaBranch.App.Views;
 

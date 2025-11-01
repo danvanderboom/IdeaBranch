@@ -8,9 +8,12 @@ using IdeaBranch.App.Services.Notifications;
 using IdeaBranch.App.ViewModels;
 using IdeaBranch.Presentation.ViewModels;
 using IdeaBranch.Domain;
+using IdeaBranch.Infrastructure.Analytics;
+using IdeaBranch.Infrastructure.Export;
 using IdeaBranch.Infrastructure.Resilience;
 using IdeaBranch.Infrastructure.Storage;
 using IdeaBranch.Infrastructure.Sync;
+using IdeaBranch.App.ViewModels.Analytics;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Storage;
 
@@ -86,6 +89,44 @@ public static class MauiProgram
 			return new SqlitePromptTemplateRepository(db.Connection);
 		});
 
+		// Register conversations repository
+		builder.Services.AddSingleton<IConversationsRepository>(sp =>
+		{
+			var db = sp.GetRequiredService<TopicDb>();
+			var annotationsRepository = sp.GetRequiredService<IAnnotationsRepository>();
+			var tagTaxonomyRepository = sp.GetRequiredService<ITagTaxonomyRepository>();
+			return new SqliteConversationsRepository(db.Connection, annotationsRepository, tagTaxonomyRepository);
+		});
+
+		// Register analytics services
+		builder.Services.AddSingleton<WordCloudService>(sp =>
+		{
+			var conversationsRepository = sp.GetRequiredService<IConversationsRepository>();
+			var annotationsRepository = sp.GetRequiredService<IAnnotationsRepository>();
+			var topicTreeRepository = sp.GetRequiredService<ITopicTreeRepository>();
+			var tagTaxonomyRepository = sp.GetRequiredService<ITagTaxonomyRepository>();
+			return new WordCloudService(conversationsRepository, annotationsRepository, topicTreeRepository, tagTaxonomyRepository);
+		});
+
+		builder.Services.AddSingleton<TimelineService>(sp =>
+		{
+			var conversationsRepository = sp.GetRequiredService<IConversationsRepository>();
+			var annotationsRepository = sp.GetRequiredService<IAnnotationsRepository>();
+			var topicTreeRepository = sp.GetRequiredService<ITopicTreeRepository>();
+			var tagTaxonomyRepository = sp.GetRequiredService<ITagTaxonomyRepository>();
+			return new TimelineService(conversationsRepository, annotationsRepository, topicTreeRepository, tagTaxonomyRepository);
+		});
+
+		builder.Services.AddSingleton<IAnalyticsService>(sp =>
+		{
+			var wordCloudService = sp.GetRequiredService<WordCloudService>();
+			var timelineService = sp.GetRequiredService<TimelineService>();
+			return new AnalyticsService(wordCloudService, timelineService);
+		});
+
+		// Register export service
+		builder.Services.AddSingleton<AnalyticsExportService>();
+
 		// Register ViewModels
 		builder.Services.AddTransient<TopicTreeViewModel>(sp =>
 		{
@@ -119,6 +160,29 @@ public static class MauiProgram
 		{
 			var searchCoordinator = sp.GetRequiredService<IdeaBranch.App.Services.Search.SearchCoordinator>();
 			return new AdvancedSearchViewModel(searchCoordinator);
+		});
+
+		builder.Services.AddTransient<SimpleSearchViewModel>(sp =>
+		{
+			var searchCoordinator = sp.GetRequiredService<IdeaBranch.App.Services.Search.SearchCoordinator>();
+			return new SimpleSearchViewModel(searchCoordinator);
+		});
+
+		// Register analytics ViewModels
+		builder.Services.AddTransient<WordCloudViewModel>(sp =>
+		{
+			var analyticsService = sp.GetRequiredService<IAnalyticsService>();
+			var exportService = sp.GetRequiredService<AnalyticsExportService>();
+			var tagTaxonomyRepository = sp.GetRequiredService<ITagTaxonomyRepository>();
+			return new WordCloudViewModel(analyticsService, exportService, tagTaxonomyRepository);
+		});
+
+		builder.Services.AddTransient<ViewModels.Analytics.TimelineViewModel>(sp =>
+		{
+			var analyticsService = sp.GetRequiredService<IAnalyticsService>();
+			var exportService = sp.GetRequiredService<AnalyticsExportService>();
+			var tagTaxonomyRepository = sp.GetRequiredService<ITagTaxonomyRepository>();
+			return new ViewModels.Analytics.TimelineViewModel(analyticsService, exportService, tagTaxonomyRepository);
 		});
 
 		// Register resilience policies for HttpClientFactory and outbound I/O

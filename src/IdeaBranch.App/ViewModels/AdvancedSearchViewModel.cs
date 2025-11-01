@@ -23,6 +23,10 @@ public class AdvancedSearchViewModel : INotifyPropertyChanged
     private DateTime? _updatedAtTo;
     private IReadOnlyList<Guid>? _selectedIncludeTags;
     private IReadOnlyList<Guid>? _selectedExcludeTags;
+    private IReadOnlyList<TagWeightFilter>? _tagWeightFilters;
+    private DateTime? _temporalStart;
+    private DateTime? _temporalEnd;
+    private string? _errorMessage;
     private int? _pageSize;
     private int? _pageOffset;
 
@@ -115,6 +119,7 @@ public class AdvancedSearchViewModel : INotifyPropertyChanged
             {
                 _selectedIncludeTags = value;
                 OnPropertyChanged(nameof(SelectedIncludeTags));
+                OnPropertyChanged(nameof(IncludeTagsDisplayText));
             }
         }
     }
@@ -131,9 +136,111 @@ public class AdvancedSearchViewModel : INotifyPropertyChanged
             {
                 _selectedExcludeTags = value;
                 OnPropertyChanged(nameof(SelectedExcludeTags));
+                OnPropertyChanged(nameof(ExcludeTagsDisplayText));
             }
         }
     }
+
+    /// <summary>
+    /// Gets or sets tag weight filters for annotations.
+    /// </summary>
+    public IReadOnlyList<TagWeightFilter>? TagWeightFilters
+    {
+        get => _tagWeightFilters;
+        set
+        {
+            if (_tagWeightFilters != value)
+            {
+                _tagWeightFilters = value;
+                OnPropertyChanged(nameof(TagWeightFilters));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the start of the temporal/historical time range filter.
+    /// </summary>
+    public DateTime? TemporalStart
+    {
+        get => _temporalStart;
+        set
+        {
+            if (_temporalStart != value)
+            {
+                _temporalStart = value;
+                OnPropertyChanged(nameof(TemporalStart));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the end of the temporal/historical time range filter.
+    /// </summary>
+    public DateTime? TemporalEnd
+    {
+        get => _temporalEnd;
+        set
+        {
+            if (_temporalEnd != value)
+            {
+                _temporalEnd = value;
+                OnPropertyChanged(nameof(TemporalEnd));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets any error message from the last search.
+    /// </summary>
+    public string? ErrorMessage
+    {
+        get => _errorMessage;
+        set
+        {
+            if (_errorMessage != value)
+            {
+                _errorMessage = value;
+                OnPropertyChanged(nameof(ErrorMessage));
+                OnPropertyChanged(nameof(HasError));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets whether there is an error message.
+    /// </summary>
+    public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
+
+    /// <summary>
+    /// Gets display text for include tags.
+    /// </summary>
+    public string? IncludeTagsDisplayText
+    {
+        get
+        {
+            if (SelectedIncludeTags == null || SelectedIncludeTags.Count == 0)
+                return null;
+            return $"{SelectedIncludeTags.Count} tag(s) selected";
+        }
+    }
+
+    /// <summary>
+    /// Gets display text for exclude tags.
+    /// </summary>
+    public string? ExcludeTagsDisplayText
+    {
+        get
+        {
+            if (SelectedExcludeTags == null || SelectedExcludeTags.Count == 0)
+                return null;
+            return $"{SelectedExcludeTags.Count} tag(s) selected";
+        }
+    }
+
+    /// <summary>
+    /// Gets whether to show temporal range controls.
+    /// </summary>
+    public bool ShowTemporalRange => SelectedContentTypes.Contains(SearchContentType.Annotations);
 
     /// <summary>
     /// Gets or sets the page size for pagination.
@@ -234,6 +341,7 @@ public class AdvancedSearchViewModel : INotifyPropertyChanged
         try
         {
             IsLoading = true;
+            ErrorMessage = null;
 
             var request = new SearchRequest
             {
@@ -241,8 +349,11 @@ public class AdvancedSearchViewModel : INotifyPropertyChanged
                 TextContains = SearchText,
                 IncludeTags = SelectedIncludeTags,
                 ExcludeTags = SelectedExcludeTags,
+                TagWeightFilters = TagWeightFilters?.ToList(),
                 UpdatedAtFrom = UpdatedAtFrom,
                 UpdatedAtTo = UpdatedAtTo,
+                TemporalStart = TemporalStart,
+                TemporalEnd = TemporalEnd,
                 PageSize = PageSize,
                 PageOffset = PageOffset
             };
@@ -251,7 +362,7 @@ public class AdvancedSearchViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            // In a real implementation, we'd show error messages to the user
+            ErrorMessage = $"Search failed: {ex.Message}";
             System.Diagnostics.Debug.WriteLine($"Search error: {ex.Message}");
             Results = null;
         }
@@ -269,6 +380,7 @@ public class AdvancedSearchViewModel : INotifyPropertyChanged
         if (!SelectedContentTypes.Contains(contentType))
         {
             SelectedContentTypes.Add(contentType);
+            OnPropertyChanged(nameof(ShowTemporalRange));
             ExecuteSearchCommand.ChangeCanExecute();
         }
     }
@@ -281,6 +393,7 @@ public class AdvancedSearchViewModel : INotifyPropertyChanged
         if (SelectedContentTypes.Contains(contentType))
         {
             SelectedContentTypes.Remove(contentType);
+            OnPropertyChanged(nameof(ShowTemporalRange));
             ExecuteSearchCommand.ChangeCanExecute();
         }
     }
@@ -295,9 +408,13 @@ public class AdvancedSearchViewModel : INotifyPropertyChanged
         UpdatedAtTo = null;
         SelectedIncludeTags = null;
         SelectedExcludeTags = null;
+        TagWeightFilters = null;
+        TemporalStart = null;
+        TemporalEnd = null;
         PageSize = null;
         PageOffset = null;
         Results = null;
+        ErrorMessage = null;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

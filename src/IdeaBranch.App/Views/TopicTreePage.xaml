@@ -4,11 +4,20 @@
              xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels"
              xmlns:hierarchical="clr-namespace:CriticalInsight.Data.Hierarchical;assembly=CriticalInsight.Data"
              xmlns:res="clr-namespace:IdeaBranch.App.Resources"
+             xmlns:controls="clr-namespace:IdeaBranch.App.Controls"
              x:Class="IdeaBranch.App.Views.TopicTreePage"
              x:DataType="vm:TopicTreeViewModel"
              Title="{x:Static res:AppResources.TopicTreePage_Title}">
     <Grid>
-        <CollectionView ItemsSource="{Binding ProjectedCollection}"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Simple Search Panel -->
+        <controls:SimpleSearchPanel Grid.Row="0" x:Name="SimpleSearchPanel" />
+
+        <CollectionView Grid.Row="1" ItemsSource="{Binding ProjectedCollection}"
                         x:Name="TopicTreeCollectionView"
                         SemanticProperties.Description="Hierarchical tree view of topic nodes. Tap a node to view details or expand/collapse if it has children.">
             <CollectionView.ItemTemplate>

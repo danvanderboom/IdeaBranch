@@ -23,6 +23,7 @@
             <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
             <converters:InvertedBoolToFontAttributesConverter x:Key="InvertedBoolToFontAttributesConverter" />
             <converters:StringEqualityToBoolConverter x:Key="StringToVisibilityConverter" />
+            <converters:WeightToFontSizeConverter x:Key="WeightToFontSizeConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

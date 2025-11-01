@@ -10,6 +10,10 @@
 The primary product source document is located at:
 - **`docs/product/IdeaBranch Product.txt`** - Complete product definition including features, requirements, and usage scenarios
 
+## Features
+
+- **Analytics**: Word cloud and timeline visualizations - see [Analytics Documentation](development/analytics.md)
+
 ## Application Settings
 
 For detailed documentation on the settings system, see:

@@ -659,3 +659,8 @@ C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UnitTests\obj\Debug\net9.0
 C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UnitTests\obj\Debug\net9.0-windows10.0.19041\IdeaBranch.UnitTests.pdb
 C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UnitTests\obj\Debug\net9.0-windows10.0.19041\IdeaBranch.UnitTests.genruntimeconfig.cache
 C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UnitTests\obj\Debug\net9.0-windows10.0.19041\ref\IdeaBranch.UnitTests.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UnitTests\bin\Debug\net9.0-windows10.0.19041\SkiaSharp.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UnitTests\bin\Debug\net9.0-windows10.0.19041\runtimes\osx\native\libSkiaSharp.dylib
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UnitTests\bin\Debug\net9.0-windows10.0.19041\runtimes\win-arm64\native\libSkiaSharp.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UnitTests\bin\Debug\net9.0-windows10.0.19041\runtimes\win-x64\native\libSkiaSharp.dll
+C:\Source\CriticalInsight\IdeaBranch\tests\IdeaBranch.UnitTests\bin\Debug\net9.0-windows10.0.19041\runtimes\win-x86\native\libSkiaSharp.dll

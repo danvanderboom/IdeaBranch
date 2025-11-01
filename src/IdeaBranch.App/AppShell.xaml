@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:IdeaBranch.App"
     xmlns:views="clr-namespace:IdeaBranch.App.Views"
+    xmlns:analytics="clr-namespace:IdeaBranch.App.Views.Analytics"
     xmlns:res="clr-namespace:IdeaBranch.App.Resources"
     Title="IdeaBranch.App">
 
@@ -55,5 +56,17 @@
         ContentTemplate="{DataTemplate views:TagTaxonomyPage}"
         Route="TagTaxonomyPage"
         AutomationId="TagTaxonomyPage" />
+
+    <ShellContent
+        Title="Advanced Search"
+        ContentTemplate="{DataTemplate views:AdvancedSearchPage}"
+        Route="AdvancedSearchPage"
+        AutomationId="AdvancedSearchPage" />
+
+    <ShellContent
+        Title="Word Cloud"
+        ContentTemplate="{DataTemplate analytics:WordCloudPage}"
+        Route="WordCloudPage"
+        AutomationId="WordCloudPage" />
 
 </Shell>

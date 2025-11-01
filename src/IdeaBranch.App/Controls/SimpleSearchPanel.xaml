@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels"
+             xmlns:search="clr-namespace:IdeaBranch.App.Services.Search"
+             x:Class="IdeaBranch.App.Controls.SimpleSearchPanel"
+             x:DataType="vm:SimpleSearchViewModel"
+             AutomationId="SimpleSearchPanel">
+    <Grid Padding="8" Margin="8" BackgroundColor="#F5F5F5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Frame Grid.Row="0" BorderColor="#CCCCCC" Padding="8" Margin="0">
+            <VerticalStackLayout Spacing="8">
+                <!-- Header with expand/collapse -->
+            <Grid>
+                <Label Text="Search" FontAttributes="Bold" FontSize="16" VerticalOptions="Center" />
+                <Button Text="⋯" 
+                        HorizontalOptions="End" 
+                        Clicked="OnExpandToggleClicked"
+                        BackgroundColor="Transparent"
+                        TextColor="Gray"
+                        FontSize="20"
+                        AutomationId="SimpleSearchPanel_ExpandToggle" />
+            </Grid>
+
+            <!-- Collapsible Content -->
+            <VerticalStackLayout x:Name="SearchContent" 
+                               Spacing="8" 
+                               IsVisible="{Binding IsExpanded}">
+                <!-- Text Search -->
+                <Entry Text="{Binding SearchText}" 
+                       Placeholder="Search text..."
+                       TextChanged="OnSearchTextChanged"
+                       AutomationId="SimpleSearchPanel_SearchText" />
+
+                <!-- Content Type Toggles -->
+                <HorizontalStackLayout Spacing="8">
+                    <CheckBox x:Name="CheckTopicNodes" 
+                             IsChecked="{Binding SearchTopicNodes}"
+                             CheckedChanged="OnContentTypeChanged"
+                             AutomationId="SimpleSearchPanel_CheckTopicNodes" />
+                    <Label Text="Topics" VerticalOptions="Center" />
+                    <CheckBox x:Name="CheckAnnotations" 
+                             IsChecked="{Binding SearchAnnotations}"
+                             CheckedChanged="OnContentTypeChanged"
+                             AutomationId="SimpleSearchPanel_CheckAnnotations" />
+                    <Label Text="Annotations" VerticalOptions="Center" />
+                    <CheckBox x:Name="CheckTags" 
+                             IsChecked="{Binding SearchTags}"
+                             CheckedChanged="OnContentTypeChanged"
+                             AutomationId="SimpleSearchPanel_CheckTags" />
+                    <Label Text="Tags" VerticalOptions="Center" />
+                    <CheckBox x:Name="CheckTemplates" 
+                             IsChecked="{Binding SearchTemplates}"
+                             CheckedChanged="OnContentTypeChanged"
+                             AutomationId="SimpleSearchPanel_CheckTemplates" />
+                    <Label Text="Templates" VerticalOptions="Center" />
+                </HorizontalStackLayout>
+
+                <!-- UpdatedAt Filter -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Updated After" FontSize="12" />
+                    <DatePicker x:Name="UpdatedAtFromPicker" 
+                               DateSelected="OnUpdatedAtFromDateSelected"
+                               AutomationId="SimpleSearchPanel_UpdatedAtFrom" />
+                </VerticalStackLayout>
+
+                <!-- Results Summary -->
+                <Label Text="{Binding ResultSummary}" 
+                       FontSize="12" 
+                       TextColor="Gray"
+                       IsVisible="{Binding HasResults}"
+                       AutomationId="SimpleSearchPanel_ResultSummary" />
+
+                <!-- Actions -->
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <Button Grid.Column="0" 
+                            Text="Search" 
+                            Command="{Binding ExecuteSearchCommand}"
+                            IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}"
+                            AutomationId="SimpleSearchPanel_SearchButton" />
+                    <Button Grid.Column="1" 
+                            Text="Advanced..." 
+                            Clicked="OnAdvancedSearchClicked"
+                            AutomationId="SimpleSearchPanel_AdvancedButton" />
+                </Grid>
+
+                <!-- Loading Indicator -->
+                <ActivityIndicator IsRunning="{Binding IsLoading}" 
+                                 IsVisible="{Binding IsLoading}"
+                                 AutomationId="SimpleSearchPanel_LoadingIndicator" />
+
+                <!-- Error Message -->
+                <Label Text="{Binding ErrorMessage}" 
+                       TextColor="Red" 
+                       IsVisible="{Binding HasError}"
+                       AutomationId="SimpleSearchPanel_ErrorMessage" />
+            </VerticalStackLayout>
+        </Frame>
+    </Grid>
+</ContentView>

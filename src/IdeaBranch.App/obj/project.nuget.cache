@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ELyYK64Cy2o=",
+  "dgSpecHash": "4xep7SDDbQo=",
   "success": true,
   "projectFilePath": "C:\\Source\\CriticalInsight\\IdeaBranch\\src\\IdeaBranch.App\\IdeaBranch.App.csproj",
   "expectedPackageFiles": [
@@ -73,6 +73,12 @@
     "C:\\Users\\danva\\.nuget\\packages\\runtime.unix.system.private.uri\\4.3.0\\runtime.unix.system.private.uri.4.3.0.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\runtime.win.system.diagnostics.debug\\4.3.0\\runtime.win.system.diagnostics.debug.4.3.0.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\runtime.win7.system.private.uri\\4.3.0\\runtime.win7.system.private.uri.4.3.0.nupkg.sha512",
+    "C:\\Users\\danva\\.nuget\\packages\\skiasharp\\2.88.8\\skiasharp.2.88.8.nupkg.sha512",
+    "C:\\Users\\danva\\.nuget\\packages\\skiasharp.nativeassets.android\\2.88.8\\skiasharp.nativeassets.android.2.88.8.nupkg.sha512",
+    "C:\\Users\\danva\\.nuget\\packages\\skiasharp.nativeassets.ios\\2.88.8\\skiasharp.nativeassets.ios.2.88.8.nupkg.sha512",
+    "C:\\Users\\danva\\.nuget\\packages\\skiasharp.nativeassets.maccatalyst\\2.88.8\\skiasharp.nativeassets.maccatalyst.2.88.8.nupkg.sha512",
+    "C:\\Users\\danva\\.nuget\\packages\\skiasharp.nativeassets.macos\\2.88.8\\skiasharp.nativeassets.macos.2.88.8.nupkg.sha512",
+    "C:\\Users\\danva\\.nuget\\packages\\skiasharp.nativeassets.win32\\2.88.8\\skiasharp.nativeassets.win32.2.88.8.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\sqlite-net-pcl\\1.9.172\\sqlite-net-pcl.1.9.172.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.1.10\\sqlitepclraw.bundle_e_sqlite3.2.1.10.nupkg.sha512",
     "C:\\Users\\danva\\.nuget\\packages\\sqlitepclraw.bundle_green\\2.1.2\\sqlitepclraw.bundle_green.2.1.2.nupkg.sha512",

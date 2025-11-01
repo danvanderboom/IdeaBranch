@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:IdeaBranch.App.ViewModels.Analytics"
+             x:Class="IdeaBranch.App.Views.Analytics.WordCloudPage"
+             x:DataType="vm:WordCloudViewModel"
+             Title="Word Cloud Analytics"
+             AutomationId="WordCloudPage">
+    <Grid RowDefinitions="Auto,*" RowSpacing="10" Padding="10">
+        <!-- Filter Panel -->
+        <Border Grid.Row="0" BackgroundColor="{StaticResource Secondary}" Padding="10" StrokeThickness="1" Stroke="{StaticResource Gray500}">
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Filters" FontSize="18" FontAttributes="Bold" />
+                
+                <!-- Source Types -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Source Types:" FontSize="14" FontAttributes="Bold" />
+                    <HorizontalStackLayout Spacing="10">
+                        <CheckBox IsChecked="{Binding IncludePrompts}" />
+                        <Label Text="Prompts" VerticalOptions="Center" />
+                        <CheckBox IsChecked="{Binding IncludeResponses}" />
+                        <Label Text="Responses" VerticalOptions="Center" />
+                        <CheckBox IsChecked="{Binding IncludeAnnotations}" />
+                        <Label Text="Annotations" VerticalOptions="Center" />
+                        <CheckBox IsChecked="{Binding IncludeTopics}" />
+                        <Label Text="Topics" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+
+                <!-- Options -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <VerticalStackLayout Grid.Column="0" Spacing="5">
+                        <Label Text="Min Frequency:" />
+                        <Entry Text="{Binding MinFrequency}" Keyboard="Numeric" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1" Spacing="5">
+                        <Label Text="Max Words:" />
+                        <Entry Text="{Binding MaxWords}" Keyboard="Numeric" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- Date Range -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <VerticalStackLayout Grid.Column="0" Spacing="5">
+                        <Label Text="Start Date:" />
+                        <DatePicker Date="{Binding StartDate}" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1" Spacing="5">
+                        <Label Text="End Date:" />
+                        <DatePicker Date="{Binding EndDate}" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- Generate Button -->
+                <Button Text="Generate Word Cloud" 
+                        Command="{Binding GenerateCommand}" 
+                        IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}" />
+                
+                <!-- Error Message -->
+                <Label Text="{Binding ErrorMessage}" 
+                       IsVisible="{Binding HasError}" 
+                       TextColor="Red" />
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Content Area -->
+        <Grid Grid.Row="1">
+            <VerticalStackLayout Spacing="10" Padding="10">
+                <!-- Loading Indicator -->
+                <ActivityIndicator IsRunning="{Binding IsLoading}" 
+                                  IsVisible="{Binding IsLoading}" 
+                                  HeightRequest="50" />
+
+                <!-- Word Cloud Display -->
+                <Border IsVisible="{Binding HasData}" 
+                       BackgroundColor="White" 
+                       Padding="10" 
+                       StrokeThickness="1" 
+                       Stroke="{StaticResource Gray500}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="{Binding WordCount, StringFormat='Total Words: {0}'}" 
+                               FontSize="16" 
+                               FontAttributes="Bold" />
+                        
+                        <!-- Word List (simple display) -->
+                        <ScrollView>
+                            <CollectionView ItemsSource="{Binding WordCloudData.WordFrequencies}">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Padding="5" ColumnDefinitions="*,Auto">
+                                            <Label Grid.Column="0" 
+                                                   Text="{Binding Word}" 
+                                                   FontSize="{Binding Weight, Converter={StaticResource WeightToFontSizeConverter}}" />
+                                            <Label Grid.Column="1" 
+                                                   Text="{Binding Frequency, StringFormat='({0})'}" 
+                                                   TextColor="Gray" 
+                                                   VerticalOptions="Center" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </ScrollView>
+
+                        <!-- Export Buttons -->
+                        <HorizontalStackLayout Spacing="10">
+                            <Button Text="Export JSON" Command="{Binding ExportJsonCommand}" />
+                            <Button Text="Export CSV" Command="{Binding ExportCsvCommand}" />
+                            <Button Text="Export PNG" Command="{Binding ExportPngCommand}" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Empty State -->
+                <Label Text="No word cloud data. Click 'Generate Word Cloud' to create one." 
+                       IsVisible="{Binding HasData, Converter={StaticResource InvertedBoolConverter}}" 
+                       HorizontalOptions="Center" 
+                       VerticalOptions="Center" 
+                       TextColor="Gray" />
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+</ContentPage>
+
