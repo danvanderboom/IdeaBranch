@@ -114,6 +114,33 @@ public partial class SkiaTimelineView : ContentView
     }
 
     /// <summary>
+    /// Identifies the GroupByType bindable property.
+    /// </summary>
+    public static readonly BindableProperty GroupByTypeProperty = BindableProperty.Create(
+        nameof(GroupByType),
+        typeof(bool),
+        typeof(SkiaTimelineView),
+        false,
+        propertyChanged: OnGroupByTypeChanged);
+
+    private static void OnGroupByTypeChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        if (bindable is SkiaTimelineView view)
+        {
+            view.InvalidateCanvas();
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets whether to group events by type into bands.
+    /// </summary>
+    public bool GroupByType
+    {
+        get => (bool)GetValue(GroupByTypeProperty);
+        set => SetValue(GroupByTypeProperty, value);
+    }
+
+    /// <summary>
     /// Occurs when the selected time range changes.
     /// </summary>
     public event EventHandler<(DateTime Start, DateTime End)?>? SelectedTimeRangeChanged;
@@ -192,7 +219,7 @@ public partial class SkiaTimelineView : ContentView
             return;
         }
 
-        _renderer.DrawTimeline(canvas, info, events, _viewStartTime, _viewEndTime, _zoomLevel, _showDiagnostics, CurrentFps, AverageDrawTimeMs);
+        _renderer.DrawTimeline(canvas, info, events, _viewStartTime, _viewEndTime, _zoomLevel, _showDiagnostics, CurrentFps, AverageDrawTimeMs, GroupByType, SelectedEvent);
 
         RecordFrameTime();
         EmitTelemetryIfNeeded(events.Count);

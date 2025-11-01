@@ -119,10 +119,80 @@
                                FontSize="16" 
                                FontAttributes="Bold" />
                         
+                        <!-- Group by Type Toggle -->
+                        <HorizontalStackLayout Spacing="10">
+                            <CheckBox IsChecked="{Binding GroupByType}" />
+                            <Label Text="Group by Type" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+
                         <!-- Interactive SkiaSharp Timeline -->
                         <controls:SkiaTimelineView x:Name="TimelineView"
                                                   Events="{Binding TimelineEventViews}"
+                                                  SelectedEvent="{Binding SelectedEvent}"
+                                                  GroupByType="{Binding GroupByType}"
                                                   HeightRequest="400" />
+
+                        <!-- Statistics Module -->
+                        <Border IsVisible="{Binding HasData}" 
+                               BackgroundColor="{StaticResource Light}" 
+                               Padding="10" 
+                               StrokeThickness="1" 
+                               Stroke="{StaticResource Gray500}">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="Statistics" FontSize="16" FontAttributes="Bold" />
+                                
+                                <!-- Event Type Counts -->
+                                <VerticalStackLayout IsVisible="{Binding EventTypeCounts, Converter={StaticResource IsNotNullConverter}}">
+                                    <Label Text="Counts by Type:" FontSize="14" FontAttributes="Bold" />
+                                    <Label Text="{Binding EventTypeCountsString}" FontSize="12" />
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Event Details Card -->
+                        <Border IsVisible="{Binding HasSelectedEvent}" 
+                               BackgroundColor="White" 
+                               Padding="15" 
+                               StrokeThickness="2" 
+                               Stroke="Blue"
+                               Margin="0,10,0,0">
+                            <VerticalStackLayout Spacing="10">
+                                <HorizontalStackLayout Spacing="10">
+                                    <Label Text="Event Details" FontSize="18" FontAttributes="Bold" />
+                                    <Button Text="✕" 
+                                           Command="{Binding CloseEventDetailsCommand}"
+                                           BackgroundColor="Transparent"
+                                           TextColor="Gray"
+                                           FontSize="16"
+                                           WidthRequest="30"
+                                           HeightRequest="30" />
+                                </HorizontalStackLayout>
+                                
+                                <Label Text="{Binding SelectedEvent.Title}" FontSize="16" FontAttributes="Bold" />
+                                <Label Text="{Binding SelectedEvent.Type}" FontSize="14" TextColor="Gray" />
+                                <Label Text="{Binding SelectedEvent.Details}" FontSize="14" IsVisible="{Binding SelectedEvent.Details, Converter={StaticResource IsNotNullConverter}}" />
+                                
+                                <!-- Timestamp -->
+                                <VerticalStackLayout Spacing="5">
+                                    <Label Text="Timestamp:" FontSize="12" FontAttributes="Bold" />
+                                    <Label Text="{Binding SelectedEvent.When.Start, StringFormat='{0:yyyy-MM-dd HH:mm:ss}'}" FontSize="12" />
+                                </VerticalStackLayout>
+                                
+                                <!-- Tags -->
+                                <VerticalStackLayout Spacing="5" IsVisible="{Binding SelectedEvent.Tags, Converter={StaticResource IsNotNullConverter}}">
+                                    <Label Text="Tags:" FontSize="12" FontAttributes="Bold" />
+                                    <Label Text="{Binding SelectedEvent.TagsString}" FontSize="12" />
+                                </VerticalStackLayout>
+                                
+                                <!-- Node Link -->
+                                <Button Text="{Binding SelectedEvent.NodeId, StringFormat='View Node: {0}'}"
+                                       Command="{Binding NavigateToNodeCommand}"
+                                       CommandParameter="{Binding SelectedEvent.NodeId}"
+                                       IsVisible="{Binding SelectedEvent.NodeId, Converter={StaticResource IsNotNullConverter}}"
+                                       BackgroundColor="Blue"
+                                       TextColor="White" />
+                            </VerticalStackLayout>
+                        </Border>
 
                         <!-- Export Buttons -->
                         <HorizontalStackLayout Spacing="10">

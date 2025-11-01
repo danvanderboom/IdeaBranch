@@ -44,7 +44,9 @@ internal class TimelineRenderer
         double zoomLevel,
         bool showDiagnostics = false,
         double fps = 0,
-        double drawTimeMs = 0)
+        double drawTimeMs = 0,
+        bool groupByType = false,
+        TimelineEventView? selectedEvent = null)
     {
         var timeRange = (viewEnd - viewStart).TotalDays;
         if (timeRange <= 0) return;
@@ -59,18 +61,28 @@ internal class TimelineRenderer
 
         // Get visible events and clusters
         var visibleEvents = GetVisibleEvents(events, viewStart, viewEnd);
-        var clusters = ClusterEvents(visibleEvents, pixelsPerDay, info.Width, viewStart);
-
-        // Draw events/clusters
-        foreach (var cluster in clusters)
+        
+        if (groupByType)
         {
-            if (cluster.IsCluster && cluster.Events.Count > 0)
+            // Group by type into bands
+            DrawBandedTimeline(canvas, info, visibleEvents, viewStart, viewEnd, pixelsPerDay, selectedEvent);
+        }
+        else
+        {
+            // Standard clustering
+            var clusters = ClusterEvents(visibleEvents, pixelsPerDay, info.Width, viewStart);
+
+            // Draw events/clusters
+            foreach (var cluster in clusters)
             {
-                DrawCluster(canvas, cluster, pixelsPerDay, viewStart);
-            }
-            else if (cluster.Events.Count == 1)
-            {
-                DrawEvent(canvas, cluster.Events[0], pixelsPerDay, viewStart);
+                if (cluster.IsCluster && cluster.Events.Count > 0)
+                {
+                    DrawCluster(canvas, cluster, pixelsPerDay, viewStart);
+                }
+                else if (cluster.Events.Count == 1)
+                {
+                    DrawEvent(canvas, cluster.Events[0], pixelsPerDay, viewStart, selectedEvent);
+                }
             }
         }
 
@@ -285,13 +297,27 @@ internal class TimelineRenderer
         return clusters;
     }
 
-    private void DrawEvent(SKCanvas canvas, TimelineEventView evt, double pixelsPerDay, DateTime viewStart)
+    private void DrawEvent(SKCanvas canvas, TimelineEventView evt, double pixelsPerDay, DateTime viewStart, TimelineEventView? selectedEvent = null)
     {
         var x = (float)((evt.When.Start.Date - viewStart).TotalDays * pixelsPerDay);
         var y = 50.0f; // Base Y position for events
 
         var color = EventTypeColors.GetValueOrDefault(evt.Type, SKColors.Gray);
         var size = EventTypeSizes.GetValueOrDefault(evt.Type, 8.0f);
+
+        // Highlight selected event
+        var isSelected = selectedEvent != null && selectedEvent.Id == evt.Id;
+        if (isSelected)
+        {
+            // Draw highlight circle
+            using var highlightPaint = new SKPaint
+            {
+                Color = SKColors.Yellow.WithAlpha(128),
+                IsAntialias = true,
+                Style = SKPaintStyle.Fill
+            };
+            canvas.DrawCircle(x, y, size + 4, highlightPaint);
+        }
 
         using var paint = new SKPaint
         {
@@ -301,6 +327,71 @@ internal class TimelineRenderer
         };
 
         canvas.DrawCircle(x, y, size, paint);
+    }
+
+    private void DrawBandedTimeline(SKCanvas canvas, SKImageInfo info, List<TimelineEventView> events, DateTime viewStart, DateTime viewEnd, double pixelsPerDay, TimelineEventView? selectedEvent)
+    {
+        // Group events by type
+        var eventsByType = events.GroupBy(e => e.Type).OrderBy(g => g.Key).ToList();
+        var bandHeight = (info.Height - 60) / Math.Max(eventsByType.Count, 1); // Reserve space for axis
+
+        var bandIndex = 0;
+        foreach (var typeGroup in eventsByType)
+        {
+            var bandY = 30.0f + (bandIndex * bandHeight);
+            
+            // Draw band label
+            using var labelPaint = new SKPaint
+            {
+                Color = SKColors.Black,
+                TextSize = 10,
+                IsAntialias = true
+            };
+            canvas.DrawText(typeGroup.Key, 5, bandY + 10, labelPaint);
+
+            // Draw band background
+            using var bandPaint = new SKPaint
+            {
+                Color = SKColors.LightGray.WithAlpha(50),
+                IsAntialias = true,
+                Style = SKPaintStyle.Fill
+            };
+            canvas.DrawRect(0, bandY, info.Width, bandHeight - 2, bandPaint);
+
+            // Draw events in this band
+            foreach (var evt in typeGroup)
+            {
+                var x = (float)((evt.When.Start.Date - viewStart).TotalDays * pixelsPerDay);
+                var y = bandY + (bandHeight / 2);
+
+                var color = EventTypeColors.GetValueOrDefault(evt.Type, SKColors.Gray);
+                var size = EventTypeSizes.GetValueOrDefault(evt.Type, 8.0f);
+
+                // Highlight selected event
+                var isSelected = selectedEvent != null && selectedEvent.Id == evt.Id;
+                if (isSelected)
+                {
+                    using var highlightPaint = new SKPaint
+                    {
+                        Color = SKColors.Yellow.WithAlpha(128),
+                        IsAntialias = true,
+                        Style = SKPaintStyle.Fill
+                    };
+                    canvas.DrawCircle(x, y, size + 4, highlightPaint);
+                }
+
+                using var paint = new SKPaint
+                {
+                    Color = color,
+                    IsAntialias = true,
+                    Style = SKPaintStyle.Fill
+                };
+
+                canvas.DrawCircle(x, y, size, paint);
+            }
+
+            bandIndex++;
+        }
     }
 
     private void DrawCluster(SKCanvas canvas, EventCluster cluster, double pixelsPerDay, DateTime viewStart)

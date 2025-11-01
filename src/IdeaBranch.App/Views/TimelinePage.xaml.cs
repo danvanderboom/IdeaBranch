@@ -10,6 +10,20 @@ public partial class TimelinePage : ContentPage
         BindingContext = viewModel;
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        
+        // Wire up event selection from timeline view
+        if (BindingContext is TimelineViewModel vm && TimelineView != null)
+        {
+            TimelineView.SelectedEventChanged += (s, eventView) =>
+            {
+                vm.SelectedEvent = eventView;
+            };
+        }
+    }
+
     public TimelinePage() : this(new TimelineViewModel())
     {
     }
@@ -23,4 +37,5 @@ public partial class TimelinePage : ContentPage
             DisplayAlert("Tag Picker", "Tag picker with hierarchical selection and per-tag 'Include descendants' toggle will be implemented here.", "OK");
         }
     }
+
 }

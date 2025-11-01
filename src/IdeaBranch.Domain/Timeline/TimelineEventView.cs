@@ -41,6 +41,20 @@ public sealed record TimelineEventView
     public string? Details { get; init; }
 
     /// <summary>
+    /// Gets the tags as a formatted string.
+    /// </summary>
+    public string TagsString
+    {
+        get
+        {
+            if (Tags == null || Tags.Count == 0)
+                return "No tags";
+
+            return string.Join(", ", Tags.Keys);
+        }
+    }
+
+    /// <summary>
     /// Initializes a new instance with the specified values.
     /// </summary>
     public TimelineEventView(

@@ -65,17 +65,51 @@ public class AnalyticsExportService
     /// </summary>
     public async Task<string> ExportTimelineToJsonAsync(
         TimelineData data,
+        bool includeAllFields = false,
         CancellationToken cancellationToken = default)
     {
         return await Task.Run(() =>
         {
-            var json = JsonSerializer.Serialize(data, new JsonSerializerOptions
+            if (includeAllFields)
             {
-                WriteIndented = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+                // Create enhanced export object with all required fields
+                var exportData = data.Events.Select(evt => new
+                {
+                    eventId = evt.Id.ToString(),
+                    type = evt.EventType.ToString(),
+                    title = evt.Title ?? string.Empty,
+                    body = evt.Details ?? string.Empty,
+                    start = evt.Timestamp,
+                    end = (DateTime?)null, // Timeline events are point events
+                    precision = "day", // Assume day precision for now
+                    nodeId = evt.NodeId?.ToString(),
+                    nodePath = (string?)null, // Would need to fetch from topic tree
+                    tags = evt.TagIds.Select(id => id.ToString()).ToArray(),
+                    annotationIds = Array.Empty<string>(), // Would need to fetch from annotations
+                    source = GetSourceFromEventType(evt.EventType),
+                    actor = "System", // Would need to fetch from event metadata
+                    createdAt = evt.Timestamp,
+                    updatedAt = evt.Timestamp
+                }).ToArray();
 
-            return json;
+                var json = JsonSerializer.Serialize(exportData, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                });
+
+                return json;
+            }
+            else
+            {
+                var json = JsonSerializer.Serialize(data, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                });
+
+                return json;
+            }
         }, cancellationToken);
     }
 
@@ -84,19 +118,54 @@ public class AnalyticsExportService
     /// </summary>
     public async Task<string> ExportTimelineToCsvAsync(
         TimelineData data,
+        bool includeAllFields = false,
         CancellationToken cancellationToken = default)
     {
         return await Task.Run(() =>
         {
             var sb = new StringBuilder();
 
-            // Header
-            sb.AppendLine("Timestamp,EventType,Title,Details,NodeId");
-
-            // Data rows
-            foreach (var evt in data.Events)
+            if (includeAllFields)
             {
-                sb.AppendLine($"{evt.Timestamp:O},{evt.EventType},{EscapeCsvField(evt.Title)},{EscapeCsvField(evt.Details ?? "")},{evt.NodeId}");
+                // Header with all required fields
+                sb.AppendLine("eventId,type,title,body,start,end,precision,nodeId,nodePath,tags,annotationIds,source,actor,createdAt,updatedAt");
+
+                // Data rows
+                foreach (var evt in data.Events)
+                {
+                    var tagString = string.Join(";", evt.TagIds.Select(id => id.ToString()));
+                    var annotationIdsString = string.Empty; // Would need to fetch from annotations
+                    var nodePath = string.Empty; // Would need to fetch from topic tree
+                    var source = GetSourceFromEventType(evt.EventType);
+                    var actor = "System"; // Would need to fetch from event metadata
+                    
+                    sb.AppendLine($"{EscapeCsvField(evt.Id.ToString())}," +
+                                 $"{EscapeCsvField(evt.EventType.ToString())}," +
+                                 $"{EscapeCsvField(evt.Title ?? "")}," +
+                                 $"{EscapeCsvField(evt.Details ?? "")}," +
+                                 $"{evt.Timestamp:O}," +
+                                 $"," + // end
+                                 $"day," + // precision
+                                 $"{(evt.NodeId.HasValue ? EscapeCsvField(evt.NodeId.Value.ToString()) : "")}," +
+                                 $"{EscapeCsvField(nodePath)}," +
+                                 $"{EscapeCsvField(tagString)}," +
+                                 $"{EscapeCsvField(annotationIdsString)}," +
+                                 $"{EscapeCsvField(source)}," +
+                                 $"{EscapeCsvField(actor)}," +
+                                 $"{evt.Timestamp:O}," + // createdAt
+                                 $"{evt.Timestamp:O}"); // updatedAt
+                }
+            }
+            else
+            {
+                // Header (original format)
+                sb.AppendLine("Timestamp,EventType,Title,Details,NodeId");
+
+                // Data rows
+                foreach (var evt in data.Events)
+                {
+                    sb.AppendLine($"{evt.Timestamp:O},{evt.EventType},{EscapeCsvField(evt.Title)},{EscapeCsvField(evt.Details ?? "")},{evt.NodeId}");
+                }
             }
 
             return sb.ToString();
@@ -358,6 +427,22 @@ public class AnalyticsExportService
         }
 
         return field;
+    }
+
+    /// <summary>
+    /// Gets the source name from an event type.
+    /// </summary>
+    private string GetSourceFromEventType(TimelineEventType eventType)
+    {
+        return eventType switch
+        {
+            TimelineEventType.TopicCreated => "Topics",
+            TimelineEventType.TopicUpdated => "Topics",
+            TimelineEventType.AnnotationCreated => "Annotations",
+            TimelineEventType.AnnotationUpdated => "Annotations",
+            TimelineEventType.ConversationMessage => "Conversations",
+            _ => "Unknown"
+        };
     }
 }
 

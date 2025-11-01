@@ -37,6 +37,10 @@ public class TimelineViewModel : INotifyPropertyChanged
     private bool _showUpdated = true;
     private string? _searchQuery;
     private string? _activeDatePreset;
+    private TimelineEventView? _selectedEvent;
+    private bool _groupByType = false;
+    private Dictionary<string, int>? _eventTypeCounts;
+    private Dictionary<string, List<(DateTime Date, int Count)>>? _eventTypeTrends;
 
     /// <summary>
     /// Initializes a new instance with required services.
@@ -59,6 +63,9 @@ public class TimelineViewModel : INotifyPropertyChanged
         ApplyLast7DaysCommand = new Command(() => ApplyLast7Days());
         ApplyThisMonthCommand = new Command(() => ApplyThisMonth());
         ApplyThisYearCommand = new Command(() => ApplyThisYear());
+        NavigateToNodeCommand = new Command<Guid?>(async (nodeId) => await NavigateToNodeAsync(nodeId));
+        CloseEventDetailsCommand = new Command(() => SelectedEvent = null);
+        ToggleGroupByTypeCommand = new Command(() => GroupByType = !GroupByType);
     }
 
     /// <summary>
@@ -97,6 +104,7 @@ public class TimelineViewModel : INotifyPropertyChanged
                 ExportJsonCommand.ChangeCanExecute();
                 ExportCsvCommand.ChangeCanExecute();
                 ExportPngCommand.ChangeCanExecute();
+                UpdateStatistics();
             }
         }
     }
@@ -402,6 +410,107 @@ public class TimelineViewModel : INotifyPropertyChanged
     public Command ApplyThisYearCommand { get; }
 
     /// <summary>
+    /// Gets or sets the selected event.
+    /// </summary>
+    public TimelineEventView? SelectedEvent
+    {
+        get => _selectedEvent;
+        set
+        {
+            if (_selectedEvent != value)
+            {
+                _selectedEvent = value;
+                OnPropertyChanged(nameof(SelectedEvent));
+                OnPropertyChanged(nameof(HasSelectedEvent));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets whether an event is selected.
+    /// </summary>
+    public bool HasSelectedEvent => SelectedEvent != null;
+
+    /// <summary>
+    /// Gets or sets whether to group events by type.
+    /// </summary>
+    public bool GroupByType
+    {
+        get => _groupByType;
+        set
+        {
+            if (_groupByType != value)
+            {
+                _groupByType = value;
+                OnPropertyChanged(nameof(GroupByType));
+                OnPropertyChanged(nameof(TimelineEventViews));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the event type counts for statistics.
+    /// </summary>
+    public Dictionary<string, int>? EventTypeCounts
+    {
+        get => _eventTypeCounts;
+        private set
+        {
+            if (_eventTypeCounts != value)
+            {
+                _eventTypeCounts = value;
+                OnPropertyChanged(nameof(EventTypeCounts));
+                OnPropertyChanged(nameof(EventTypeCountsString));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the event type counts as a formatted string.
+    /// </summary>
+    public string EventTypeCountsString
+    {
+        get
+        {
+            if (EventTypeCounts == null || EventTypeCounts.Count == 0)
+                return "No events";
+
+            return string.Join(Environment.NewLine, EventTypeCounts.Select(kvp => $"{kvp.Key}: {kvp.Value}"));
+        }
+    }
+
+    /// <summary>
+    /// Gets the event type trends for statistics.
+    /// </summary>
+    public Dictionary<string, List<(DateTime Date, int Count)>>? EventTypeTrends
+    {
+        get => _eventTypeTrends;
+        private set
+        {
+            if (_eventTypeTrends != value)
+            {
+                _eventTypeTrends = value;
+                OnPropertyChanged(nameof(EventTypeTrends));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the command to navigate to a node.
+    /// </summary>
+    public Command<Guid?> NavigateToNodeCommand { get; }
+
+    /// <summary>
+    /// Gets the command to close event details.
+    /// </summary>
+    public Command CloseEventDetailsCommand { get; }
+
+    /// <summary>
+    /// Gets the command to toggle grouping by type.
+    /// </summary>
+    public Command ToggleGroupByTypeCommand { get; }
+
+    /// <summary>
     /// Generates the timeline.
     /// </summary>
     public async Task GenerateTimelineAsync(CancellationToken cancellationToken = default)
@@ -462,6 +571,7 @@ public class TimelineViewModel : INotifyPropertyChanged
             };
 
             TimelineData = await _analyticsService.GenerateTimelineAsync(options, cancellationToken);
+            UpdateStatistics();
         }
         catch (OperationCanceledException)
         {
@@ -472,6 +582,7 @@ public class TimelineViewModel : INotifyPropertyChanged
             ErrorMessage = $"Generation failed: {ex.Message}";
             System.Diagnostics.Debug.WriteLine($"Timeline generation error: {ex.Message}");
             TimelineData = null;
+            UpdateStatistics();
         }
         finally
         {
@@ -480,7 +591,97 @@ public class TimelineViewModel : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Exports timeline data to JSON.
+    /// Updates statistics from current timeline data.
+    /// </summary>
+    private void UpdateStatistics()
+    {
+        if (TimelineData == null || TimelineData.Events.Count == 0)
+        {
+            EventTypeCounts = null;
+            EventTypeTrends = null;
+            return;
+        }
+
+        // Calculate per-type counts
+        var counts = new Dictionary<string, int>();
+        var trends = new Dictionary<string, List<(DateTime Date, int Count)>>();
+
+        foreach (var evt in TimelineData.Events)
+        {
+            var typeName = evt.EventType.ToString();
+            counts.TryGetValue(typeName, out var count);
+            counts[typeName] = count + 1;
+
+            // Group by date for trends (day precision)
+            var eventDate = evt.Timestamp.Date;
+            if (!trends.ContainsKey(typeName))
+            {
+                trends[typeName] = new List<(DateTime Date, int Count)>();
+            }
+
+            var trendList = trends[typeName];
+            var existingEntry = trendList.FirstOrDefault(e => e.Date == eventDate);
+            if (existingEntry.Date == default)
+            {
+                trendList.Add((eventDate, 1));
+            }
+            else
+            {
+                var index = trendList.IndexOf(existingEntry);
+                trendList[index] = (eventDate, existingEntry.Count + 1);
+            }
+        }
+
+        // Sort trends by date
+        foreach (var key in trends.Keys.ToList())
+        {
+            trends[key] = trends[key].OrderBy(e => e.Date).ToList();
+        }
+
+        EventTypeCounts = counts;
+        EventTypeTrends = trends;
+    }
+
+    /// <summary>
+    /// Navigates to a topic node.
+    /// </summary>
+    private async Task NavigateToNodeAsync(Guid? nodeId)
+    {
+        if (!nodeId.HasValue)
+            return;
+
+        try
+        {
+            // Get TopicTreeViewModel from services
+            var services = Application.Current?.Handler?.MauiContext?.Services;
+            var topicTreeViewModel = services?.GetService<IdeaBranch.App.ViewModels.TopicTreeViewModel>();
+            
+            if (topicTreeViewModel == null)
+            {
+                ErrorMessage = "Topic tree view model not available.";
+                return;
+            }
+
+            // Find and navigate to the node
+            var domainNode = topicTreeViewModel.FindDomainNode(nodeId.Value);
+            if (domainNode != null)
+            {
+                await topicTreeViewModel.EditNodeAsync(domainNode);
+            }
+            else
+            {
+                ErrorMessage = $"Node with ID {nodeId} not found.";
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Navigation failed: {ex.Message}";
+            System.Diagnostics.Debug.WriteLine($"Navigation error: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Exports timeline data to JSON with all required fields.
     /// </summary>
     public async Task ExportJsonAsync()
     {
@@ -489,7 +690,7 @@ public class TimelineViewModel : INotifyPropertyChanged
 
         try
         {
-            var json = await _exportService.ExportTimelineToJsonAsync(TimelineData);
+            var json = await _exportService.ExportTimelineToJsonAsync(TimelineData, includeAllFields: true);
             
             var fileName = $"timeline_{DateTime.UtcNow:yyyyMMddHHmmss}.json";
             var filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
@@ -509,7 +710,7 @@ public class TimelineViewModel : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Exports timeline data to CSV.
+    /// Exports timeline data to CSV with all required fields.
     /// </summary>
     public async Task ExportCsvAsync()
     {
@@ -518,7 +719,7 @@ public class TimelineViewModel : INotifyPropertyChanged
 
         try
         {
-            var csv = await _exportService.ExportTimelineToCsvAsync(TimelineData);
+            var csv = await _exportService.ExportTimelineToCsvAsync(TimelineData, includeAllFields: true);
             
             var fileName = $"timeline_{DateTime.UtcNow:yyyyMMddHHmmss}.csv";
             var filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
