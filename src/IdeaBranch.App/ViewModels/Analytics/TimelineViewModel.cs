@@ -33,6 +33,10 @@ public class TimelineViewModel : INotifyPropertyChanged
     private DateTime? _startDate;
     private DateTime? _endDate;
     private TimelineGrouping _grouping = TimelineGrouping.Day;
+    private bool _showCreated = true;
+    private bool _showUpdated = true;
+    private string? _searchQuery;
+    private string? _activeDatePreset;
 
     /// <summary>
     /// Initializes a new instance with required services.
@@ -47,10 +51,14 @@ public class TimelineViewModel : INotifyPropertyChanged
         _tagTaxonomyRepository = tagTaxonomyRepository ?? throw new ArgumentNullException(nameof(tagTaxonomyRepository));
 
         SelectedTags = new ObservableCollection<TagTaxonomyNode>();
+        SelectedTagSelections = new ObservableCollection<TagSelection>();
         GenerateCommand = new Command(async () => await GenerateTimelineAsync(), () => !IsLoading);
         ExportJsonCommand = new Command(async () => await ExportJsonAsync(), () => TimelineData != null);
         ExportCsvCommand = new Command(async () => await ExportCsvAsync(), () => TimelineData != null);
         ExportPngCommand = new Command(async () => await ExportPngAsync(), () => TimelineData != null);
+        ApplyLast7DaysCommand = new Command(() => ApplyLast7Days());
+        ApplyThisMonthCommand = new Command(() => ApplyThisMonth());
+        ApplyThisYearCommand = new Command(() => ApplyThisYear());
     }
 
     /// <summary>
@@ -237,6 +245,11 @@ public class TimelineViewModel : INotifyPropertyChanged
             {
                 _startDate = value;
                 OnPropertyChanged(nameof(StartDate));
+                // Clear preset if manually adjusted
+                if (!string.IsNullOrEmpty(ActiveDatePreset))
+                {
+                    ActiveDatePreset = null;
+                }
             }
         }
     }
@@ -253,6 +266,11 @@ public class TimelineViewModel : INotifyPropertyChanged
             {
                 _endDate = value;
                 OnPropertyChanged(nameof(EndDate));
+                // Clear preset if manually adjusted
+                if (!string.IsNullOrEmpty(ActiveDatePreset))
+                {
+                    ActiveDatePreset = null;
+                }
             }
         }
     }
@@ -276,7 +294,77 @@ public class TimelineViewModel : INotifyPropertyChanged
     /// <summary>
     /// Gets the selected tags for filtering.
     /// </summary>
+    [Obsolete("Use SelectedTagSelections instead for per-tag descendant control.")]
     public ObservableCollection<TagTaxonomyNode> SelectedTags { get; }
+
+    /// <summary>
+    /// Gets the selected tag selections with per-tag descendant control.
+    /// </summary>
+    public ObservableCollection<TagSelection> SelectedTagSelections { get; }
+
+    /// <summary>
+    /// Gets or sets whether to show Created event types.
+    /// </summary>
+    public bool ShowCreated
+    {
+        get => _showCreated;
+        set
+        {
+            if (_showCreated != value)
+            {
+                _showCreated = value;
+                OnPropertyChanged(nameof(ShowCreated));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets whether to show Updated event types.
+    /// </summary>
+    public bool ShowUpdated
+    {
+        get => _showUpdated;
+        set
+        {
+            if (_showUpdated != value)
+            {
+                _showUpdated = value;
+                OnPropertyChanged(nameof(ShowUpdated));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the search query for free-text filtering.
+    /// </summary>
+    public string? SearchQuery
+    {
+        get => _searchQuery;
+        set
+        {
+            if (_searchQuery != value)
+            {
+                _searchQuery = value;
+                OnPropertyChanged(nameof(SearchQuery));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the active date preset label (Last 7 days, This month, This year).
+    /// </summary>
+    public string? ActiveDatePreset
+    {
+        get => _activeDatePreset;
+        private set
+        {
+            if (_activeDatePreset != value)
+            {
+                _activeDatePreset = value;
+                OnPropertyChanged(nameof(ActiveDatePreset));
+            }
+        }
+    }
 
     /// <summary>
     /// Gets the command to generate the timeline.
@@ -297,6 +385,21 @@ public class TimelineViewModel : INotifyPropertyChanged
     /// Gets the command to export as PNG.
     /// </summary>
     public Command ExportPngCommand { get; }
+
+    /// <summary>
+    /// Gets the command to apply "Last 7 days" date preset.
+    /// </summary>
+    public Command ApplyLast7DaysCommand { get; }
+
+    /// <summary>
+    /// Gets the command to apply "This month" date preset.
+    /// </summary>
+    public Command ApplyThisMonthCommand { get; }
+
+    /// <summary>
+    /// Gets the command to apply "This year" date preset.
+    /// </summary>
+    public Command ApplyThisYearCommand { get; }
 
     /// <summary>
     /// Generates the timeline.
@@ -322,11 +425,37 @@ public class TimelineViewModel : INotifyPropertyChanged
                 return;
             }
 
+            // Build event types filter (Created/Updated mapping)
+            HashSet<TimelineEventType>? eventTypes = null;
+            if (!ShowCreated && !ShowUpdated)
+            {
+                // Both unchecked means no events (empty set)
+                eventTypes = new HashSet<TimelineEventType>();
+            }
+            else if (!ShowCreated || !ShowUpdated)
+            {
+                // Only one checked
+                eventTypes = new HashSet<TimelineEventType>();
+                if (ShowCreated)
+                {
+                    eventTypes.Add(TimelineEventType.TopicCreated);
+                    eventTypes.Add(TimelineEventType.AnnotationCreated);
+                    eventTypes.Add(TimelineEventType.ConversationMessage);
+                }
+                if (ShowUpdated)
+                {
+                    eventTypes.Add(TimelineEventType.TopicUpdated);
+                    eventTypes.Add(TimelineEventType.AnnotationUpdated);
+                }
+            }
+            // If both checked (default), leave null to include all event types
+
             var options = new TimelineOptions
             {
                 SourceTypes = sourceTypes,
-                TagIds = SelectedTags.Select(t => t.Id).ToList(),
-                IncludeTagDescendants = IncludeTagDescendants,
+                TagSelections = SelectedTagSelections.Count > 0 ? SelectedTagSelections.ToList() : null,
+                EventTypes = eventTypes,
+                SearchQuery = string.IsNullOrWhiteSpace(SearchQuery) || SearchQuery.Length < 2 ? null : SearchQuery,
                 StartDate = StartDate,
                 EndDate = EndDate,
                 Grouping = Grouping
@@ -435,6 +564,39 @@ public class TimelineViewModel : INotifyPropertyChanged
             ErrorMessage = $"Export failed: {ex.Message}";
             System.Diagnostics.Debug.WriteLine($"Export error: {ex.Message}");
         }
+    }
+
+    /// <summary>
+    /// Applies "Last 7 days" date preset.
+    /// </summary>
+    private void ApplyLast7Days()
+    {
+        var now = DateTime.Now;
+        EndDate = now;
+        StartDate = now.AddDays(-7);
+        ActiveDatePreset = "Last 7 days";
+    }
+
+    /// <summary>
+    /// Applies "This month" date preset.
+    /// </summary>
+    private void ApplyThisMonth()
+    {
+        var now = DateTime.Now;
+        EndDate = now;
+        StartDate = new DateTime(now.Year, now.Month, 1);
+        ActiveDatePreset = "This month";
+    }
+
+    /// <summary>
+    /// Applies "This year" date preset.
+    /// </summary>
+    private void ApplyThisYear()
+    {
+        var now = DateTime.Now;
+        EndDate = now;
+        StartDate = new DateTime(now.Year, 1, 1);
+        ActiveDatePreset = "This year";
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

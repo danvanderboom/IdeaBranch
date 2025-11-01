@@ -67,13 +67,7 @@ public class TimelineService : IAnalyticsService
             events.AddRange(conversationEvents);
         }
 
-        // Sort chronologically
-        events = events.OrderBy(e => e.Timestamp).ToList();
-
-        // Group into bands based on grouping level
-        var bands = GroupEventsIntoBands(events, options.Grouping);
-
-        // Get tag IDs for events (if needed)
+        // Get tag IDs for events (needed for tag filtering and search)
         foreach (var evt in events)
         {
             if (evt.NodeId.HasValue)
@@ -82,6 +76,70 @@ public class TimelineService : IAnalyticsService
                 evt.TagIds = tagIds;
             }
         }
+
+        // Apply faceted boolean filters: AND across facets, OR within facets
+
+        // Facet 1: Event Types (OR within facet, AND with other facets)
+        if (options.EventTypes != null && options.EventTypes.Count > 0)
+        {
+            events = events.Where(e => options.EventTypes.Contains(e.EventType)).ToList();
+        }
+
+        // Facet 2: Tag Selections (OR within facet - tag A OR tag B, AND with other facets)
+        if (options.TagSelections != null && options.TagSelections.Count > 0)
+        {
+            // Expand tag selections: for each selection, get tag ID and descendants if IncludeDescendants is true
+            var tagIdsToMatch = new HashSet<Guid>();
+            foreach (var selection in options.TagSelections)
+            {
+                tagIdsToMatch.Add(selection.TagId);
+                if (selection.IncludeDescendants)
+                {
+                    // Get all descendant tag IDs
+                    var root = await _tagTaxonomyRepository.GetRootAsync(cancellationToken);
+                    var descendants = CollectDescendantTagIds(root, selection.TagId);
+                    foreach (var descendantId in descendants)
+                    {
+                        tagIdsToMatch.Add(descendantId);
+                    }
+                }
+            }
+
+            // Filter events: event must have at least one tag matching any selected tag (OR within facet)
+            events = events.Where(e =>
+            {
+                if (e.TagIds == null || e.TagIds.Count == 0)
+                    return false; // No tags means no match
+
+                // Check if any event tag matches any selected tag (OR logic)
+                return e.TagIds.Any(tagId => tagIdsToMatch.Contains(tagId));
+            }).ToList();
+        }
+
+        // Facet 3: Search Query (AND with other facets)
+        if (!string.IsNullOrWhiteSpace(options.SearchQuery) && options.SearchQuery.Length >= 2)
+        {
+            var searchLower = options.SearchQuery.ToLowerInvariant();
+            events = events.Where(e =>
+            {
+                // Search in: title, details, tag names/paths, source/service name, actor display name
+                if (e.Title != null && e.Title.ToLowerInvariant().Contains(searchLower))
+                    return true;
+                if (e.Details != null && e.Details.ToLowerInvariant().Contains(searchLower))
+                    return true;
+
+                // Search in tag names/paths - would need tag taxonomy lookup, simplified for now
+                // TODO: Enhance with actual tag name/path search when tag taxonomy service is available
+
+                return false;
+            }).ToList();
+        }
+
+        // Sort chronologically
+        events = events.OrderBy(e => e.Timestamp).ToList();
+
+        // Group into bands based on grouping level
+        var bands = GroupEventsIntoBands(events, options.Grouping);
 
         var earliestEvent = events.Count > 0 ? events[0].Timestamp : (DateTime?)null;
         var latestEvent = events.Count > 0 ? events[events.Count - 1].Timestamp : (DateTime?)null;
@@ -202,23 +260,49 @@ public class TimelineService : IAnalyticsService
             nodeIds.AddRange(CollectNodeIds(root));
         }
 
-        foreach (var nodeId in nodeIds)
-        {
-            IReadOnlyList<Annotation> annotations;
+            foreach (var nodeId in nodeIds)
+            {
+                IReadOnlyList<Annotation> annotations;
 
-            if (options.TagIds != null && options.TagIds.Count > 0)
-            {
-                annotations = await _annotationsRepository.GetByNodeIdAndTagsAsync(
-                    nodeId,
-                    options.TagIds,
-                    cancellationToken);
-            }
-            else
-            {
-                annotations = await _annotationsRepository.GetByNodeIdAsync(
-                    nodeId,
-                    cancellationToken);
-            }
+                // Use TagSelections if available, otherwise fall back to TagIds for backward compatibility
+                IReadOnlyList<Guid>? tagIds = null;
+                if (options.TagSelections != null && options.TagSelections.Count > 0)
+                {
+                    // Expand tag selections to tag IDs
+                    var tagIdsSet = new HashSet<Guid>();
+                    foreach (var selection in options.TagSelections)
+                    {
+                        tagIdsSet.Add(selection.TagId);
+                        if (selection.IncludeDescendants)
+                        {
+                            var root = await _tagTaxonomyRepository.GetRootAsync(cancellationToken);
+                            var descendants = CollectDescendantTagIds(root, selection.TagId);
+                            foreach (var descendantId in descendants)
+                            {
+                                tagIdsSet.Add(descendantId);
+                            }
+                        }
+                    }
+                    tagIds = tagIdsSet.ToList();
+                }
+                else if (options.TagIds != null && options.TagIds.Count > 0)
+                {
+                    tagIds = options.TagIds;
+                }
+
+                if (tagIds != null && tagIds.Count > 0)
+                {
+                    annotations = await _annotationsRepository.GetByNodeIdAndTagsAsync(
+                        nodeId,
+                        tagIds,
+                        cancellationToken);
+                }
+                else
+                {
+                    annotations = await _annotationsRepository.GetByNodeIdAsync(
+                        nodeId,
+                        cancellationToken);
+                }
 
             foreach (var annotation in annotations)
             {
@@ -258,11 +342,40 @@ public class TimelineService : IAnalyticsService
 
         IReadOnlyList<ConversationMessage> messages;
 
-        if (options.TagIds != null && options.TagIds.Count > 0)
+        // Use TagSelections if available, otherwise fall back to TagIds for backward compatibility
+        IReadOnlyList<Guid>? tagIds = null;
+        bool includeTagDescendants = false;
+        if (options.TagSelections != null && options.TagSelections.Count > 0)
+        {
+            // Expand tag selections to tag IDs
+            var tagIdsSet = new HashSet<Guid>();
+            foreach (var selection in options.TagSelections)
+            {
+                tagIdsSet.Add(selection.TagId);
+                if (selection.IncludeDescendants)
+                {
+                    var root = await _tagTaxonomyRepository.GetRootAsync(cancellationToken);
+                    var descendants = CollectDescendantTagIds(root, selection.TagId);
+                    foreach (var descendantId in descendants)
+                    {
+                        tagIdsSet.Add(descendantId);
+                    }
+                }
+            }
+            tagIds = tagIdsSet.ToList();
+            includeTagDescendants = false; // Already included via expansion
+        }
+        else if (options.TagIds != null && options.TagIds.Count > 0)
+        {
+            tagIds = options.TagIds;
+            includeTagDescendants = options.IncludeTagDescendants;
+        }
+
+        if (tagIds != null && tagIds.Count > 0)
         {
             messages = await _conversationsRepository.GetMessagesByTagsAsync(
-                options.TagIds,
-                options.IncludeTagDescendants,
+                tagIds,
+                includeTagDescendants,
                 options.StartDate,
                 options.EndDate,
                 cancellationToken);
@@ -373,6 +486,34 @@ public class TimelineService : IAnalyticsService
     {
         var diff = (7 + (date.DayOfWeek - DayOfWeek.Monday)) % 7;
         return date.AddDays(-1 * diff).Date;
+    }
+
+    /// <summary>
+    /// Recursively collects descendant tag IDs for a given parent tag ID.
+    /// </summary>
+    private List<Guid> CollectDescendantTagIds(TagTaxonomyNode node, Guid parentTagId)
+    {
+        var descendants = new List<Guid>();
+
+        if (node.Id == parentTagId)
+        {
+            // Found parent, collect all children
+            foreach (var child in node.Children)
+            {
+                descendants.Add(child.Id);
+                descendants.AddRange(CollectDescendantTagIds(child, child.Id)); // Recurse
+            }
+        }
+        else
+        {
+            // Search in children
+            foreach (var child in node.Children)
+            {
+                descendants.AddRange(CollectDescendantTagIds(child, parentTagId));
+            }
+        }
+
+        return descendants;
     }
 }
 

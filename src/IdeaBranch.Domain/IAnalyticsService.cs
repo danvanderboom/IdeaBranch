@@ -90,12 +90,31 @@ public class TimelineOptions
     /// <summary>
     /// Gets or sets tag IDs to filter by.
     /// </summary>
+    [Obsolete("Use TagSelections instead for per-tag descendant control.")]
     public IReadOnlyList<Guid>? TagIds { get; set; }
 
     /// <summary>
     /// Gets or sets whether to include descendants of specified tags in hierarchical filtering.
     /// </summary>
+    [Obsolete("Use TagSelections instead for per-tag descendant control.")]
     public bool IncludeTagDescendants { get; set; }
+
+    /// <summary>
+    /// Gets or sets tag selections with per-tag descendant inclusion control.
+    /// </summary>
+    public IReadOnlyList<TagSelection>? TagSelections { get; set; }
+
+    /// <summary>
+    /// Gets or sets event types to filter by (Created/Updated mapping).
+    /// If null or empty, all event types are included.
+    /// </summary>
+    public IReadOnlySet<TimelineEventType>? EventTypes { get; set; }
+
+    /// <summary>
+    /// Gets or sets the search query for free-text filtering (case-insensitive substring match).
+    /// Minimum length is 2 characters. If null or empty, no search filtering is applied.
+    /// </summary>
+    public string? SearchQuery { get; set; }
 
     /// <summary>
     /// Gets or sets the start date/time filter (optional).
@@ -148,6 +167,11 @@ public enum TimelineGrouping
     Week,
     Month
 }
+
+/// <summary>
+/// Represents a tag selection with optional descendant inclusion.
+/// </summary>
+public sealed record TagSelection(Guid TagId, bool IncludeDescendants);
 
 /// <summary>
 /// Word cloud data containing word frequencies.

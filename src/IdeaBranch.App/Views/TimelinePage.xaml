@@ -26,17 +26,67 @@
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
 
+                <!-- Event Types -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Event Types:" FontSize="14" FontAttributes="Bold" />
+                    <HorizontalStackLayout Spacing="10">
+                        <CheckBox IsChecked="{Binding ShowCreated}" />
+                        <Label Text="Created" VerticalOptions="Center" />
+                        <CheckBox IsChecked="{Binding ShowUpdated}" />
+                        <Label Text="Updated" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+
+                <!-- Search -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Search:" FontSize="14" FontAttributes="Bold" />
+                    <Entry Text="{Binding SearchQuery}" 
+                            Placeholder="Search events (min 2 characters)" />
+                </VerticalStackLayout>
+
+                <!-- Tags -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Tags:" FontSize="14" FontAttributes="Bold" />
+                    <Label Text="{Binding SelectedTagSelections.Count, StringFormat='Selected: {0} tag(s)'}" 
+                           FontSize="12" 
+                           TextColor="Gray" />
+                    <Button Text="Select Tags..." 
+                            Clicked="OnTagPickerClicked" />
+                    <!-- TODO: Replace with TagPickerPopup when enhanced -->
+                </VerticalStackLayout>
+
                 <!-- Date Range -->
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                    <VerticalStackLayout Grid.Column="0" Spacing="5">
-                        <Label Text="Start Date:" />
-                        <DatePicker Date="{Binding StartDate}" />
-                    </VerticalStackLayout>
-                    <VerticalStackLayout Grid.Column="1" Spacing="5">
-                        <Label Text="End Date:" />
-                        <DatePicker Date="{Binding EndDate}" />
-                    </VerticalStackLayout>
-                </Grid>
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Date Range:" FontSize="14" FontAttributes="Bold" />
+                    <Label Text="{Binding ActiveDatePreset}" 
+                           FontSize="12" 
+                           TextColor="Blue" 
+                           IsVisible="{Binding ActiveDatePreset, Converter={StaticResource IsNotNullConverter}}" />
+                    
+                    <!-- Quick Presets -->
+                    <HorizontalStackLayout Spacing="10">
+                        <Button Text="Last 7 days" 
+                                Command="{Binding ApplyLast7DaysCommand}" 
+                                FontSize="12" />
+                        <Button Text="This month" 
+                                Command="{Binding ApplyThisMonthCommand}" 
+                                FontSize="12" />
+                        <Button Text="This year" 
+                                Command="{Binding ApplyThisYearCommand}" 
+                                FontSize="12" />
+                    </HorizontalStackLayout>
+                    
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <VerticalStackLayout Grid.Column="0" Spacing="5">
+                            <Label Text="Start Date:" />
+                            <DatePicker Date="{Binding StartDate}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                            <Label Text="End Date:" />
+                            <DatePicker Date="{Binding EndDate}" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </VerticalStackLayout>
 
                 <!-- Generate Button -->
                 <Button Text="Generate Timeline" 

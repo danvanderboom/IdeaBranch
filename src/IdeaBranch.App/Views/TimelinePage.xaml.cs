@@ -13,4 +13,14 @@ public partial class TimelinePage : ContentPage
     public TimelinePage() : this(new TimelineViewModel())
     {
     }
+
+    private void OnTagPickerClicked(object? sender, EventArgs e)
+    {
+        // TODO: Show TagPickerPopup when enhanced with TagSelection support
+        if (BindingContext is TimelineViewModel vm)
+        {
+            // Placeholder: Show alert for now
+            DisplayAlert("Tag Picker", "Tag picker with hierarchical selection and per-tag 'Include descendants' toggle will be implemented here.", "OK");
+        }
+    }
 }
