@@ -97,6 +97,18 @@ public class VisualizationTheme
     /// Gets or sets the background opacity (0.0-1.0).
     /// </summary>
     public float BackgroundOpacity { get; set; } = 1.0f;
+
+    /// <summary>
+    /// Optional gradient start color for word coloring (frequency-based).
+    /// When set with <see cref="WordGradientEnd"/>, word colors will be
+    /// interpolated between start and end based on weight/frequency.
+    /// </summary>
+    public SKColor? WordGradientStart { get; set; }
+
+    /// <summary>
+    /// Optional gradient end color for word coloring (frequency-based).
+    /// </summary>
+    public SKColor? WordGradientEnd { get; set; }
 }
 
 /// <summary>
@@ -108,5 +120,15 @@ public enum BackgroundType
     Gradient,
     Image,
     Transparent
+}
+
+/// <summary>
+/// Word cloud layout options.
+/// </summary>
+public enum WordCloudLayout
+{
+    Random,
+    Spiral,
+    ForceDirected
 }
 

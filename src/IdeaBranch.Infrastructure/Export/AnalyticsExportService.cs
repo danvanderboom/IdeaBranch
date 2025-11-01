@@ -181,6 +181,7 @@ public class AnalyticsExportService
         int height = 600,
         ExportOptions? options = null,
         VisualizationTheme? theme = null,
+        WordCloudLayout layout = WordCloudLayout.Random,
         CancellationToken cancellationToken = default)
     {
         var exportOpts = options ?? new ExportOptions { Width = width, Height = height };
@@ -227,59 +228,32 @@ public class AnalyticsExportService
             var weightRange = maxWeight - minWeight;
 
             var positions = new List<(float x, float y)>();
-            var random = new Random();
 
-            // Simple layout algorithm: place words randomly, avoiding overlaps
-            foreach (var wordFreq in words)
+            if (layout == WordCloudLayout.Spiral)
             {
+                PlaceWordsSpiral(words, positions, scaledWidth, scaledHeight, minSize, maxSize, minWeight, maxWeight);
+            }
+            else if (layout == WordCloudLayout.ForceDirected)
+            {
+                PlaceWordsForceDirected(words, positions, scaledWidth, scaledHeight);
+            }
+            else
+            {
+                PlaceWordsRandom(words, positions, scaledWidth, scaledHeight, minSize, maxSize, minWeight, maxWeight);
+            }
+
+            for (int i = 0; i < words.Count; i++)
+            {
+                var wordFreq = words[i];
                 var fontSize = weightRange > 0
                     ? (float)(minSize + (wordFreq.Weight - minWeight) / weightRange * (maxSize - minSize))
                     : minSize;
 
-                using var tempPaint = new SKPaint
-                {
-                    TextSize = fontSize,
-                    IsAntialias = true
-                };
+                var (x, y) = positions[i];
 
-                var textWidth = tempPaint.MeasureText(wordFreq.Word);
-                var textHeight = fontSize;
-
-                // Try to place word (simple collision avoidance)
-                int attempts = 0;
-                float x = 0, y = 0;
-                bool placed = false;
-
-                while (attempts < 50 && !placed)
-                {
-                    x = random.Next((int)(textWidth / 2), (int)(scaledWidth - textWidth / 2));
-                    y = random.Next((int)(textHeight), (int)(scaledHeight - textHeight));
-
-                    // Check collision with existing positions
-                    bool collision = false;
-                    foreach (var (px, py) in positions)
-                    {
-                        var distance = Math.Sqrt(Math.Pow(x - px, 2) + Math.Pow(y - py, 2));
-                        if (distance < textWidth + 20) // Add some spacing
-                        {
-                            collision = true;
-                            break;
-                        }
-                    }
-
-                    if (!collision)
-                    {
-                        placed = true;
-                        positions.Add((x, y));
-                    }
-
-                    attempts++;
-                }
-
-                // Draw word
                 using var paint = new SKPaint
                 {
-                    Color = GetColorForWeight(wordFreq.Weight, minWeight, maxWeight),
+                    Color = GetWordColor(wordFreq.Weight, minWeight, maxWeight, theme),
                     TextSize = fontSize,
                     IsAntialias = true,
                     TextAlign = SKTextAlign.Center
@@ -306,6 +280,7 @@ public class AnalyticsExportService
         int height = 600,
         ExportOptions? options = null,
         VisualizationTheme? theme = null,
+        WordCloudLayout layout = WordCloudLayout.Random,
         CancellationToken cancellationToken = default)
     {
         var exportOpts = options ?? new ExportOptions { Width = width, Height = height };
@@ -346,55 +321,30 @@ public class AnalyticsExportService
             var weightRange = maxWeight - minWeight;
 
             var positions = new List<(float x, float y)>();
-            var random = new Random();
 
-            // Simple layout algorithm: place words randomly, avoiding overlaps
-            foreach (var wordFreq in words)
+            if (layout == WordCloudLayout.Spiral)
             {
+                PlaceWordsSpiral(words, positions, exportOpts.ScaledWidth, exportOpts.ScaledHeight, minSize, maxSize, minWeight, maxWeight);
+            }
+            else if (layout == WordCloudLayout.ForceDirected)
+            {
+                PlaceWordsForceDirected(words, positions, exportOpts.ScaledWidth, exportOpts.ScaledHeight);
+            }
+            else
+            {
+                PlaceWordsRandom(words, positions, exportOpts.ScaledWidth, exportOpts.ScaledHeight, minSize, maxSize, minWeight, maxWeight);
+            }
+
+            for (int i = 0; i < words.Count; i++)
+            {
+                var wordFreq = words[i];
                 var fontSize = weightRange > 0
                     ? (float)(minSize + (wordFreq.Weight - minWeight) / weightRange * (maxSize - minSize))
                     : minSize;
 
-                using var tempPaint = new SKPaint
-                {
-                    TextSize = fontSize,
-                    IsAntialias = true
-                };
+                var (x, y) = positions[i];
 
-                var textWidth = tempPaint.MeasureText(wordFreq.Word);
-                var textHeight = fontSize;
-
-                int attempts = 0;
-                float x = 0, y = 0;
-                bool placed = false;
-
-                while (attempts < 50 && !placed)
-                {
-                    x = random.Next((int)(textWidth / 2), (int)(exportOpts.ScaledWidth - textWidth / 2));
-                    y = random.Next((int)(textHeight), (int)(exportOpts.ScaledHeight - textHeight));
-
-                    bool collision = false;
-                    foreach (var (px, py) in positions)
-                    {
-                        var distance = Math.Sqrt(Math.Pow(x - px, 2) + Math.Pow(y - py, 2));
-                        if (distance < textWidth + 20)
-                        {
-                            collision = true;
-                            break;
-                        }
-                    }
-
-                    if (!collision)
-                    {
-                        placed = true;
-                        positions.Add((x, y));
-                    }
-
-                    attempts++;
-                }
-
-                // Draw word to SVG
-                var color = GetColorForWeight(wordFreq.Weight, minWeight, maxWeight);
+                var color = GetWordColor(wordFreq.Weight, minWeight, maxWeight, theme);
                 using var paint = new SKPaint
                 {
                     Color = color,
@@ -523,6 +473,159 @@ public class AnalyticsExportService
 
         return new SKColor(r, g, b);
     }
+
+    private SKColor GetWordColor(double weight, double minWeight, double maxWeight, VisualizationTheme? theme)
+    {
+        if (theme?.WordGradientStart.HasValue == true && theme.WordGradientEnd.HasValue)
+        {
+            var t = maxWeight > minWeight ? (float)((weight - minWeight) / (maxWeight - minWeight)) : 0f;
+            var start = theme.WordGradientStart.Value;
+            var end = theme.WordGradientEnd.Value;
+            byte r = (byte)(start.Red + (end.Red - start.Red) * t);
+            byte g = (byte)(start.Green + (end.Green - start.Green) * t);
+            byte b = (byte)(start.Blue + (end.Blue - start.Blue) * t);
+            byte a = (byte)(start.Alpha + (end.Alpha - start.Alpha) * t);
+            return new SKColor(r, g, b, a);
+        }
+        return GetColorForWeight(weight, minWeight, maxWeight);
+    }
+
+    private void PlaceWordsRandom(List<WordFrequency> words, List<(float x, float y)> positions, int width, int height, float minSize, float maxSize, double minWeight, double maxWeight)
+    {
+        var random = new Random();
+        var weightRange = maxWeight - minWeight;
+        foreach (var word in words)
+        {
+            var fontSize = weightRange > 0
+                ? (float)(minSize + (word.Weight - minWeight) / weightRange * (maxSize - minSize))
+                : minSize;
+            using var tempPaint = new SKPaint { TextSize = fontSize, IsAntialias = true };
+            var textWidth = tempPaint.MeasureText(word.Word);
+            var textHeight = fontSize;
+
+            int attempts = 0;
+            float x = 0, y = 0;
+            bool placed = false;
+            while (attempts < 80 && !placed)
+            {
+                x = random.Next((int)(textWidth / 2), (int)(width - textWidth / 2));
+                y = random.Next((int)(textHeight), (int)(height - textHeight));
+                bool collision = false;
+                foreach (var (px, py) in positions)
+                {
+                    var distance = Math.Sqrt(Math.Pow(x - px, 2) + Math.Pow(y - py, 2));
+                    if (distance < textWidth + 20)
+                    {
+                        collision = true;
+                        break;
+                    }
+                }
+                if (!collision)
+                {
+                    positions.Add((x, y));
+                    placed = true;
+                }
+                attempts++;
+            }
+            if (!placed)
+            {
+                positions.Add((Math.Max(textWidth, 0) / 2f, Math.Max(textHeight, 0)));
+            }
+        }
+    }
+
+    private void PlaceWordsSpiral(List<WordFrequency> words, List<(float x, float y)> positions, int width, int height, float minSize, float maxSize, double minWeight, double maxWeight)
+    {
+        var centerX = width / 2f;
+        var centerY = height / 2f;
+        var weightRange = maxWeight - minWeight;
+        foreach (var word in words)
+        {
+            var fontSize = weightRange > 0
+                ? (float)(minSize + (word.Weight - minWeight) / weightRange * (maxSize - minSize))
+                : minSize;
+            using var tempPaint = new SKPaint { TextSize = fontSize, IsAntialias = true };
+            var textWidth = tempPaint.MeasureText(word.Word);
+            var textHeight = fontSize;
+
+            float theta = 0f;
+            bool placed = false;
+            int attempts = 0;
+            while (!placed && attempts < 1000)
+            {
+                var a = 4f; // spiral tightness
+                var radius = a + 2f * theta;
+                var x = centerX + radius * (float)Math.Cos(theta);
+                var y = centerY + radius * (float)Math.Sin(theta);
+                if (x - textWidth / 2f >= 0 && x + textWidth / 2f <= width && y - textHeight >= 0 && y <= height)
+                {
+                    bool collision = false;
+                    foreach (var (px, py) in positions)
+                    {
+                        var distance = Math.Sqrt(Math.Pow(x - px, 2) + Math.Pow(y - py, 2));
+                        if (distance < textWidth + 20)
+                        {
+                            collision = true;
+                            break;
+                        }
+                    }
+                    if (!collision)
+                    {
+                        positions.Add((x, y));
+                        placed = true;
+                        break;
+                    }
+                }
+                theta += 0.2f;
+                attempts++;
+            }
+            if (!placed)
+            {
+                positions.Add((centerX, centerY));
+            }
+        }
+    }
+
+    private void PlaceWordsForceDirected(List<WordFrequency> words, List<(float x, float y)> positions, int width, int height)
+    {
+        var centerX = width / 2f;
+        var centerY = height / 2f;
+        var random = new Random();
+
+        for (int i = 0; i < words.Count; i++)
+        {
+            var angle = (float)(random.NextDouble() * Math.PI * 2);
+            var radius = 10f + (float)(random.NextDouble() * Math.Min(width, height) / 8f);
+            positions.Add((centerX + radius * (float)Math.Cos(angle), centerY + radius * (float)Math.Sin(angle)));
+        }
+
+        for (int iter = 0; iter < 200; iter++)
+        {
+            for (int i = 0; i < words.Count; i++)
+            {
+                var posI = positions[i];
+                var forceX = 0f;
+                var forceY = 0f;
+                for (int j = 0; j < words.Count; j++)
+                {
+                    if (i == j) continue;
+                    var posJ = positions[j];
+                    var dx = posI.x - posJ.x;
+                    var dy = posI.y - posJ.y;
+                    var distSq = dx * dx + dy * dy + 0.01f;
+                    var repulse = 10000f / distSq;
+                    forceX += dx * repulse;
+                    forceY += dy * repulse;
+                }
+                forceX += (centerX - posI.x) * 0.01f;
+                forceY += (centerY - posI.y) * 0.01f;
+
+                positions[i] = (Clamp(posI.x + forceX * 0.0005f, 0, width), Clamp(posI.y + forceY * 0.0005f, 0, height));
+            }
+        }
+    }
+
+    private float Clamp(float v, float min, float max) => v < min ? min : (v > max ? max : v);
 
     /// <summary>
     /// Gets a color for an event type.
